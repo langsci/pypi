@@ -1,0 +1,180 @@
+
+\section{Guidelines for a chapter with Language Science Press}
+\chapter{Running Text}
+
+\section{General remarks}
+
+This template is for creating chapters for an edited volume to be submitted to Language Science Press. The final book will not look exactly like this document. Rather, a number of typographical adjustments will be made to fonts, page layout and so on. For  you as an author, it is important to concentrate on the content. Use as little direct formatting as possible and if you have to format something, rather use the styles (upper left corner of the user interface) than direct formatting as bold or italics.  
+
+For title of your chapter, use the style “Title“. For section headings, use \sectref{sec:key:1}, \sectref{sec:key:2}, \sectref{sec:key:3} and so on.  Sections should be exhaustive. This means that there should not be any text before a section ending with “.1“. This text for instance could not precede the title „General remarks“. 
+
+Running text does not require any special formatting. Simply use the standard settings of your program, but be aware that the pages might look different in the final versions. Footnotes are entered as usual with the insert-footnote-function\footnote{This is a footnote} Do not use endnotes. Cross references should include the words “Table“ or “Figure“, or the section sign §. There is no special category for maps. Use “Figure“ for maps as well. 
+
+References to the literature are given according to the Unified Style sheet for linguistics. If you use a bibliography manager like Zotero or EndNote, get in touch with the editors to see in how far there are possiibilities for conversion. 
+
+You will be required to submit a full list of references in Bibtex-format, so it might be a good idea to think about that already during the creation of the manuscript.
+
+Lists are either bulleted or enumerated. Try to stick to these types. 
+
+\begin{itemize}
+\item Bullet list 
+\item also known as unordered list
+\end{itemize}
+
+There is normally no need to use letters, Roman numerals or fancy symbols.
+
+\begin{itemize}
+\item Enumerations
+\item also known as ordered lists
+\item use numbers
+\end{itemize}
+\chapter{Floats}
+
+\section{Tables} 
+
+Tables should be referenced from the text (See \tabref{tab:key:1}). Tables will be placed according to typographic criteria; do not assume that a table will appear exactly where you put it. Your text must be understandable even if the table is not directly adjacent. Final tables will be rendered with some additional lines above and below them to set them off from the general text. It is not necessary to replicate this while you write.
+
+\begin{tabularx}{\textwidth}{XX}
+\lsptoprule
+ Must have & Must not have\\
+ Caption & Footnotes\\
+ Passage in text where they are referenced & Vertical lines\\
+& Excessive horizontal lines\\
+\lspbottomrule
+\end{tabularx}
+%%please move \begin{table} just above \begin{tabular
+\begin{table}
+\caption{All tables must have a caption.}
+\label{tab:1}
+\end{table}
+
+\section{Figures}
+
+What has been said for tables is true for graphics as well. All graphics are labelled „Figure“ regardless of whether they are drawings, photographs or maps. Figures must have copyright clearance, and the appropriate license must be given in the caption (see \figref{fig:key:1})
+
+\begin{figure}
+\caption{All figures must have a caption. Include licensing information in the caption (CC-BY-SA Raúl Ruano Ruiz. Original source http://upload.wikimedia.org/wikipedia/commons/e/ef/Icono\_Normativa.png)}
+\label{fig:key:1}
+\end{figure}
+
+\chapter{Special Text}
+
+\section{Examples} 
+
+Linguistic examples typically have three lines.  The first line is either italic or roman, depending on the series. We will correct this automatically. The second line should follow the Leipzig Glossing Rules. Use {\textsc{small caps}} rather than ALLCAPS for abbreviations.
+
+Examples have a running number enclosed in parentheses. If you have subexamples, use a lower case letter followed by a period.
+
+There is no need to align the elements as this is done automatically by Latex, as in (1.). But you can add white space for your own convenience if you like (2).
+
+\ea\label{ex:key:}
+\langinfo{}{}{French (personal knowledge)}\\
+\langinfo{}{}{Paris}\\
+\gll Ceci n'est pas une pomme\\
+     this \textstyleLangSciCategory{neg} \textstyleLangSciCategory{cop}.\textstyleLangSciCategory{3sg}.\textstyleLangSciCategory{pres}  \textstyleLangSciCategory{neg}  \textstyleLangSciCategory{det}.\textstyleLangSciCategory{f} apple\\
+\glt „This is not an apple.”
+\z
+
+\ea\label{ex:key:} 
+
+\langinfo{}{}{Saint-Etienne}\\
+\gll Ceci est une pomme\\
+     This is an apple\\
+\glt “This is an apple.”
+\z
+
+\ea\label{ex:key:} 
+
+\langinfo{}{}{Lyon}\\
+\gll Ceci es unse pomme\\
+     This is an apple\\
+\glt “This is an apple”
+\z
+
+\ea\label{ex:key:}
+\langinfo{}{}{        French (personal knowledge)} \\
+\gll La       terre  est                    bleu-e  comme  une      orange\\
+     \textstyleLangSciCategory{dem}.\textstyleLangSciCategory{f} earth \textstyleLangSciCategory{cop}.\textstyleLangSciCategory{3sg}.\textstyleLangSciCategory{pres}    blue-\textstyleLangSciCategory{f}   like       \textstyleLangSciCategory{indef}.\textstyleLangSciCategory{f} orange\\
+\glt „Earth is blue like an orange“
+\z
+
+If your example is very long and would span several lines, it is preferable to use a smaller font rather than several lines. The final book will use the standard font and break the lines automatically at the best position
+
+\ea\label{ex:key:}
+\langinfo{}{}{French}\\
+\gll Ceci n'    est                   pas   une   pomme et    la       terre  est                  bleu-e  comme une      orange\\
+     {this} {\textsc{neg cop}}{.3}{\textsc{sg.pres}}{} {\textsc{neg det.f}}{  apple    and} {\textsc{dem.f}}{ earth}{ \textsc{cop.3sg.pres}}{  blue-}{\textsc{f} }{like} {\textsc{indef.f} }{orange}\\
+\section{Conversation transcripts}
+
+Conversation transcripts are a special form of examples. They are typeset in a monospace font in order to make alignment across several stretches of text easier.   The numbering in this example is also in monospace; in the final book, it will be typeset in the normal font, just like the other example numbers. Do use ALLCAPS for glosses in conversation transcripts, do not use smallcaps.
+
+\begin{lstlisting}
+\ea%3
+    \label{ex:key:3}
+    \gll\\
+        \\
+    \glt
+    \z
+
+          CHSF\_2012\_08\_04S4\_1712020\\
+\\
+1 A    daira naa inu tina ka' eede                           M1\\
+       daira nu-ya   i-nu    tina ka-tu   ere-de\\
+       Daira 2 {\textsc{sg-foc}} 1 {\textsc{sg-acc}} tub  grab-{\textsc{sr}}  pass-{\textsc{imp}}\\
+       Daira you pass me the tub\\
+\\
+2 B   enstaa? ((pointing at tub))                           M2\\
+      ensta-a\\
+      this-{\textsc{q}}\\
+      this one?\\
+\\
+3 A   jee tsadekee                                          M1\\
+      jee tsa-de-ke-e\\
+      yes {\textsc{sem-pl}}{}-do-{\textsc{imp}}\\
+      yeah do that \\
+\\
+4 B   ((throws tub to A))                                M2
+\end{lstlisting}
+
+\section{Quotations}
+
+Quotations use the quotation environment. Do not use quotation marks. There is no need to italicize the quotation as it is already offset by indentation. 
+
+\begin{quotation}
+I believe that everything happens for a reason. People change so that you can learn to let go, things go wrong so that you appreciate them when they're right, you believe lies so you eventually learn to trust no one but yourself, and sometimes good things fall apart so better things can fall together. (Marilyn Monroe) \end{quotation}
+\chapter{Another chapter with an abstract}
+
+\begin{abstract}
+All chapters of edited volumes should have an abstract. These abstracts should give an overview of the topics covered but should remain concise. Do use the abstract style.\\
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+\end{abstract}
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+\chapter{Yet another chapter with an epigram}
+
+\begin{styleListenabsatz}
+Use the epigram style for epigrams. As epigrams do not go very well with abstracts, try to avoid epigrams in edited volumes.
+\end{styleListenabsatz}
+
+\begin{styleEpigramauthor}
+John Smith
+\end{styleEpigramauthor}
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+\begin{verbatim}%%move bib entries to  localbibliography.bib
+@@book{Meier1999,
+	address = {Amsterdam},
+	author = {Meier, Hans.},
+	publisher = {John Benjamins},
+	title = {The grammar of Nothing in {Spanish}},
+	year = {1999}
+}
+
+@@misc{Schmitz2000,
+	author = {Schmitz, \citet{Horst},
+	title = {} Where do we go from here?},
+	year = {2000}
+}
+
+\end{verbatim}
