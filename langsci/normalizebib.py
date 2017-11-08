@@ -98,6 +98,7 @@ class Record():
     """
     
     if len(self.errors)>0:
+      restrict =  True
       if restrict==False or self.inkeysd.get(self.key):
         print(self.key,'\n  '.join(['  ']+self.errors))
  

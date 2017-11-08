@@ -13637,6 +13637,12 @@ OCCURREDREPLACEMENTS=[
 """Northern""",
 """Otoe""",
 """Proto-Siouan""",
-"""Western"""
+"""Western""",
+"""Chinese""",
+"""cherokee""",
+"""Kimarang""",
+"""Frege""",
+"""Balinese""",
+"""Irish"""
   ]
   
