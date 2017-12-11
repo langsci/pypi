@@ -169,6 +169,22 @@ class Document:
         (r"\~{n}",u"ñ"),
         
         
+        
+        (r"\"{a}",u"ä"),
+        (r"\"{e}",u"ë"),
+        (r"\"{i}",u"ï"),
+        (r"\"{o}",u"ö"),
+        (r"\"{u}",u"ü"),
+        (r"\"{y}",u"ÿ"),
+                
+        (r"\"{A}",u"Ä"),
+        (r"\"{E}",u"Ë"),
+        (r"\"{I}",u"Ï"),
+        (r"\"{O}",u"Ö"),
+        (r"\"{U}",u"Ü"),
+        (r"\"{Y}",u"Ÿ"),
+        
+        
         (r"\v{a}",u"ǎ"),
         (r"\v{e}",u"ě"),
         (r"\v{i}",u"ǐ"),
@@ -558,7 +574,7 @@ class Document:
           #i=1
           #while i!=0:
             #modtext,i = re.subn('\\%s\{([^\}]+) '%s,'\\%s{\\1} \\%s{'%(s,s),modtext) 
-        modtext = re.sub("\\\\includegraphics\[.*?width=\\\\textwidth","%please move the includegraphics inside the {figure} environment\n%%\includegraphics[width=\\\\textwidth",modtext)
+        modtext = re.sub("\\\\includegraphics\[.*?width=\\\\textwidth\]\{","%please move the includegraphics inside the {figure} environment\n%%\includegraphics[width=\\\\textwidth]{figures/",modtext)
         
         modtext = re.sub("\\\\item *\n+",'\\item ',modtext)
         
