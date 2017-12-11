@@ -411,10 +411,12 @@ class Document:
         #unescape w2l unicode
         w2lunicodep3 = re.compile(r'(\[[0-9A-Fa-f]{3}\?\])')
         w2lunicodep4 = re.compile(r'(\[[0-9A-Da-d][0-9A-Fa-f]{3}\?\])') #intentionally leaving out PUA   
-        #for m in w2lunicodep3.findall(modtext):
-          #modtext=modtext.replace(m,'\u0{}'.format(m[1:-2]).decode('unicode_escape'))
-        #for m in w2lunicodep4.findall(modtext):
-            #modtext=modtext.replace(m,'\u{}'.format(m[1:-2]).decode('unicode_escape'))
+        byteprefix3 =  b'\u0'
+        byteprefix4 =  b'\u'
+        for m in w2lunicodep3.findall(modtext):
+          modtext=modtext.replace(m,(byteprefix3+m[1:-2].encode('utf-8')).decode('unicode_escape'))
+        for m in w2lunicodep4.findall(modtext):
+           modtext=modtext.replace(m,(byteprefix4+m[1:-2].encode('utf-8')).decode('unicode_escape'))
         #remove marked up white space and punctuation
         modtext = re.sub("\\text(it|bf|sc)\{([ \.,]*)\}","\\2",modtext)  
         
