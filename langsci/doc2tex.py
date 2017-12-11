@@ -205,6 +205,17 @@ class Document:
         (r"\={O}",u"Ō"),
         (r"\={U}",u"Ū"),
         
+        (r"\=a",u"ā"),
+        (r"\=e",u"ē"),
+        (r"\=i",u"ī"),
+        (r"\=o",u"ō"),
+        (r"\=u",u"ū"),        
+        (r"\=A",u"Ā"),
+        (r"\=E",u"Ē"),
+        (r"\=I",u"Ī"),
+        (r"\=O",u"Ō"),
+        (r"\=U",u"Ū"),
+        
         ("{\\textquoteleft}","`"),
         ("{\\textgreater}",">"),
         ("{\\textless}","<"),
@@ -353,7 +364,9 @@ class Document:
 				#(" }","} "),  
                                 #("\\setcounter","%\\setcounter"),  
                                 ("\n\n\\item","\\item"),  
-                                ("\n\n\\end","\\end") 
+                                ("\n\n\\end","\\end") ,  
+                                ("[Warning: Draw object ignored]","%%[Warning: Draw object ignored]\n"),
+                                (r"\=\i","{\=\i}")
                                 
                             )    
         yanks =  ("\\begin{flushleft}",
