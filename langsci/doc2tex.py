@@ -213,6 +213,7 @@ class Document:
         (r"\={a}",u"ā"),
         (r"\={e}",u"ē"),
         (r"\={i}",u"ī"),
+        (r"\={\i}",u"ī"),
         (r"\={o}",u"ō"),
         (r"\={u}",u"ū"),        
         (r"\={A}",u"Ā"),
@@ -487,20 +488,25 @@ class Document:
         #collapse newlines
         modtext = re.sub("\n*\\\\\\\\\n*",'\\\\\\\\\n',modtext) 
         #bib
-        modtext = re.sub("\(([A-Z][a-z]+) +et al\.  +([12][0-9]{3}[a-z]?): *([0-9,-]+)\)","\\citep[\\3]{\\1EtAl\\2}",modtext)
-        modtext = re.sub("\(([A-Z][a-z]+) +([12][0-9]{3}[a-z]?): *([0-9,-]+)\)","\\citep[\\3]{\\1\\2}",modtext)
-        modtext = re.sub("\(([A-Z][a-z]+) +et al\. +([12][0-9]{3}[a-z]?)\)","\\citep{\\1EtAl\\2}",modtext)
-        modtext = re.sub("\(([A-Z][a-z]+) +([12][0-9]{3}[a-z]?)\)","\\citep{\\1\\2}",modtext)
+        modtext = re.sub("\(([Mac]*[A-Z][a-z]+) +et al\.  +([12][0-9]{3}[a-z]?): *([0-9,-]+)\)","\\citep[\\3]{\\1EtAl\\2}",modtext)
+        modtext = re.sub("\(([Mac]*[A-Z][a-z]+) +([12][0-9]{3}[a-z]?): *([0-9,-]+)\)","\\citep[\\3]{\\1\\2}",modtext)
+        modtext = re.sub("\(([Mac]*[A-Z][a-z]+) +et al\. +([12][0-9]{3}[a-z]?)\)","\\citep{\\1EtAl\\2}",modtext)
+        modtext = re.sub("\(([Mac]*[A-Z][a-z]+) +([12][0-9]{3}[a-z]?)\)","\\citep{\\1\\2}",modtext)
         #citet
-        modtext = re.sub("([A-Z][a-z]+) +et al. +\(([12][0-9]{3}[a-z]?): *([0-9,-]+)\)","\\citet[\\3]{\\1EtAl\\2}",modtext)
-        modtext = re.sub("([A-Z][a-z]+) +\(([12][0-9]{3}[a-z]?): *([0-9,-]+)\)","\\citet[\\3]{\\1\\2}",modtext)
-        modtext = re.sub("([A-Z][a-z]+) +et al. +\(([12][0-9]{3}[a-z]?)\)","\\citet{\\1EtAl\\2}",modtext)
-        modtext = re.sub("([A-Z][a-z]+) +\(([12][0-9]{3}[a-z]?)\)","\\citet{\\1\\2}",modtext)
+        modtext = re.sub("([Mac]*[A-Z][a-z]+) +et al.? +\(([12][0-9]{3}[a-z]?): *([0-9,-]+)\)","\\citet[\\3]{\\1EtAl\\2}",modtext)
+        modtext = re.sub("([Mac]*[A-Z][a-z]+) +\(([12][0-9]{3}[a-z]?): *([0-9,-]+)\)","\\citet[\\3]{\\1\\2}",modtext)
+        modtext = re.sub("([Mac]*[A-Z][a-z]+) +et al.? +\(([12][0-9]{3}[a-z]?)\)","\\citet{\\1EtAl\\2}",modtext)
+        modtext = re.sub("([Mac]*[A-Z][a-z]+) +\(([12][0-9]{3}[a-z]?)\)","\\citet{\\1\\2}",modtext)
+        #citegen
+        modtext = re.sub("([Mac]*[A-Z][a-z]+) +et al.?'s +\(([12][0-9]{3}[a-z]?)\)","\\citegen{\\1EtAl\\2}",modtext)
+        modtext = re.sub("([Mac]*[A-Z][a-z]+)'s +\(([12][0-9]{3}[a-z]?)\)","\\citegen{\\1\\2}",modtext)
         #modtext = re.sub("([A-Z][a-z]+) +([12][0-9]{3}[a-z]?)","\\citet{\\1\\2}",modtext)i
         #very last thing: catch all citealt
-        modtext = re.sub("([A-Z][a-z]+) +([12][0189][0-9]{2}[a-z]?)","\\citealt{\\1\\2}",modtext)    
-        modtext = re.sub("([A-Z][a-z]+) \\& \\citet{","\\citet{\\1",modtext)        
-        modtext = re.sub("([A-Z][a-z]+) \\& \\citealt{","\\citealt{\\1",modtext)        
+        modtext = re.sub("([Mac]*[A-Z][a-z]+) +([12][0189][0-9]{2}[a-z]?)","\\citealt{\\1\\2}",modtext)    
+        modtext = re.sub("([Mac]*[A-Z][a-z]+) \\& \\citet{","\\citet{\\1",modtext)        
+        modtext = re.sub("([Mac]*[A-Z][a-z]+) \\& \\citealt{","\\citealt{\\1",modtext)    
+        modtext = re.sub("([Mac]*[A-Z][a-z]+) and \\citealt{","\\citealt{\\1",modtext)   
+        modtext = re.sub("([A-Z][a-z]+)\}, \\citealt{","\\1,",modtext)        
         #examples
         modtext = modtext.replace("\n()", "\n\\ea \n \\gll \\\\\n   \\\\\n \\glt\n\\z\n\n")
         modtext = re.sub("\n\(([0-9]+)\)", """\n\ea%\\1
