@@ -202,6 +202,7 @@ class Document:
         (r"\u{a}",u"ă"),
         (r"\u{e}",u"ĕ"),
         (r"\u{i}",u"ĭ"),
+        (r"\u{\i}",u"ĭ"),
         (r"\u{o}",u"ŏ"),
         (r"\u{u}",u"ŭ"),        
         (r"\u{A}",u"Ă"),
@@ -214,6 +215,7 @@ class Document:
         (r"\={e}",u"ē"),
         (r"\={i}",u"ī"),
         (r"\={\i}",u"ī"),
+        (r"\=\i",u"ī"),
         (r"\={o}",u"ō"),
         (r"\={u}",u"ū"),        
         (r"\={A}",u"Ā"),
@@ -286,6 +288,7 @@ class Document:
         ("{\\textquoteleft}","`"),
         ("{\\textgreater}",">"),
         ("{\\textless}","<"),
+        ("{\\textquotedbl}",'"'),
                                 ("{\\textquotedblleft}","``"), 
                                 ("{\\textquoteright}","'"),
                                 ("{\\textquotedblright}","''"),
@@ -539,25 +542,70 @@ class Document:
         modtext = re.sub("\n*\\\\\\\\\n*",'\\\\\\\\\n',modtext) 
         #bib
         authorchars = "[Mac]*[A-Z][-a-záéíóúaèìòùâeîôûñäëïöü]+"
-        modtext = re.sub("\((%s) +et al\.  +([12][0-9]{3}[a-z]?): *([0-9,-]+)\)"%authorchars,"\\citep[\\3]{\\1EtAl\\2}",modtext)
-        modtext = re.sub("\((%s) +([12][0-9]{3}[a-z]?): *([0-9,-]+)\)"%authorchars,"\\citep[\\3]{\\1\\2}",modtext)
-        modtext = re.sub("\((%s) +et al\. +([12][0-9]{3}[a-z]?)\)"%authorchars,"\\citep{\\1EtAl\\2}",modtext)
-        modtext = re.sub("\((%s) +([12][0-9]{3}[a-z]?)\)"%authorchars,"\\citep{\\1\\2}",modtext)
+        yearchars = "[12][0-9]{3}[a-z]?"
+        modtext = re.sub("\((%s) +et al\.?  +(%s): *([0-9,-]+)\)"%(authorchars,yearchars),
+                         "\\citep[\\3]{\\1EtAl\\2}",
+                         modtext)
+        modtext = re.sub("\((%s) +(%s): *([0-9,-]+)\)"%(authorchars,yearchars),
+                         "\\citep[\\3]{\\1\\2}",
+                         modtext)
+        modtext = re.sub("\((%s) +et al\.? +(%s)\)"%(authorchars,yearchars),
+                         "\\citep{\\1EtAl\\2}",
+                         modtext)
+        modtext = re.sub("\((%s) +(%s)\)"%(authorchars,yearchars),
+                         "\\citep{\\1\\2}",
+                         modtext)
         #citet
-        modtext = re.sub("(%s) +et al.? +\(([12][0-9]{3}[a-z]?): *([0-9,-]+)\)"%authorchars,"\\citet[\\3]{\\1EtAl\\2}",modtext)
-        modtext = re.sub("(%s) +\(([12][0-9]{3}[a-z]?): *([0-9,-]+)\)"%authorchars,"\\citet[\\3]{\\1\\2}",modtext)
-        modtext = re.sub("(%s) +et al.? +\(([12][0-9]{3}[a-z]?)\)"%authorchars,"\\citet{\\1EtAl\\2}",modtext)
-        modtext = re.sub("(%s) +\(([12][0-9]{3}[a-z]?)\)"%authorchars,"\\citet{\\1\\2}",modtext)
+        modtext = re.sub("(%s) +et al.? +\((%s): *([0-9,-]+)\)"%(authorchars,yearchars),
+                         "\\citet[\\3]{\\1EtAl\\2}",
+                         modtext)
+        modtext = re.sub("(%s) +\((%s): *([0-9,-]+)\)"%(authorchars,yearchars),
+                         "\\citet[\\3]{\\1\\2}",
+                         modtext)
+        modtext = re.sub("(%s) +et al.? +\((%s)\)"%(authorchars,yearchars),
+                         "\\citet{\\1EtAl\\2}",
+                         modtext)
+        modtext = re.sub("(%s) +\((%s)\)"%(authorchars,yearchars),
+                         "\\citet{\\1\\2}",
+                         modtext)
         #citegen
-        modtext = re.sub("(%s) +et al.?'s +\(([12][0-9]{3}[a-z]?)\)"%authorchars,"\\citegen{\\1EtAl\\2}",modtext)
-        modtext = re.sub("(%s)'s +\(([12][0-9]{3}[a-z]?)\)"%authorchars,"\\citegen{\\1\\2}",modtext)
-        #modtext = re.sub("([A-Z][a-z]+) +([12][0-9]{3}[a-z]?)","\\citet{\\1\\2}",modtext)i
-        #very last thing: catch all citealt
-        modtext = re.sub("(%s) +([12][0189][0-9]{2}[a-z]?)"%authorchars,"\\citealt{\\1\\2}",modtext)    
-        modtext = re.sub("(%s) \\& \\citet{"%authorchars,"\\citet{\\1",modtext)        
-        modtext = re.sub("(%s) \\& \\citealt{"%authorchars,"\\citealt{\\1",modtext)    
-        modtext = re.sub("(%s) and \\citealt{"%authorchars,"\\citealt{\\1",modtext)   
-        modtext = re.sub("([A-Z][a-z]+)\}, \\citealt{","\\1,",modtext)        
+        modtext = re.sub("(%s) +et al\.?]['’]s +\((%s)\)"%(authorchars,yearchars),
+                         "\\citegen{\\1EtAl\\2}",
+                         modtext)
+        modtext = re.sub("(%s)['’]s +\((%s)\)"%(authorchars,yearchars),
+                         "\\citegen{\\1\\2}",
+                         modtext)
+        #citeapo
+        modtext = re.sub("(%s) +et al\.?]['’] +\((%s)\)"%(authorchars,yearchars),
+                         "\\citeapo{\\1EtAl\\2}",
+                         modtext)
+        modtext = re.sub("(%s)['’] +\((%s)\)"%(authorchars,yearchars),
+                         "\\citeapo{\\1\\2}",
+                         modtext)
+        #modtext = re.sub("([A-Z][a-z]+) +(%s)","\\citet{\\1\\2}",modtext)i
+        #catch all citealt
+        modtext = re.sub("(%s) +(%s)"%(authorchars,yearchars),
+                         "\\citealt{\\1\\2}",
+                         modtext)    
+        modtext = re.sub("(%s) et al\.? +(%s)"%(authorchars,yearchars),
+                         "\\citealt{\\1EtAl\\2}",
+                         modtext)    
+        #conflate
+        modtext = re.sub(r"(%s) \\& \\citet{"%authorchars,
+                         "\\citet{\\1",
+                         modtext)  
+        modtext = re.sub(r"(%s) and \\citet{"%authorchars,
+                         "\\citet{\\1",
+                         modtext)        
+        modtext = re.sub(r"(%s) \\& \\citealt{"%authorchars,
+                         "\\citealt{\\1",
+                         modtext)    
+        modtext = re.sub(r"(%s) and \\citealt{"%authorchars,
+                         "\\citealt{\\1",
+                         modtext)   
+        modtext = re.sub(r"([A-Z][a-z]+)\}[,;] \\citealt{",
+                         "\\1,",
+                         modtext)        
         #examples
         modtext = modtext.replace("\n()", "\n\\ea \n \\gll \\\\\n   \\\\\n \\glt\n\\z\n\n")
         modtext = re.sub("\n\(([0-9]+)\)", """\n\ea%\\1
@@ -627,10 +675,11 @@ class Document:
         
         #TODO propagate textbf in gll
         
-        #for s in ('textit','textbf','textsc','texttt','emph'):
-          #i=1
-          #while i!=0:
-            #modtext,i = re.subn('\\%s\{([^\}]+) '%s,'\\%s{\\1} \\%s{'%(s,s),modtext) 
+        for s in ('textit','textbf','textsc','texttt','emph'):
+          i=1
+          while i!=0:
+            modtext,i = re.subn(r'\\%s\{([^\}]+) '%s,r'\\%s{\1} \\%s{'%(s,s),modtext) 
+            
         modtext = re.sub("\\\\includegraphics\[.*?width=\\\\textwidth\]\{","%please move the includegraphics inside the {figure} environment\n%%\includegraphics[width=\\\\textwidth]{figures/",modtext)
         
         modtext = re.sub("\\\\item *\n+",'\\item ',modtext)
