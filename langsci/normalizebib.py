@@ -400,7 +400,7 @@ class Record():
 
 
 def normalize(fn):
-  a = fn.read().split('\n@') 
+  a = open(fn).read().split('\n@') 
   fn.close()
   #split preamble (if any) from records
   preamble = a[0]
