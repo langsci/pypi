@@ -147,6 +147,7 @@ class ImgFile(LSPFile):
             img = Image.open(self.fn)
         except IOError:
             print "could not open", self.fn
+            return
         try:
             x,y = img.info['dpi']
             if x < 72 or y < 72:
