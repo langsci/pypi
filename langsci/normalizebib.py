@@ -80,7 +80,7 @@ class Record():
     pages = self.fields.get('pages')
     if pages != None: 
       self.fields['pages'] = re.sub(r'([0-9])-([0-9])',r'\1--\2',pages)                 
-    self.conformsubtitles() 
+    self.conformtitles() 
     self.conforminitials()
     self.checketal()
     self.checkand()
@@ -288,7 +288,10 @@ class Record():
       
   def addsortname(self,name):
     #print(name)
-    residue = name.translate({ord(i):None for i in string.ascii_letters+'- ,{}'})
+    try:
+        residue = name.translate({ord(i):None for i in string.ascii_letters+'- ,{}'})
+    except  TypeError: #python2
+        residue = ''
     if residue == '':
       pass
     else:
@@ -446,7 +449,7 @@ if __name__ == "__main__":
   outfilename = 'sorted.bib'
   inbib = open(sys.argv[1])
   
-  f = open(fn)
+  f = inbib
   s = f.read()
   f.close()
   outbib = open(outfilename,'w')
