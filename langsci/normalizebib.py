@@ -398,6 +398,28 @@ class Record():
     
 
 
+def normalize(fn):
+  a = fn.read().split('\n@') 
+  fn.close()
+  #split preamble (if any) from records
+  preamble = a[0]
+  rest = a[1:]
+  #sort and reverse in order to get the order of edited volumes and incollection right 
+  rest.sort() 
+  rest = rest[::-1] 
+  restrict = False #should only cited works be written to sorted.bib?
+  #create the new bibtex records
+  bibtexs = [Record(q,
+                    inkeysd=citationsd, 
+                    restrict=restrict,
+                    reporting=['conferences']                    
+                    ).bibtex() 
+              for q in rest
+            ]
+  #assemble output string
+  rest = '\n\n'.join([b for b in bibtexs if b]) 
+  return '\n'.join((preamble, rest))
+
 if __name__ == "__main__":    
   """
   usage: python3 normalizebib.py localbibliography.bib 
@@ -419,28 +441,8 @@ if __name__ == "__main__":
   citations = list(set(citations)) #uniq
   #store in dict for more efficient checking for presence
   citationsd = dict(zip(citations,[True for t in range(len(citations))]))
-  #access bib file
-  a = inbib.read().split('\n@') 
-  #split preamble (if any) from records
-  preamble = a[0]
-  rest = a[1:]
-  #sort and reverse in order to get the order of edited volumes and incollection right 
-  rest.sort() 
-  rest = rest[::-1] 
-  restrict = False #should only cited works be written to sorted.bib?
-  #create the new bibtex records
-  bibtexs = [Record(q,
-                    inkeysd=citationsd, 
-                    restrict=restrict,
-                    reporting=['conferences']                    
-                    ).bibtex() 
-              for q in rest
-            ]
-  #assemble output string
-  new = '\n\n'.join([b for b in bibtexs if b]) 
-  inbib.close()
+  #access bib file 
+  newbib = normalize(inbib) 
   #write out
-  outbib.write(preamble)
-  outbib.write('\n')
-  outbib.write(new)
+  outbib.write(newbib)
   outbib.close()
