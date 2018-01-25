@@ -170,8 +170,8 @@ class Record():
     for t in ('title','booktitle'):
       if self.fields.get(t) != None: 
         self.fields[t] = re.sub(r'([:\.\?!]) *([a-zA-Z])', self.upperme ,self.fields[t])
-        self.fields[t] = re.sub(r'([A-Z][a-z]*[A-Z])', "{\1}" ,self.fields[t])
-        self.fields[t] = re.sub(r' ([A-Z]) ', " {{\1}} " ,self.fields[t])
+        self.fields[t] = re.sub(r'([A-Z][a-z]*[A-Z])', r"{\1}" ,self.fields[t])
+        self.fields[t] = re.sub(r' ([A-Z]) ', r" {{\1}} " ,self.fields[t])
         
   def conforminitials(self):
     """
