@@ -399,9 +399,8 @@ class Record():
     
 
 
-def normalize(fn):
-  a = open(fn).read().split('\n@') 
-  fn.close()
+def normalize(s, inkeysd={}, restrict=False):
+  a = s.split('\n@') 
   #split preamble (if any) from records
   preamble = a[0]
   rest = a[1:]
@@ -411,7 +410,7 @@ def normalize(fn):
   restrict = False #should only cited works be written to sorted.bib?
   #create the new bibtex records
   bibtexs = [Record(q,
-                    inkeysd=citationsd, 
+                    inkeysd=inkeysd, 
                     restrict=restrict,
                     reporting=['conferences']                    
                     ).bibtex() 
@@ -428,6 +427,10 @@ if __name__ == "__main__":
   texdir = 'chapters'
   outfilename = 'sorted.bib'
   inbib = open(sys.argv[1])
+  
+  f = open(fn)
+  s = f.read()
+  f.close()
   outbib = open(outfilename,'w')
   texs = glob.glob('%s/*tex'%texdir)
   CITE = re.compile(r'\cite[yeargenltp]*(?:\[.*?\])?\{(.*?)\}')
@@ -443,7 +446,7 @@ if __name__ == "__main__":
   #store in dict for more efficient checking for presence
   citationsd = dict(zip(citations,[True for t in range(len(citations))]))
   #access bib file 
-  newbib = normalize(inbib) 
+  newbib = normalize(s,inkeysd=citationsd,restrict=True) 
   #write out
   outbib.write(newbib)
   outbib.close()
