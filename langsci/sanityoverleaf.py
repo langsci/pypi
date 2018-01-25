@@ -7,7 +7,7 @@ import subprocess
 
 
 def cloneorpull(url):
-    m = re.search('([0-9]{7,}[a-z]+)',overleafurl)
+    m = re.search('([0-9]{7,}[a-z]+)',url)
     overleafID = m.group(1)
     print "overleaf ID found:", overleafID
     giturl = "https://git.overleaf.com/"+overleafID
