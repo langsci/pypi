@@ -177,7 +177,8 @@ class Record():
     bibstring+=",\n\t".join(["%s = {%s}"%f for f in fields])
     bibstring+="\n}"  
     #print bibstring
-    self.bibstring = normalizebib.Record(bibstring).bibtex() 
+    tmpbibstring = normalizebib.Record(bibstring).bibtex() 
+    self.bibstring = normalizebib.normalize(tmpbibstring) #this could be made in a more elegant way
 
 def getRecords(fn, splitter="\n\n"):
   c = open(fn).read()
