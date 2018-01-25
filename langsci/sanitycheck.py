@@ -135,6 +135,27 @@ class BibFile(LSPFile):
   filechecks = []
   spellerrors = []
 
+class ImgFile(LSPFile): 
+    def __init__(self,fn):
+        self.fn = fn  
+        self.errors = [] 
+        self.spellerrors = []
+        self.latexterms = [] 
+    
+    def check(self): 
+        img = Image.open(self.fn)
+        try:
+            x,y = img.info['dpi']
+            if x < 72 or y < 72:
+                print "low res for", self.fn.split                     
+                self.errors.append(LSPError(self.fn,' ',' ',' ',"low res"))	
+        except KeyError:
+            x,y =  img.size
+            if x< 1500:
+                print "resolution of %s when printed full with: %i. Required: 300" %(self.fn.split('/')[-1],x/5)                                   
+                self.errors.append(LSPError(self.fn,' ',' ',' ',"low res"))	
+
+   
 
 
 class LSPDir:
@@ -181,20 +202,15 @@ class LSPDir:
       self.errors[bfn] = [None,None]
       self.errors[bfn][0] = b.errors
       self.errors[bfn][1] = b.spellerrors
+    for ifn in self.pngfiles+self.jpgfiles:
+      imgf = ImgFile(ifn) 
+      imgf.check()
+      self.spellerrors = [] 
+      self.errors[ifn] = [None,None]
+      self.errors[ifn][0] = imgf.errors
+      self.errors[ifn][1] = []
       
-  def checkimg(self):
-    for pfn in self.pngfiles+self.jpgfiles: 
-        print pfn
-        img = Image.open(pfn)
-        try:
-            x,y = img.info['dpi']
-            if x < 72 or y < 72:
-                print "low res for", pfn
-        except KeyError:
-            x,y =  img.size
-            if x< 1500:
-              print "resolution of %s when printed full with: %i. Required: 300" %(pfn.split('/')[-1],x/5)
-    
+ 
 
     
  

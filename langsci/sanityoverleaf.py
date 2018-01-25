@@ -35,6 +35,6 @@ if __name__ == "__main__":
     lspdir.check()
     lspdir.printErrors()
     imgdir =  LSPDir(os.path.join(d,'figures'))
-    imgdir.checkimg()
+    imgdir.check()
     imgdir.printErrors()
     
