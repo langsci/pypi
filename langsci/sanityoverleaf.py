@@ -1,18 +1,17 @@
 from sanitycheck import LSPDir
 import re
-import  git 
+import git 
 import os
 import sys
 import subprocess
 
-    
-if __name__ == "__main__":
-    overleafurl = sys.argv[1]
+
+def cloneorpull(url):
     m = re.search('([0-9]{7,}[a-z]+)',overleafurl)
     overleafID = m.group(1)
     print "overleaf ID found:", overleafID
     giturl = "https://git.overleaf.com/"+overleafID
-    gitdir = './'+overleafID  
+    gitdir = os.path.join(os.getcwd(),overleafID)
     print "git repo is ", giturl
     try:
         git.Repo.clone_from(giturl, gitdir)
@@ -22,11 +21,18 @@ if __name__ == "__main__":
         cwd = os.getcwd()
         print gitdir
         os.chdir(gitdir)
-        subprocess.call(["git","pull"])
-        subprocess.call("ls")
+        subprocess.call(["git","pull"]) 
         os.chdir(cwd)
         print "pulled"
-    lspdir = LSPDir(os.path.join(gitdir,'chapters'))
+    return gitdir
+        
+    return lspdir
+    
+    
+if __name__ == "__main__":
+    overleafurl = sys.argv[1]
+    d = cloneorpull(overleafurl)
+    lspdir = LSPDir(os.path.join(d,'chapters'))
     print "checking %s" % ' '.join([f for f in lspdir.texfiles+lspdir.bibfiles])
     lspdir.check()
     lspdir.printErrors()
