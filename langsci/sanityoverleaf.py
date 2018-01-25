@@ -24,9 +24,7 @@ def cloneorpull(url):
         subprocess.call(["git","pull"]) 
         os.chdir(cwd)
         print "pulled"
-    return gitdir
-        
-    return lspdir
+    return gitdir 
     
     
 if __name__ == "__main__":
@@ -36,3 +34,7 @@ if __name__ == "__main__":
     print "checking %s" % ' '.join([f for f in lspdir.texfiles+lspdir.bibfiles])
     lspdir.check()
     lspdir.printErrors()
+    imgdir =  LSPDir(os.path.join(d,'figures'))
+    imgdir.checkimg()
+    imgdir.printErrors()
+    

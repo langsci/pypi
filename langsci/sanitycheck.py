@@ -8,6 +8,7 @@ import textwrap
 import uuid
 import enchant
 from enchant.tokenize import get_tokenizer
+from PIL import Image
 
 class LSPError:
   def __init__(self,fn,linenr,line,offendingstring,msg):
@@ -141,6 +142,8 @@ class LSPDir:
     self.dirname = dirname
     self.texfiles = self.findallfiles('tex')
     self.bibfiles = self.findallfiles('bib')
+    self.pngfiles = self.findallfiles('png')
+    self.jpgfiles = self.findallfiles('jpg')
     self.errors={} 
     
   def findallfiles(self, ext):
@@ -178,6 +181,21 @@ class LSPDir:
       self.errors[bfn] = [None,None]
       self.errors[bfn][0] = b.errors
       self.errors[bfn][1] = b.spellerrors
+      
+  def checkimg(self):
+    for pfn in self.pngfiles+self.jpgfiles: 
+        print pfn
+        img = Image.open(pfn)
+        try:
+            x,y = img.info['dpi']
+            if x < 72 or y < 72:
+                print "low res for", pfn
+        except KeyError:
+            x,y =  img.size
+            if x< 1500:
+              print "resolution of %s when printed full with: %i. Required: 300" %(pfn.split('/')[-1],x/5)
+    
+
     
  
     
