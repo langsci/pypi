@@ -143,7 +143,10 @@ class ImgFile(LSPFile):
         self.latexterms = [] 
     
     def check(self): 
-        img = Image.open(self.fn)
+        try:
+            img = Image.open(self.fn)
+        except IOError:
+            print "could not open", fn
         try:
             x,y = img.info['dpi']
             if x < 72 or y < 72:
