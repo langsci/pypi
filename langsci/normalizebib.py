@@ -109,7 +109,7 @@ class Record():
     substitute a regex match with uppercase
     """
     
-    return match.group(1) + ' {' +match.group(2).upper()+'}'
+    return match.group(1) + ' {{' +match.group(2).upper()+'}}'
 
   def checklanguagenames(self):
     ts = ['title','booktitle']
