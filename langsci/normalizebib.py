@@ -82,6 +82,7 @@ class Record():
       self.fields['pages'] = re.sub(r'([0-9])-([0-9])',r'\1--\2',pages)                 
     self.conformsubtitles() 
     self.conforminitials()
+    self.checketal()
     self.checkand()
     self.checkedition()
     self.checkurl()
@@ -159,15 +160,19 @@ class Record():
 
  
       
-  def conformsubtitles(self):
+  def conformtitles(self):
     """
     uppercase and protect first word of subtitle
+    protect capitals inside a word 
+    protect lone capitals
     """
     
     for t in ('title','booktitle'):
       if self.fields.get(t) != None: 
         self.fields[t] = re.sub(r'([:\.\?!]) *([a-zA-Z])', self.upperme ,self.fields[t])
-      
+        self.fields[t] = re.sub(r'([A-Z][a-z]*[A-Z])', "{\1}" ,self.fields[t])
+        self.fields[t] = re.sub(r' ([A-Z]) ', " {{\1}} " ,self.fields[t])
+        
   def conforminitials(self):
     """
     make sure that initials have a space between them
@@ -188,6 +193,16 @@ class Record():
         commas = self.fields[t].count(',')
         if commas > ands +1:
           self.errors.append("problem with commas in %s: %s"% (t,self.fields[t]))
+          
+  def checketal(self):
+    """
+    check whether literal 'et al' is used in author or editor fields
+    """
+    
+    for t in ('author','editor'):
+      if self.fields.get(t) != None: 
+        self.fields[t] = self.fields[t].replace("et al","\\biberror{et al}")
+        self.errors.append("literal et al in  %s: %s"% (t,self.fields[t]))
           
   def checkedition(self):
     """
