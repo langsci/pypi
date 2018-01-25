@@ -285,7 +285,10 @@ class Record():
         s = '\\%s'%d 
         sortname = sortname.replace(s,'')
       for r in FRENCH_REPLACEMENTS+GERMAN_REPLACEMENTS+ICELANDIC_REPLACEMENTS:
-        sortname = sortname.replace(*r)
+        try:
+            sortname = sortname.replace(*r)
+        except UnicodeDecodeError:
+            pass
       #replace higher Unicode with nearest low ASCII equivalent
       if ASCIITRANS:
         sortname = sortname.translate(ASCIITRANS) 
