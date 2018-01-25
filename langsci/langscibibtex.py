@@ -171,7 +171,7 @@ class Record():
     except TypeError:
       return
     key = authorpart+yearpart 
-    bibstring="@%s{%s,\n\t"%(self.typ,key)    
+    bibstring="%s{%s,\n\t"%(self.typ,key)    
     fields = [(f,self.__dict__[f]) for f in self.__dict__ if f in FIELDS and self.__dict__[f] not in ('',None)]
     fields.sort()
     bibstring+=",\n\t".join(["%s = {%s}"%f for f in fields])
