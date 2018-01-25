@@ -1,3 +1,5 @@
+# encoding=utf-8
+
 FRENCH_REPLACEMENTS=[
   ('Œ','Oe'), 
   ('œ','oe')
