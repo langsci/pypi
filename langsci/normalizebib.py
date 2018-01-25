@@ -234,16 +234,16 @@ class Record():
     if not self.fields.get('address'):      
       publisher = self.fields.get('publisher','') 
       if "John Benjamins" in publisher:
-        self.fields['address'] = "Amsterdam"
+        self.fields['address'] = "{Amsterdam}"
         0/0
       elif "Cambridge" in publisher or "CUP" in publisher :
-        self.fields['publisher'] = "Cambridge"
+        self.fields['address'] = "{Cambridge}"
       elif "Oxford" in publisher or "OUP" in publisher :
-        self.fields['publisher'] = "Oxford"
+        self.fields['address'] = "{Oxford}"
       elif "Blackwell" in publisher or "Routledge" in publisher :
-        self.fields['publisher'] = "London"
+        self.fields['address'] = "{London}"
       elif "Gruyter" in publisher or "Mouton" in publisher :
-        self.fields['publisher'] = "Berlin"
+        self.fields['address'] = "{Berlin}"
     mandatory = ('year', 'title', 'address', 'publisher')
     for m in mandatory:
       self.handleerror(m)
