@@ -287,9 +287,10 @@ class Record():
       for r in FRENCH_REPLACEMENTS+GERMAN_REPLACEMENTS+ICELANDIC_REPLACEMENTS:
         sortname = sortname.replace(*r)
       #replace higher Unicode with nearest low ASCII equivalent
-      sortname = sortname.translate(ASCIITRANS) 
-      #update fields 
-      self.fields['sortname'] = sortname
+      if ASCIITRANS:
+        sortname = sortname.translate(ASCIITRANS) 
+        #update fields 
+        self.fields['sortname'] = sortname
       
 
       

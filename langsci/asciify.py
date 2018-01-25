@@ -78,6 +78,9 @@ for key in asciiequivs:
   for char in asciiequivs[key]:
     _orig += char
     _trans += key
-ASCIITRANS = str.maketrans(_orig, _trans)
+try:    
+    ASCIITRANS = str.maketrans(_orig, _trans)
+except AttributeError: #Python2
+    ASCIITRANS = False
 
 
