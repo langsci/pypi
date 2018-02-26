@@ -253,6 +253,8 @@ COUNTRIES=[
   ]
 
 LANGUAGENAMES=[
+"""Algonquian""",
+"""Polish""",
 """English""",
 """French""",
 """Spanish""",
