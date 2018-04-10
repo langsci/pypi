@@ -1,34 +1,47 @@
 # -*- coding: utf-8 -*-
 import re
-from asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS
+from helpers import INITD, REPLACEMENTS
+
   
-p = re.compile(r"\\indexentry \{(.*)\|(\(?hyperpage|\)|infn)")
-   
-def setposition(s): 
+orig = ''
+trans = ''
+
+for k in INITD:
+  s = INITD[k]
+  for c in s:
+    orig+=c
+    trans+=k
+     
+transtable = str.maketrans(orig, trans)
+
+p = re.compile(r"\\indexentry \{(.*?)@")
+
+    
+def process(s): 
   if s.strip()=='':
     return s
   m = p.match(s) 
-  entry = '' 
+  o = ''
   try:
-    entry = m.groups(1)[0]
+    o = m.groups(1)[0] 
   except AttributeError:
-    print("could not analyze", repr(s))
+    print(repr(s))
+  t = o.translate(transtable) 
+  for r in REPLACEMENTS:
+    t = t.replace(r[0],r[1])
+  if t == o:
     return s
-  translatedentry = entry.translate(ASCIITRANS)  
-  for r in FRENCH_REPLACEMENTS+GERMAN_REPLACEMENTS+ICELANDIC_REPLACEMENTS:
-    translatedentry = translatedentry.replace(*r)
-  if translatedentry == entry:
-    return s
-  else:
-    return s.replace(entry,"%s@%s"%(translatedentry,entry))
+  else:  
+    return s.replace("%s@"%o,"%s@"%t)
+  
+  
 
 if __name__ == '__main__':
-  infilename = 'main.adx'
-  outfilename = 'mainmod.adx'
-  lines = open(infilename).readlines()
+  fn = 'main.adx'
+  lines = open(fn).readlines()
   print(len(lines))
-  linesnew = list(map(setposition, lines))
-  out = open(outfilename,'w')
-  out.write(''.join(linesnew))
+  lines2 = list(map(process, lines))
+  out = open('mainmod.adx','w')
+  out.write(''.join(lines2))
   out.close()
   
