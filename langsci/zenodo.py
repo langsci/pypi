@@ -113,22 +113,22 @@ def register(token,metadata):
     #'filename': "test.csv",
     'metadata': metadata
       } 
-  pprint.pprint(json.dumps(data))        
+  #pprint.pprint(json.dumps(data))        
             
   r = requests.post('https://zenodo.org/api/deposit/depositions', 
                     params={'access_token': token},  
                     headers = {"Content-Type": "application/json"},
                     data=json.dumps(data)
                     )
-  pprint.pprint(r.json())
+  #pprint.pprint(r.json())
   return r.json()['metadata']["prereserve_doi"]["doi"]
 
       
 
 if __name__ == "__main__":
   book = Book()  
-  for c in book.chapters:
-    pprint.pprint(c.metadata) 
+  #for c in book.chapters:
+    #pprint.pprint(c.metadata) 
   tokenfile = open('zenodo.token')
   token = open('zenodo.token').read().strip()
   tokenfile.close()
@@ -136,8 +136,7 @@ if __name__ == "__main__":
   bookdoi = register(token, book.metadata)
   print("BookDOI{%s}"%bookdoi)
   for ch in book.chapters:    
-    chapterDOI = register(token,ch.metadata) 
-    #chapterDOI='1234'
+    chapterDOI = register(token,ch.metadata)  
     insertstring = "\\ChapterDOI{%s}\n"%chapterDOI  
     chapterf = open('chapters/%s.tex'%ch.path)
     chapterlines = chapterf.readlines()
