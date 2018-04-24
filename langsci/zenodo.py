@@ -8,12 +8,13 @@ import re
 INCLUDEPAPERP = re.compile("\\includepaper\{chapters/(.*?)\}")
 BOOKAUTHORP = re.compile(r"\\author{(.*?)}")
 LASTAND = re.compile(r"(\\lastand|\\and)")
-CHAPTERAUTHORP = re.compile(r"\\author{(.*?)\\affiliation{(.*)}}")
+CHAPTERAUTHORP = re.compile(r"\\author{(.*?)\\affiliation{(.*)}")
 TITLEP = re.compile(r"\\title{(.*?)}")
 ISBNP = re.compile(r"\\lsISBNdigital}{(.*)}") 
 CHAPTERKEYWORDSP = re.compile(r"\\keywords{(.*?)}")
 ABSTRACTP = re.compile(r"\\abstract{(.*?)[}\n]")
 BACKBODYP = re.compile(r"\\BackBody{(.*?)[}\n]")
+KEYWORDSEPARATOR = re.compile("[,;-]")
 
 class Publication():
   def __init__(self):
@@ -42,7 +43,7 @@ class Book(Publication):
     #self.metadata['related_identifiers'] = [{'isAlternateIdentifier':self.digitalisbn}]    
     self.metadata['title']=self.title
     self.metadata['description']=self.abstract
-    self.metadata['creators']=[{'name':au} for au in self.authors]  
+    self.metadata['creators']=[{'name':au} for au in self.authors]      
     self.metadata['keywords']=self.keywords
     
   def getBookMetadata(self):
@@ -57,7 +58,10 @@ class Book(Publication):
           authors.append(au.strip())
     self.authors = authors
     self.abstract = BACKBODYP.search(localmetadata).group(1)
-    self.keywords = [x.strip() for x in CHAPTERKEYWORDSP.search(localmetadata).group(1).split(',')]
+    try:
+      self.keywords = [x.strip() for x in KEYWORDSEPARATOR.split(CHAPTERKEYWORDSP.search(localmetadata).group(1))]
+    except:
+      pass
     self.digitalisbn = ISBNP.search(localmetadata).group(1) 
     
   def getChapters(self):
@@ -70,15 +74,20 @@ class Book(Publication):
 
 class Chapter(Publication):  
   def __init__ (self,path,booktitle='',isbn=False):
+    print(path)
     Publication.__init__(self)
     chapterf = open('chapters/%s.tex'%path)
     chapter = chapterf.read()
     chapterf.close()
     preamble = chapter.split('\\begin{document}')[0]
-    author, affiliation = CHAPTERAUTHORP.search(preamble).groups()
+    author, affiliation = CHAPTERAUTHORP.search(preamble).groups()#TODO needs handling of multiple authors
     title = TITLEP.search(preamble).group(1)
     abstract = ABSTRACTP.search(preamble).group(1)
-    keywords = [x.strip() for x in CHAPTERKEYWORDSP.search(preamble).group(1).split(',')]    
+    keywords = []
+    try:
+      keywords = [x.strip() for x in CHAPTERKEYWORDSP.search(preamble).group(1).split(',')]    
+    except:
+      pass
     self.path = path.strip()  
     self.author = author.strip()
     self.authors = [author]
@@ -99,7 +108,7 @@ class Chapter(Publication):
     #'creators': [{'name': 'Doe, John',
             #'affiliation': 'Zenodo'}],
     #self.metadata['partof_pages'] = chapter.pagerange
-    self.metadata['related_identifiers'] = [{'hasPart':self.bookisbn}] #unintuitive directionality of hasPart and isPart
+    #self.metadata['related_identifiers'] = [{'hasPart':self.bookisbn}] #unintuitive directionality of hasPart and isPart
 
 def register(token,metadata):
   data={
@@ -121,16 +130,17 @@ def register(token,metadata):
 if __name__ == "__main__":
   book = Book() 
   #pprint.pprint(book.__dict__)
-  #for c in book.chapters:
-    #pprint.pprint(c.__dict__) 
+  for c in book.chapters:
+    pprint.pprint(c.metadata) 
   tokenfile = open('zenodo.token')
   token = open('zenodo.token').read().strip()
   tokenfile.close()
   print(token) 
-  bookdoi = register(token, book.metadata)
-  print("BookDOI{%s}"%bookdoi)
-  for ch in book.chapters:    
+  #bookdoi = register(token, book.metadata)
+  #print("BookDOI{%s}"%bookdoi)
+  for ch in book.chapters[:17]:    
     chapterDOI = register(token,ch.metadata) 
+    #chapterDOI='1234'
     insertstring = "\\ChapterDOI{%s}\n"%chapterDOI  
     chapterf = open('chapters/%s.tex'%ch.path)
     chapterlines = chapterf.readlines()
