@@ -1,8 +1,6 @@
 import requests
 import json
-import pprint 
-import yaml
-import glob
+import pprint   
 import re
 
 INCLUDEPAPERP = re.compile("\\includepaper\{chapters/(.*?)\}")
@@ -128,17 +126,16 @@ def register(token,metadata):
       
 
 if __name__ == "__main__":
-  book = Book() 
-  #pprint.pprint(book.__dict__)
+  book = Book()  
   for c in book.chapters:
     pprint.pprint(c.metadata) 
   tokenfile = open('zenodo.token')
   token = open('zenodo.token').read().strip()
   tokenfile.close()
   print(token) 
-  #bookdoi = register(token, book.metadata)
-  #print("BookDOI{%s}"%bookdoi)
-  for ch in book.chapters[:17]:    
+  bookdoi = register(token, book.metadata)
+  print("BookDOI{%s}"%bookdoi)
+  for ch in book.chapters:    
     chapterDOI = register(token,ch.metadata) 
     #chapterDOI='1234'
     insertstring = "\\ChapterDOI{%s}\n"%chapterDOI  
