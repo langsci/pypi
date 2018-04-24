@@ -39,7 +39,11 @@ class Book(Publication):
     self.chapter = []
     self.getChapters()
     self.metadata['publication_type'] = 'book'
-    self.metadata['related_identifiers'] = [{'isAlternateIdentifier':self.digitalisbn}]
+    #self.metadata['related_identifiers'] = [{'isAlternateIdentifier':self.digitalisbn}]    
+    self.metadata['title']=self.title
+    self.metadata['description']=self.abstract
+    self.metadata['creators']=[{'name':au} for au in self.authors]  
+    self.metadata['keywords']=self.keywords
     
   def getBookMetadata(self):
     localmetadataf = open('localmetadata.tex')
@@ -75,7 +79,8 @@ class Chapter(Publication):
     title = TITLEP.search(preamble).group(1)
     abstract = ABSTRACTP.search(preamble).group(1)
     keywords = [x.strip() for x in CHAPTERKEYWORDSP.search(preamble).group(1).split(',')]    
-    self.author = author
+    self.author = author.strip()
+    self.authors = [author]
     self.title = title
     self.booktitle = booktitle
     self.abstract = abstract 
@@ -84,55 +89,46 @@ class Chapter(Publication):
       self.bookisbn = isbn    
     self.metadata['publication_type'] = 'section'   
     self.metadata['imprint_isbn'] = self.bookisbn
-    self.metadata['partof_title'] = self.booktitle
+    self.metadata['partof_title'] = self.booktitle        
+    self.metadata['title']=self.title
+    self.metadata['description']=self.abstract
+    self.metadata['creators']=[{'name':au} for au in self.authors]  
+    self.metadata['keywords']=self.keywords
+    #TODO needs affiliation
+    #'creators': [{'name': 'Doe, John',
+            #'affiliation': 'Zenodo'}],
     #self.metadata['partof_pages'] = chapter.pagerange
     self.metadata['related_identifiers'] = [{'hasPart':self.bookisbn}] #unintuitive directionality of hasPart and isPart
 
-if __name__ == "__main__":
-  book = Book() 
-  pprint.pprint(book.__dict__)
-  for c in book.chapters:
-    pprint.pprint(c.__dict__)
-  0/0
-  #tokenfile = open('zenodo.token')
-  #token = open('zenodo.token').read().strip()
-  #tokenfile.close()
-  #print(token)
-
-
-#if chapter:
-    #metadata['publication_type'] = 'section'
-    #metadata['imprint_isbn'] = localdata.isbn 
-    #metadata['partof_title'] = chapter.booktitle
-    #metadata['partof_pages'] = chapter.pagerange
-    #metadata['related_identifiers'] = [{'hasPart':chapter.booktitle}] #unintuitive directionality of hasPart and isPart
-#else:
-    #metadata['related_identifiers'] = [{'isAlternateIdentifier':localdata['isbn']}]
-        
-metadata['title']=localdata['title']
-metadata['description']=localdata['description']
-metadata['creators']=[{'name':localdata['author']}]  
-try:
-    metadata['keywords']= localdata['keywords'].split(',')        
-except KeyError:
-    pass
-#'subjects':[{'identifier':'http://glottolog.org/resource/languoid/id/stan1293'}],
-#'creators': [{'name': 'Doe, John',
-            #'affiliation': 'Zenodo'}],
-#'keywords': ['',''],
-
-data={
+def register(token,metadata):
+  data={
     #'filename': "test.csv",
     'metadata': metadata
-}
+      } 
+  pprint.pprint(json.dumps(data))        
+            
+  r = requests.post('https://zenodo.org/api/deposit/depositions', 
+                    params={'access_token': token},  
+                    headers = {"Content-Type": "application/json"},
+                    data=json.dumps(data)
+                    )
+  pprint.pprint(r.json())
+  return r.json()['metadata']["prereserve_doi"]["doi"]
 
-pprint.pprint(json.dumps(data))        
-        
-r = requests.post('https://zenodo.org/api/deposit/depositions', 
-                  params={'access_token': token}, 
-                  json={},
-                  headers = {"Content-Type": "application/json"},
-                  data=json.dumps(data)
-                  )
+      
 
-pprint.pprint(r.json())
+if __name__ == "__main__":
+  book = Book() 
+  #pprint.pprint(book.__dict__)
+  #for c in book.chapters:
+    #pprint.pprint(c.__dict__) 
+  tokenfile = open('zenodo.token')
+  token = open('zenodo.token').read().strip()
+  tokenfile.close()
+  print(token) 
+  bookdoi = register(token, book.metadata)
+  print("BookDOI{%s}"%bookdoi)
+  #for ch in book.chapters:
+    #register(token,ch.metadata)
+
+
