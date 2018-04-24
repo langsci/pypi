@@ -3,3 +3,7 @@ author: "John Smith"
 description:  "some important stuff"
 isbn: '123124'
 keywords: morphology,syntax
+
+chapters:
+- {'filename': '', 'title': 'Introduction', 'author': 'John Doe', 'abstract': 'This is the abstract'}
+- {'filename': '', 'title': 'Conclusion', 'author': 'Jane Wang', 'abstract': 'This is the conclusion'}
