@@ -79,6 +79,7 @@ class Chapter(Publication):
     title = TITLEP.search(preamble).group(1)
     abstract = ABSTRACTP.search(preamble).group(1)
     keywords = [x.strip() for x in CHAPTERKEYWORDSP.search(preamble).group(1).split(',')]    
+    self.path = path.strip()  
     self.author = author.strip()
     self.authors = [author]
     self.title = title
@@ -128,7 +129,16 @@ if __name__ == "__main__":
   print(token) 
   bookdoi = register(token, book.metadata)
   print("BookDOI{%s}"%bookdoi)
-  #for ch in book.chapters:
-    #register(token,ch.metadata)
+  for ch in book.chapters:    
+    chapterDOI = register(token,ch.metadata) 
+    insertstring = "\\ChapterDOI{%s}\n"%chapterDOI  
+    chapterf = open('chapters/%s.tex'%ch.path)
+    chapterlines = chapterf.readlines()
+    chapterf.close()   
+    chapterf = open('chapters/%s.tex'%ch.path,'w')
+    chapterf.write(chapterlines[0]) 
+    chapterf.write(insertstring) 
+    chapterf.write("".join(chapterlines[1:])) 
+    chapterf.close() 
 
 
