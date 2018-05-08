@@ -21,7 +21,7 @@ class Publication():
             'license':'cc-by',
             'imprint_publisher':'Language Science Press',
             'imprint_place':'Berlin',
-            'communities': [{'identifier':'Language Science Press'}],
+            'communities': [{'identifier':'langscipress'}],
             'prereserve_doi': True, 
             'language':'eng' 
         } 
