@@ -150,3 +150,5 @@ if __name__ == "__main__":
     chapterf.close() 
 
 
+#TODO provide offset for continuations.
+#check sanity of files before registering
