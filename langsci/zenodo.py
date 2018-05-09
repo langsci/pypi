@@ -26,6 +26,22 @@ class Publication():
             'language':'eng' 
         } 
     
+  def register(self,token):
+    data={
+      #'filename': "test.csv",
+      'metadata': self.metadata
+        } 
+    #pprint.pprint(json.dumps(data))        
+              
+    r = requests.post('https://zenodo.org/api/deposit/depositions', 
+                      params={'access_token': token},  
+                      headers = {"Content-Type": "application/json"},
+                      data=json.dumps(data)
+                      )
+    #pprint.pprint(r.json())
+    return r.json()['metadata']["prereserve_doi"]["doi"]
+
+    
 class Book(Publication): 
   def __init__(self):
     Publication.__init__(self)
@@ -108,20 +124,6 @@ class Chapter(Publication):
     #self.metadata['partof_pages'] = chapter.pagerange
     #self.metadata['related_identifiers'] = [{'hasPart':self.bookisbn}] #unintuitive directionality of hasPart and isPart
 
-def register(token,metadata):
-  data={
-    #'filename': "test.csv",
-    'metadata': metadata
-      } 
-  #pprint.pprint(json.dumps(data))        
-            
-  r = requests.post('https://zenodo.org/api/deposit/depositions', 
-                    params={'access_token': token},  
-                    headers = {"Content-Type": "application/json"},
-                    data=json.dumps(data)
-                    )
-  #pprint.pprint(r.json())
-  return r.json()['metadata']["prereserve_doi"]["doi"]
 
       
 
@@ -133,10 +135,10 @@ if __name__ == "__main__":
   token = open('zenodo.token').read().strip()
   tokenfile.close()
   print(token) 
-  bookdoi = register(token, book.metadata)
+  bookdoi = book.register(token)
   print("BookDOI{%s}"%bookdoi)
   for ch in book.chapters:    
-    chapterDOI = register(token,ch.metadata)  
+    chapterDOI = ch.register(token)  
     insertstring = "\\ChapterDOI{%s}\n"%chapterDOI  
     chapterf = open('chapters/%s.tex'%ch.path)
     chapterlines = chapterf.readlines()
