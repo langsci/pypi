@@ -6,13 +6,16 @@ import re
 INCLUDEPAPERP = re.compile("\\includepaper\{chapters/(.*?)\}")
 BOOKAUTHORP = re.compile(r"\\author{(.*?)}")
 LASTAND = re.compile(r"(\\lastand|\\and)")
-CHAPTERAUTHORP = re.compile(r"\\author{(.*?)\\affiliation{(.*)}")
+CHAPTERAUTHORP = re.compile(r"\\author{(.*?) *\\affiliation{(.*)}")
 TITLEP = re.compile(r"\\title{(.*?)}")
 ISBNP = re.compile(r"\\lsISBNdigital}{(.*)}") 
 CHAPTERKEYWORDSP = re.compile(r"\\keywords{(.*?)}")
 ABSTRACTP = re.compile(r"\\abstract{(.*?)[}\n]")
 BACKBODYP = re.compile(r"\\BackBody{(.*?)[}\n]")
 KEYWORDSEPARATOR = re.compile("[,;-]")
+PAGERANGEP = re.compile("{([0-9]+--[0-9]+)}")
+BIBAUTHORP = re.compile(r"author={([^}]+)") #current setup adds space after author
+BIBTITLEP = re.compile(r"title={{([^}]+)}}")
 
 class Publication():
   def __init__(self):
@@ -94,8 +97,6 @@ class Chapter(Publication):
     chapter = chapterf.read()
     chapterf.close()
     preamble = chapter.split('\\begin{document}')[0]
-    author, affiliation = CHAPTERAUTHORP.search(preamble).groups()#TODO needs handling of multiple authors
-    title = TITLEP.search(preamble).group(1)
     abstract = ABSTRACTP.search(preamble).group(1)
     keywords = []
     try:
@@ -103,12 +104,16 @@ class Chapter(Publication):
     except:
       pass
     self.path = path.strip()  
-    self.author = author.strip()
-    self.authors = [author]
-    self.title = title
-    self.booktitle = booktitle
     self.abstract = abstract 
     self.keywords = keywords
+    self.pagerange = ''
+    for l in open('collection_tmp.bib').readlines():  
+      if l.startswith("@incollection{chapters/%s,"%path):   
+        self.pagerange = PAGERANGEP.search(l).group(1)  
+        self.authors = [au.strip() for au in BIBAUTHORP.search(l).group(1).split(' and ')]
+        self.title = BIBTITLEP.search(l).group(1)
+        break 
+    self.booktitle = booktitle
     if isbn:
       self.bookisbn = isbn    
     self.metadata['publication_type'] = 'section'   
@@ -135,20 +140,24 @@ if __name__ == "__main__":
   token = open('zenodo.token').read().strip()
   tokenfile.close()
   print(token) 
-  bookdoi = book.register(token)
+  #bookdoi = book.register(token)
   print("BookDOI{%s}"%bookdoi)
-  for ch in book.chapters:    
-    chapterDOI = ch.register(token)  
-    insertstring = "\\ChapterDOI{%s}\n"%chapterDOI  
+  offset = 0
+  for ch in book.chapters[:offset]:    #for continuation if program stops in the middle of a book
     chapterf = open('chapters/%s.tex'%ch.path)
     chapterlines = chapterf.readlines()
-    chapterf.close()   
+    chapterf.close()
+    for line in chapterlines:
+      if "ChapterDOI" in line:
+        print("DOI already present in %s"%ch.path)
+        raise IOError
+    #chapterDOI = ch.register(token)  
+    insertstring = "\\ChapterDOI{%s}\n"%chapterDOI  
     chapterf = open('chapters/%s.tex'%ch.path,'w')
     chapterf.write(chapterlines[0]) 
     chapterf.write(insertstring) 
     chapterf.write("".join(chapterlines[1:])) 
     chapterf.close() 
 
-
-#TODO provide offset for continuations.
+ 
 #check sanity of files before registering
