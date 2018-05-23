@@ -34,15 +34,19 @@ class Publication():
       #'filename': "test.csv",
       'metadata': self.metadata
         } 
-    #pprint.pprint(json.dumps(data))        
+    pprint.pprint(json.dumps(data))        
               
     r = requests.post('https://zenodo.org/api/deposit/depositions', 
                       params={'access_token': token},  
                       headers = {"Content-Type": "application/json"},
                       data=json.dumps(data)
                       )
-    #pprint.pprint(r.json())
-    return r.json()['metadata']["prereserve_doi"]["doi"]
+    pprint.pprint(r.json())
+    try:
+      return r.json()['metadata']["prereserve_doi"]["doi"]
+    except KeyError:
+      print(r.json()['errors'])
+      raise
 
     
 class Book(Publication): 
@@ -50,7 +54,7 @@ class Book(Publication):
     Publication.__init__(self)
     self.title=None
     self.authors=[]
-    self.abstract=None
+    self.abstract="Abstract could not be found"
     self.keywords=None
     self.digitalisbn=None
     self.getBookMetadata()
@@ -141,9 +145,9 @@ if __name__ == "__main__":
   tokenfile.close()
   print(token) 
   #bookdoi = book.register(token)
-  print("BookDOI{%s}"%bookdoi)
+  #print("BookDOI{%s}"%bookdoi)
   offset = 0
-  for ch in book.chapters[:offset]:    #for continuation if program stops in the middle of a book
+  for ch in book.chapters[offset:]:    #for continuation if program stops in the middle of a book
     chapterf = open('chapters/%s.tex'%ch.path)
     chapterlines = chapterf.readlines()
     chapterf.close()
@@ -151,7 +155,7 @@ if __name__ == "__main__":
       if "ChapterDOI" in line:
         print("DOI already present in %s"%ch.path)
         raise IOError
-    #chapterDOI = ch.register(token)  
+    chapterDOI = ch.register(token)  
     insertstring = "\\ChapterDOI{%s}\n"%chapterDOI  
     chapterf = open('chapters/%s.tex'%ch.path,'w')
     chapterf.write(chapterlines[0]) 
