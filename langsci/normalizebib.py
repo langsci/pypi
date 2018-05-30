@@ -170,7 +170,7 @@ class Record():
     for t in ('title','booktitle'):
       if self.fields.get(t) != None: 
         self.fields[t] = re.sub(r'([:\.\?!]) *([a-zA-Z])', self.upperme ,self.fields[t])
-        self.fields[t] = re.sub(r'([A-Z][a-z]*[A-Z])', r"{\1}" ,self.fields[t])
+        self.fields[t] = re.sub(r'([A-Z][a-z]*[A-Z]+)', r"{\1}" ,self.fields[t])
         self.fields[t] = re.sub(r' ([A-Z]) ', r" {{\1}} " ,self.fields[t])
         
   def conforminitials(self):
@@ -201,8 +201,9 @@ class Record():
     
     for t in ('author','editor'):
       if self.fields.get(t) != None: 
-        self.fields[t] = self.fields[t].replace("et al","\\biberror{et al}")
-        self.errors.append("literal et al in  %s: %s"% (t,self.fields[t]))
+          if "et al" in self.fields[t]:
+            self.fields[t] = self.fields[t].replace("et al","\\biberror{et al}")
+            self.errors.append("literal et al in  %s: %s"% (t,self.fields[t]))
           
   def checkedition(self):
     """
@@ -250,7 +251,6 @@ class Record():
       publisher = self.fields.get('publisher','') 
       if "John Benjamins" in publisher:
         self.fields['address'] = "{Amsterdam}"
-        0/0
       elif "Cambridge" in publisher or "CUP" in publisher :
         self.fields['address'] = "{Cambridge}"
       elif "Oxford" in publisher or "OUP" in publisher :
@@ -322,6 +322,10 @@ class Record():
     if self.typ != 'article':
       return 
     mandatory = ('author', 'year', 'title', 'journal', 'volume', 'pages') 
+    
+    if self.fields.get('volume') == None and self.fields.get('number') != None:
+      self.fields['volume'] = self.fields['number']      
+      del self.fields['number'] 
     for m in mandatory:
       self.handleerror(m)
     if self.fields.get('pages') == None: #only check for pages if no electronic journal
