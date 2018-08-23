@@ -3,7 +3,7 @@ import json
 import pprint   
 import re
 
-INCLUDEPAPERP = re.compile("\\includepaper\{chapters/(.*?)\}")
+INCLUDEPAPERP = re.compile(r"\\includepaper\{chapters/(.*?)\}")
 BOOKAUTHORP = re.compile(r"\\author{(.*?)}")
 LASTAND = re.compile(r"(\\lastand|\\and)")
 CHAPTERAUTHORP = re.compile(r"\\author{(.*?) *\\affiliation{(.*)}")
