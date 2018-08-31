@@ -4,7 +4,7 @@ import pprint
 import re
 import sys
 
-INCLUDEPAPERP = re.compile("\\includepaper\{chapters/(.*?)\}")
+INCLUDEPAPERP = re.compile(r"\\includepaper\{chapters/(.*?)\}")
 BOOKAUTHORP = re.compile(r"\\author{(.*?)}")
 LASTAND = re.compile(r"(\\lastand|\\and)")
 CHAPTERAUTHORP = re.compile(r"\\author{(.*?) *\\affiliation{(.*)}")
@@ -188,5 +188,4 @@ if __name__ == "__main__":
     chapterf.write(insertstring) 
     chapterf.write("".join(chapterlines[1:])) 
     chapterf.close() 
-
-  
+ 
