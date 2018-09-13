@@ -40,14 +40,14 @@ def _processline(s):
     print("%s => %s"%(sortstring,tmpstring))
     return s.replace("%s@"%sortstring,"%s@"%tmpstring) 
   
-def processfile(fn): 
-  print("Reading", fn)  
-  with open(fn) as indexfile:
+def processfile(filename): 
+  print("Reading", filename)  
+  with open(filename) as indexfile:
     lines = indexfile.readlines()
   print("Found %i lines" % len(lines))
   #read all lines, process them and write them to output file
   processedlines = list(map(_processline, lines))
-  with open(fn.replace('.','mod.'),'w') as out:
+  with open(filename.replace('.','mod.'),'w') as out:
     out.write(''.join(processedlines))
 
 if __name__ == '__main__':
