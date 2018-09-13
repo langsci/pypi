@@ -1,4 +1,4 @@
-#encoding=utf-8
+"""Contains lists of proper nouns which should survice decapitalization in bibliographies"""
 
 CONTINENTNAMES=["""Africa""",
 """Asia""",

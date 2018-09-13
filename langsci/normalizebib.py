@@ -2,7 +2,7 @@ import sys
 import re
 import pprint
 import glob
-from asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS
+from asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS, is_ascii
 from bibnouns import LANGUAGENAMES, OCEANNAMES, COUNTRIES, CONTINENTNAMES, CITIES, OCCURREDREPLACEMENTS
 import string
  
@@ -310,6 +310,7 @@ class Record():
       #replace higher Unicode with nearest low ASCII equivalent
       if ASCIITRANS:
         sortname = sortname.translate(ASCIITRANS) 
+        assert(is_ascii(sortname))
         #update fields 
         self.fields['sortname'] = sortname
       

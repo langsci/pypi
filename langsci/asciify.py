@@ -1,22 +1,18 @@
-# encoding=utf-8
+"""
+This package provides canonic replacements for non-ASCII characters in order to sort these characters in English lists. The main use case is sorting for bibliographies.
 
-FRENCH_REPLACEMENTS=[
-  ('Œ','Oe'), 
-  ('œ','oe')
-  ]
-GERMAN_REPLACEMENTS=[ 
-  ('ß','ss') 
-  ]
-ICELANDIC_REPLACEMENTS=[
-  ('Æ','Ae'),
-  ('æ','ae'),
-  ('Ð','d'),
-  ('ð','d'),
-  ('Þ','Th'),
-  ('þ','th') 
-  ]
-  
-asciiequivs = {'A':"ÀÁÂẦẤẪẨÃÃ̀Ã́Ã̂Ã̌Ã̍Ã̎ĀĀ̀Ā́Ā̂Ā̃Ā̃Ā̄Ā̆Ā̆Ā̈Ā̊Ā̌ĂẰẮẴẲȦȦ́ǠÄÄ́Ä̀Ä̂Ä̃ǞǞ̆Ä̆Ä̌ẢÅǺÅ̂Å̃Å̄Å̄Å̆A̋ǍA̍A̎ȀȂA̐A̓A̧À̧Á̧Â̧Ǎ̧A̭A̰À̰Á̰Ä̰Ä̰ĄĄ̀Ą́Ą̂Ą̃Ą̄Ą̄Ą̄Ą̄Ą̄Ą̇Ą̈Ą̈Ą̈Ą̈Ą̈Ą̈Ą̊Ą̌Ą̋Ą̱Ą̱Ą̱A᷎A̱À̱Á̱Â̱Ã̱Ā̱Ā̱Ā̱Ā̱Ä̱Ä̱Ä̱Ä̱Ä̱Å̱Ǎ̱A̱ẠẠ́Ạ̀ẬẠ̃Ạ̄ẶẠ̈Ạ̈Ạ̈Ạ̈Ạ̈Ạ̌Ạ̍A̤À̤Á̤Â̤Ä̤ḀḀ̂Ḁ̈A̯A̩A͔Ā͔ȺȺ̀Ⱥ́ᶏⱭ̀Ɑ́Ɑ̂Ɑ̃Ɑ̄Ɑ̆Ɑ̇Ɑ̈Ɑ̊Ɑ̌ᶐ",
+ASCIITRANS: a transtable matching each non-ASCII character listed on https://en.wikipedia.org/wiki/List_of_Latin-script_letters#Letters_with_diacritics with an ASCII equivalent
+
+FRENCH_REPLACEMENTS: a list of 2-tuples matching a French character with a two-character expansion
+GERMAN_REPLACEMENTS: a list of 2-tuples matching a German character with a two-character expansion
+ICELANDIC_REPLACEMENTS a list of 2-tuples matching an Icelandic character with a two-character expansion
+REPLACEMENTS: s collation of the lists mentioned above
+
+The canonical use would be to translate a given string via ASCIITRANS and then apply the language particular replacements for characters resulting in digraphs, resulting in a pure ASCII string. 
+"""
+
+
+_asciiequivs = {'A':"ÀÁÂẦẤẪẨÃÃ̀Ã́Ã̂Ã̌Ã̍Ã̎ĀĀ̀Ā́Ā̂Ā̃Ā̃Ā̄Ā̆Ā̆Ā̈Ā̊Ā̌ĂẰẮẴẲȦȦ́ǠÄÄ́Ä̀Ä̂Ä̃ǞǞ̆Ä̆Ä̌ẢÅǺÅ̂Å̃Å̄Å̄Å̆A̋ǍA̍A̎ȀȂA̐A̓A̧À̧Á̧Â̧Ǎ̧A̭A̰À̰Á̰Ä̰Ä̰ĄĄ̀Ą́Ą̂Ą̃Ą̄Ą̄Ą̄Ą̄Ą̄Ą̇Ą̈Ą̈Ą̈Ą̈Ą̈Ą̈Ą̊Ą̌Ą̋Ą̱Ą̱Ą̱A᷎A̱À̱Á̱Â̱Ã̱Ā̱Ā̱Ā̱Ā̱Ä̱Ä̱Ä̱Ä̱Ä̱Å̱Ǎ̱A̱ẠẠ́Ạ̀ẬẠ̃Ạ̄ẶẠ̈Ạ̈Ạ̈Ạ̈Ạ̈Ạ̌Ạ̍A̤À̤Á̤Â̤Ä̤ḀḀ̂Ḁ̈A̯A̩A͔Ā͔ȺȺ̀Ⱥ́ᶏⱭ̀Ɑ́Ɑ̂Ɑ̃Ɑ̄Ɑ̆Ɑ̇Ɑ̈Ɑ̊Ɑ̌ᶐ",
 'B':"B́B̂B̃B̄ḂB̈B̕ḆḆ̂ḄB̤B̥B̬ɃᵬᶀƁƂʙ̇ʙ̣",
 'C':'C̀ĆĈC̃C̄C̄C̆ĊC̈ČČ́Č͑ČČ̕Č͑C̋C̓C̕C̔C͑ÇÇḈÇ̆Ç̇Ç̌C̦C̭C̱C̮C̣Ć̣Č̣C̥C̬C̯C̨ȻȻ̓ꞒƇɕꜾ',
 'D':'D́D̂D̃D̄ḊD̊ĎD̑D̓D̕ḐD̦ḒḎD̮ḌḌ́D̤D̥D̬D̪ĐᵭᶁƉƊᶑƋȡꝹ́Ꝺ̇ᴅ̇ᴅ̣Ð́Ð̣',
@@ -74,13 +70,37 @@ asciiequivs = {'A':"ÀÁÂẦẤẪẨÃÃ̀Ã́Ã̂Ã̌Ã̍Ã̎ĀĀ̀Ā́Ā̂Ā
 
 _orig = ''
 _trans = ''
-for key in asciiequivs:
-  for char in asciiequivs[key]:
+for key in _asciiequivs:
+  for char in _asciiequivs[key]:
     _orig += char
     _trans += key
 try:    
     ASCIITRANS = str.maketrans(_orig, _trans)
-except AttributeError: #Python2
+except AttributeError:  
     ASCIITRANS = False
 
+FRENCH_REPLACEMENTS=[
+  ('Œ','Oe'), 
+  ('œ','oe')
+  ]
+GERMAN_REPLACEMENTS=[ 
+  ('ß','ss') 
+  ]
+ICELANDIC_REPLACEMENTS=[
+  ('Æ','Ae'),
+  ('æ','ae'),
+  ('Ð','d'),
+  ('ð','d'),
+  ('Þ','Th'),
+  ('þ','th') 
+  ]
 
+REPLACEMENTS = FRENCH_REPLACEMENTS + GERMAN_REPLACEMENTS + ICELANDIC_REPLACEMENTS
+
+def is_ascii(s):
+    """Evaluate whether a given string can be rendered in ASCII"""
+    try: 
+        s.encode('ascii')
+    except UnicodeEncodeError:
+        return False
+    return True
