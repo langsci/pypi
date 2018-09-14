@@ -1,8 +1,13 @@
-## --* encoding=utf8 *-- 
+"""
+Conform a given inline bibliographical reference to BibTeX. 
+
+"""
 import sys
 import re
 import pprint 
 import normalizebib
+
+
  
 #pattern definitions
 year = '\(? *(?P<year>[12][78901][0-9][0-9][a-f]?) *\)?' 
@@ -19,8 +24,9 @@ numbervolume = "(?P<volume>[-\.0-9/]+) *(\((?P<number>[-0-9/]+)\))?"
 pubaddr = "(?P<address>.+) *:(?!/) *(?P<publisher>[^:]+[^\.\n])"
 seriesnumber = "(?P<newtitle>.*) \((?P<series>.*?) +(?P<number>[-\.0-9/]+)\)"
 SERIESNUMBER =  re.compile(seriesnumber)
+
 #compiled regexes
-BOOK = re.compile(u"{author} {ed}[\., ]*{year}[\., ]*{title}\. +{pubaddr}{note}".format(author=author,
+BOOK = re.compile(u"{author}[., ]* {ed}[\., ]*{year}[\., ]*{title}\. +{pubaddr}{note}".format(author=author,
                                                                           ed=ed,
                                                                           year=year,
                                                                           title=title,
@@ -72,6 +78,9 @@ FIELDS = ["key",
     
     
 class Record():
+  """A bibliographical record holding all the bibliographical fields
+  """
+  
   def __init__(self,s):  
     s=s.strip()
     self.orig = s    
@@ -93,10 +102,8 @@ class Record():
     self.url = None 
     if  EDITOR.search(s):
       self.typ = "incollection"
-      m = INCOLLECTION.search(s) 
-      #print 1
-      if m: 
-        #print 2
+      m = INCOLLECTION.search(s)  
+      if m:  
         self.author = m.group('author')
         self.editor = m.group('editor')
         self.title = m.group('title')
@@ -105,8 +112,7 @@ class Record():
         self.address = m.group('address')
         self.publisher = m.group('publisher')
         self.pages = m.group('pages')   
-        self.note = m.group('note')   
-        #pprint.pprint(self.__dict__)
+        self.note = m.group('note')    
     elif  PAGES.search(s):      
       self.typ = "article"
       m = ARTICLE.search(s)
@@ -175,23 +181,16 @@ class Record():
     fields = [(f,self.__dict__[f]) for f in self.__dict__ if f in FIELDS and self.__dict__[f] not in ('',None)]
     fields.sort()
     bibstring+=",\n\t".join(["%s = {%s}"%f for f in fields])
-    bibstring+="\n}"  
-    #print bibstring
+    bibstring+="\n}"   
     tmpbibstring = normalizebib.Record(bibstring).bibtex() 
     self.bibstring = normalizebib.normalize(tmpbibstring) #this could be made in a more elegant way
 
-def getRecords(fn, splitter="\n\n"):
-  c = open(fn).read()
-  return [Record(s) for s in c.split(splitter)]
-
- 
   
 if __name__=="__main__":
-  fn = sys.argv[1]
-  lines = open(fn).readlines()
+  filename = sys.argv[1]
+  lines = open(filename).readlines()
   for l in lines:
     if l.strip=='':
       continue
     r = Record(l) 
-    print(r.bibstring)
-    #r.tobibtex()
+    print(r.bibstring) 
