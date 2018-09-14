@@ -23,7 +23,8 @@ def processline(s):
   except AttributeError:
     print("%s could not be parsed" % repr(s))   
   #get rid of Latex diacritics like {\'{e}}   
-  latexdiacritics = """'`^~"=.vdH"""
+  latexdiacritics = """'`^~"=.vdHuk"""
+  # acute grave circumflex tilde dieresis macron dot_above hacek dot_below double_acute breke ogonek
   tmpstring = re.sub(r"{\\[%s]{([A-Za-z])}}"%latexdiacritics,r"\1",sortstring)  
   #get rid of Latex diacritics like \'{e}
   tmpstring = re.sub(r"\\[%s]{([A-Za-z])}"%latexdiacritics,r"\1",tmpstring)    
