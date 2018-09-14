@@ -1,13 +1,44 @@
+"""Conform BibTeX files and repair common errors
+
+Attributes:
+  keys: a dictionary of all BibTeX keys of the type "Smith2001", used for checking for duplicates 
+  excludefields: fields which not be output in the normalized file
+"""
+
 import sys
 import re
 import pprint
 import glob
-from asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS, is_ascii
+from asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS, asciify
 from bibnouns import LANGUAGENAMES, OCEANNAMES, COUNTRIES, CONTINENTNAMES, CITIES, OCCURREDREPLACEMENTS
+from delatex import dediacriticize
 import string
- 
+import argparse
+
 keys = {} #store for all bibtex keys
-excludefields = ['language'] #fields not to output
+#The following fields will not be included in the normalizedfile
+excludefields = ['abstract', 
+                 'language', 
+                 'date-added',
+                 'date-modified',
+                 'rating',
+                 'keywords',
+                 'issn',
+                 'timestamp',
+                 'owner',
+                 'optannote',
+                 'optkey',
+                 'optmonth',
+                 'optnumber',
+                 'url_checked',
+                 'optaddress',
+                 'eprinttype',
+                 'bdsk-file-1',
+                 'bdsk-file-2',
+                 'bdsk-file-3',
+                 'bdsk-url-1',
+                 'bdsk-url-2',
+                 'bdsk-url-3'] #fields not to output
 
 
 PRESERVATIONPATTERN = re.compile(r"\b(%s)\b"%('|'.join(LANGUAGENAMES+COUNTRIES+OCEANNAMES+CONTINENTNAMES+CITIES+OCCURREDREPLACEMENTS)))    
@@ -18,6 +49,10 @@ PROCEEDINGSPATTERN = re.compile("(.* (?:Proceedings|Workshop|Conference|Symposiu
 class Record(): 
   """
   A bibtex record
+  
+  Attributes:
+    TYPEKEYFIELDS (str): a regex for finding all the BibTeX keys of the type "Smith2001"
+  
   """
 
   TYPKEYFIELDS = r"^([^\{]+)\{([^,]+),[\s\n\t]*((?:.|\n)*)\}"
@@ -246,19 +281,8 @@ class Record():
     """
     
     if self.typ != 'book':
-      return 
-    if not self.fields.get('address'):      
-      publisher = self.fields.get('publisher','') 
-      if "John Benjamins" in publisher:
-        self.fields['address'] = "{Amsterdam}"
-      elif "Cambridge" in publisher or "CUP" in publisher :
-        self.fields['address'] = "{Cambridge}"
-      elif "Oxford" in publisher or "OUP" in publisher :
-        self.fields['address'] = "{Oxford}"
-      elif "Blackwell" in publisher or "Routledge" in publisher :
-        self.fields['address'] = "{London}"
-      elif "Gruyter" in publisher or "Mouton" in publisher :
-        self.fields['address'] = "{Berlin}"
+      return     
+    self.placelookup() 
     mandatory = ('year', 'title', 'address', 'publisher')
     for m in mandatory:
       self.handleerror(m)
@@ -287,7 +311,10 @@ class Record():
       self.errors.append("neither author nor editor")        
       
   def addsortname(self,name):
-    #print(name)
+    """
+    add an additional field for sorting for names with diacritics
+    """
+    
     try:
         residue = name.translate({ord(i):None for i in string.ascii_letters+'- ,{}'})
     except  TypeError: #python2
@@ -295,26 +322,7 @@ class Record():
     if residue == '':
       pass
     else:
-      #print(residue)
-      sortname = name
-      #remove legacy diacritics
-      diacritics="""'"`~vk=^"""
-      for d in diacritics:
-        s = '\\%s'%d 
-        sortname = sortname.replace(s,'')
-      for r in FRENCH_REPLACEMENTS+GERMAN_REPLACEMENTS+ICELANDIC_REPLACEMENTS:
-        try:
-            sortname = sortname.replace(*r)
-        except UnicodeDecodeError:
-            pass
-      #replace higher Unicode with nearest low ASCII equivalent
-      if ASCIITRANS:
-        sortname = sortname.translate(ASCIITRANS) 
-        assert(is_ascii(sortname))
-        #update fields 
-        self.fields['sortname'] = sortname
-      
-
+      self.fields['sortname']= asciify(dediacriticize(name))
       
   def checkarticle(self):
     """
@@ -337,13 +345,10 @@ class Record():
     if auth:
       self.addsortname(auth)
       
-  def checkincollection(self):
+  def placelookup(self):
     """
-    perform some checks for type incollection
+    Provide addresses for some well-known publishers if addresses are missing
     """
-    if self.typ != 'incollection':
-      return 
-    
     if not self.fields.get('address'):      
       publisher = self.fields.get('publisher','') 
       if "John Benjamins" in publisher:
@@ -357,7 +362,16 @@ class Record():
       elif "Gruyter" in publisher or "Mouton" in publisher :
         self.fields['address'] = "{Berlin}"
       elif "Wiley" in publisher:
-        self.fields['address'] = "{Hoboken}"
+        self.fields['address'] = "{Hoboken}"    
+      
+  def checkincollection(self):
+    """
+    perform some checks for type incollection
+    """
+    if self.typ != 'incollection':
+      return 
+    
+    self.placelookup()
     mandatory = ('author', 'year', 'title')
     for m in mandatory:
       self.handleerror(m)      
@@ -389,8 +403,7 @@ class Record():
     for field in self.fields:
       if '??' in self.fields[field]:
         self.errors.append("?? in %s" % field)
-        
-      
+    
   def handleerror(self,m):
     """
     check whether a mandatory field is present
@@ -399,9 +412,6 @@ class Record():
     if self.fields.get(m) == None:
       self.fields[m] = r"{\biberror{no %s}}" % m
       self.errors.append("missing %s"%m) 
-      
-                
-    
     
   def bibtex(self): 
     """
@@ -413,14 +423,14 @@ class Record():
     if self.restrict and not self.inkeysd.get(self.key):
       return False
     s = """@%s{%s,\n\t%s\n}"""%(self.typ,
-        self.key,
-        ",\n\t".join(
-                                              ["%s = %s" %(f,self.fields[f]) 
-                                              for f in sorted(self.fields.keys())
-                                              if f not in excludefields
-                                              ]
-                                            )
-                                  )
+                                self.key,
+                                ",\n\t".join(
+                                    ["%s = %s" %(f,self.fields[f]) 
+                                    for f in sorted(self.fields.keys())
+                                    if f not in excludefields
+                                    ]
+                                )
+        )
     return s
     
 
@@ -432,8 +442,7 @@ def normalize(s, inkeysd={}, restrict=False):
   rest = a[1:]
   #sort and reverse in order to get the order of edited volumes and incollection right 
   rest.sort() 
-  rest = rest[::-1] 
-  restrict = False #should only cited works be written to sorted.bib?
+  rest = rest[::-1]  
   #create the new bibtex records
   bibtexs = [Record(q,
                     inkeysd=inkeysd, 
@@ -448,31 +457,35 @@ def normalize(s, inkeysd={}, restrict=False):
 
 if __name__ == "__main__":    
   """
-  usage: python3 normalizebib.py localbibliography.bib 
-  """
-  texdir = 'chapters'
-  outfilename = 'sorted.bib'
-  inbib = open(sys.argv[1])
+  usage: python3 normalizebib.py localbibliography.bib [--restrict]
   
-  f = inbib
-  s = f.read()
-  f.close()
-  outbib = open(outfilename,'w')
-  texs = glob.glob('%s/*tex'%texdir)
+  The modified records are in sorted.bib
+  """
+  parser = argparse.ArgumentParser(description='Normalize input bib file and write output to sorted.bib')
+  parser.add_argument('bibfilename', type=str, help='The bib file to be processed')
+  parser.add_argument('--restrict', action='store_true', help='Restrict the output to keys found in the tex files')
+  args = parser.parse_args()
+  
+  texdir = 'chapters'
+  outfilename = 'sorted.bib' 
+  
+  texfiles = glob.glob('%s/*tex'%texdir)
   CITE = re.compile(r'\cite[yeargenltp]*(?:\[.*?\])?\{(.*?)\}')
   #                                         pages     key  
   #accumulate the keys of cited works per tex-file
   citations = []
-  for tex in texs:
+  for texfile in texfiles:
     citations += [c.strip() 
-                  for cs in CITE.findall(open(tex).read())  
+                  for cs in CITE.findall(open(texfile).read())  
                     for c in cs.split(',')                 #there might be multiple keys per cite command
                   ]
   citations = list(set(citations)) #uniq
   #store in dict for more efficient checking for presence
   citationsd = dict(zip(citations,[True for t in range(len(citations))]))
   #access bib file 
-  newbib = normalize(s,inkeysd=citationsd,restrict=True) 
+  bibfile = open(args.bibfilename).read() 
+  newbib = normalize(bibfile,inkeysd=citationsd,restrict=args.restrict) 
   #write out
+  outbib = open(outfilename,'w')
   outbib.write(newbib)
   outbib.close()
