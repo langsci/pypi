@@ -1,3 +1,7 @@
+"""
+Perform sanity checks for Latex files in a git repository
+"""
+
 from sanitycheck import LSPDir
 import re
 import git 
@@ -7,11 +11,11 @@ import subprocess
 
 
 def cloneorpull(url):
-    m = re.search('([0-9]{7,}[a-z]+)',url)
-    overleafID = m.group(1)
-    print "overleaf ID found:", overleafID
-    giturl = "https://git.overleaf.com/"+overleafID
-    gitdir = os.path.join(os.getcwd(),overleafID)
+    m = re.search('langsci/([0-9]{2,}a?)',url)
+    githubID = m.group(1)
+    print "GitHub ID found:", githubID
+    giturl = "https://github.com/langsci/%s.git"%githubID
+    gitdir = os.path.join(os.getcwd(),githubID)
     print "git repo is ", giturl
     try:
         git.Repo.clone_from(giturl, gitdir)
@@ -28,8 +32,8 @@ def cloneorpull(url):
     
     
 if __name__ == "__main__":
-    overleafurl = sys.argv[1]
-    d = cloneorpull(overleafurl)
+    githuburl = sys.argv[1]
+    d = cloneorpull(githuburl)
     lspdir = LSPDir(os.path.join(d,'chapters'))
     print "checking %s" % ' '.join([f for f in lspdir.texfiles+lspdir.bibfiles])
     lspdir.check()
