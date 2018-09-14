@@ -265,7 +265,7 @@ class SanityDir:
         """
     for filename in self.texterrors:
       fileerrors = self.texterrors[filename]
-      print('%s, %i possible errors found' % (filename, len(fileerrors)))
+      print('\n',70*'=','\n%s, %i possible errors found.' % (filename, len(fileerrors)),"Suppressing %i error codes: %s"%(len(self.ignorecodes),','.join(ignorecodes)),'\n',70*'=')
       #print(fileerrors)
       for e in fileerrors: 
           if e.name not in self.ignorecodes:
