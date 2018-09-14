@@ -1,15 +1,26 @@
+"""This package provides canonic replacements for non-ASCII characters in order to sort these characters in English lists. 
+
+The main use case is sorting for bibliographies.
+
+
+Attributes:
+    ASCIITRANS: a transtable matching each non-ASCII character listed 
+      on https://en.wikipedia.org/wiki/List_of_Latin-script_letters#Letters_with_diacritics with an ASCII equivalent
+
+    FRENCH_REPLACEMENTS: a list of 2-tuples matching a French character 
+      with a two-character expansion
+    
+    GERMAN_REPLACEMENTS: a list of 2-tuples matching a German character
+      with a two-character expansion
+    
+    ICELANDIC_REPLACEMENTS a list of 2-tuples matching an Icelandic 
+      character with a two-character expansion
+      
+    REPLACEMENTS: s collation of the lists mentioned above
+ 
 """
-This package provides canonic replacements for non-ASCII characters in order to sort these characters in English lists. The main use case is sorting for bibliographies.
 
-ASCIITRANS: a transtable matching each non-ASCII character listed on https://en.wikipedia.org/wiki/List_of_Latin-script_letters#Letters_with_diacritics with an ASCII equivalent
 
-FRENCH_REPLACEMENTS: a list of 2-tuples matching a French character with a two-character expansion
-GERMAN_REPLACEMENTS: a list of 2-tuples matching a German character with a two-character expansion
-ICELANDIC_REPLACEMENTS a list of 2-tuples matching an Icelandic character with a two-character expansion
-REPLACEMENTS: s collation of the lists mentioned above
-
-The canonical use would be to translate a given string via ASCIITRANS and then apply the language particular replacements for characters resulting in digraphs, resulting in a pure ASCII string. 
-"""
 
 
 _asciiequivs = {'A':"ÀÁÂẦẤẪẨÃÃ̀Ã́Ã̂Ã̌Ã̍Ã̎ĀĀ̀Ā́Ā̂Ā̃Ā̃Ā̄Ā̆Ā̆Ā̈Ā̊Ā̌ĂẰẮẴẲȦȦ́ǠÄÄ́Ä̀Ä̂Ä̃ǞǞ̆Ä̆Ä̌ẢÅǺÅ̂Å̃Å̄Å̄Å̆A̋ǍA̍A̎ȀȂA̐A̓A̧À̧Á̧Â̧Ǎ̧A̭A̰À̰Á̰Ä̰Ä̰ĄĄ̀Ą́Ą̂Ą̃Ą̄Ą̄Ą̄Ą̄Ą̄Ą̇Ą̈Ą̈Ą̈Ą̈Ą̈Ą̈Ą̊Ą̌Ą̋Ą̱Ą̱Ą̱A᷎A̱À̱Á̱Â̱Ã̱Ā̱Ā̱Ā̱Ā̱Ä̱Ä̱Ä̱Ä̱Ä̱Å̱Ǎ̱A̱ẠẠ́Ạ̀ẬẠ̃Ạ̄ẶẠ̈Ạ̈Ạ̈Ạ̈Ạ̈Ạ̌Ạ̍A̤À̤Á̤Â̤Ä̤ḀḀ̂Ḁ̈A̯A̩A͔Ā͔ȺȺ̀Ⱥ́ᶏⱭ̀Ɑ́Ɑ̂Ɑ̃Ɑ̄Ɑ̆Ɑ̇Ɑ̈Ɑ̊Ɑ̌ᶐ",
@@ -36,7 +47,7 @@ _asciiequivs = {'A':"ÀÁÂẦẤẪẨÃÃ̀Ã́Ã̂Ã̌Ã̍Ã̎ĀĀ̀Ā́Ā̂�
 'X':'X̀X́X̂X̃X̄X̆X̆ẊẌX̊X̌X̓X̕X̱X̱X̣X̣X̥ᶍ',
 'Y':'ỲÝŶỸȲȲ̀Ȳ́Ȳ̃Ȳ̆Y̆Y̆Y̆ẎẎ́ŸŸ́Y̊Y̋Y̌Y̍Y̐Y̓ỶY᷎Y̱ỴỴ̣Y̥Y̯ɎƳỾ',
 'Z':'Z̀ŹẐZ̃Z̄ŻZ̈Z̋ŽŽ́Ž̏Z̑Z̓Z̕Z̨Z̗ẔZ̮ẒẒ́Ẓ̌Ẓ̣Z̤Z̥ƵᵶᶎȤʐʑⱿⱫƷ́Ʒ̇ǮǮ́Ʒ̥ᶚƺʓ',
-'_':'Þ́Þ̣ꝤꝦƻꜮʡʢǀǁǃǂʘ',
+'_':'́ƻꜮʡʢǀǁǃǂʘ',
 #
 'a':'àáâầấẫẩãã̀ã́ã̂ã̌ã̍ã̎āā̀ā́ā̂ā̃́ā̃́ā̄ā̆́ā̆́ā̈ā̊ā̌ăằắẵẳȧȧ́ǡää́ä̀ä̂ä̃ǟǟ̆ä̆ä̌ảåǻå̂å̃å̄̆å̄̆å̆a̋ǎa̍a̎ȁȃa̐a̓a̧à̧á̧â̧ǎ̧a̭a̰à̰á̰ä̰́ä̰́ąą̀ą́ą̂ą̃ą̄̀ą̄̀́ą̄́̂ą̄̂̌ą̄̌ą̇ą̈̀ą̈̀́ą̈́̂ą̈̂̌ą̈̌̄ą̈̄ą̊ą̌ą̋ą̱̀ą̱̀̀ą̱̀a᷎a̱à̱á̱â̱ã̱ā̱̀ā̱̀́ā̱́̂ā̱̂ä̱̀ä̱̀́ä̱́̂ä̱̂̌ä̱̌å̱ǎ̱̥a̱̥ạạ́ạ̀ậạ̃ạ̄ặạ̈̀ạ̈̀́ạ̈́̂ạ̈̂̌ạ̈̌ạ̌ạ̍a̤à̤á̤â̤ä̤ḁḁ̂ḁ̈a̯a̩a͔ā͔ⱥⱥ̀ⱥ́ɑ̀ɑ́ɑ̂ɑ̃ɑ̄ɑ̆ɑ̇ɑ̈ɑ̊ɑ̌',
 'b':'b́b̂b̃b̄ḃb̈b̕ḇḇ̂ḅb̤b̥b̬ƀɓƃ',
@@ -64,7 +75,7 @@ _asciiequivs = {'A':"ÀÁÂẦẤẪẨÃÃ̀Ã́Ã̂Ã̌Ã̍Ã̎ĀĀ̀Ā́Ā̂�
 'x':'x̀x́x̂x̃x̄x̆́x̆́ẋẍx̊x̌x̓x̕x̱̓x̱̓x̣̓x̣̓x̥',
 'y':'ỳýŷỹȳȳ̀ȳ́ȳ̃ȳ̆y̆̀y̆̀́y̆́ẏẏ́ÿÿ́ẙy̋y̌y̍y̐y̓ỷy᷎y̱ỵỵ̣y̥y̯ɏƴỿ',
 'z':'z̀źẑz̃z̄żz̈z̋žž́ž̏z̑z̓z̕z̨z̗ẕz̮ẓẓ́ẓ̌ẓ̣z̤z̥ƶȥɀⱬʒ́ʒ̇ǯǯ́ʒ̥',
-'_':'þ́þ̣ꝥꝧꜯ'
+'_':'ꜯ'
 }
 
 
@@ -97,8 +108,32 @@ ICELANDIC_REPLACEMENTS=[
 
 REPLACEMENTS = FRENCH_REPLACEMENTS + GERMAN_REPLACEMENTS + ICELANDIC_REPLACEMENTS
 
+
+def asciify(s): 
+  """Replace all non-ASCII characters in the input string with their ASCII equivalent and return the output
+  
+  Args:
+    s (str): the string to conform
+    
+  Returns:
+    str: the conformed string
+  """
+  tmpstring = s.translate(ASCIITRANS) 
+  for r in REPLACEMENTS:
+    tmpstring = tmpstring.replace(r[0],r[1])
+  return tmpstring  
+
+
+
 def is_ascii(s):
-    """Evaluate whether a given string can be rendered in ASCII"""
+    """Evaluate whether a given string can be rendered in ASCII
+          
+    Args:
+      s (str): the string to test
+      
+    Returns:
+      bool: True if the string can be rendered in ASCII, False otherwise.
+    """
     try: 
         s.encode('ascii')
     except UnicodeEncodeError:
