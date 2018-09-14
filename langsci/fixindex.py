@@ -5,7 +5,8 @@ The ways how the *dx files are generated varies between different versions of Te
 """
 
 import re, sys
-from asciify import ASCIITRANS, REPLACEMENTS, is_ascii
+from asciify import ASCIITRANS, REPLACEMENTS, is_ascii, asciify
+from delatex import dediacriticize
 
 # the LaTeX index entries consist of the string to be displayed (after the "@")
 # and the string used for sorting (before the "@"). 
@@ -13,6 +14,22 @@ p = re.compile(r"\\indexentry \{(.*?)@")
 
    
 def processline(s): 
+  """Conform the input string to the index requirements and return the conformed string
+  
+  To conform the string, first LaTex diacritics like {\'{e}} are removed. Then, Unicode 
+  is translated to ASCII  
+    
+  Args: 
+    s (str): the input string
+    
+  Returns:
+    str:  the output string
+    
+  Example: 
+    >>> print(processline("\v{C}{\'{e}}pl\"o, Slavomír")
+    Ceplo, Slavomir
+  """
+    
   if s.strip() == '':
     return s  
   #find the substring used for sorting
@@ -21,20 +38,9 @@ def processline(s):
   try:
     sortstring = m.groups(1)[0] 
   except AttributeError:
-    print("%s could not be parsed" % repr(s))   
-  #get rid of Latex diacritics like {\'{e}}   
-  latexdiacritics = """'`^~"=.vdHuk"""
-  # acute grave circumflex tilde dieresis macron dot_above hacek dot_below double_acute breke ogonek
-  tmpstring = re.sub(r"{\\[%s]{([A-Za-z])}}"%latexdiacritics,r"\1",sortstring)  
-  #get rid of Latex diacritics like \'{e}
-  tmpstring = re.sub(r"\\[%s]{([A-Za-z])}"%latexdiacritics,r"\1",tmpstring)    
-  #get rid of Latex diacritics like \'e
-  tmpstring = re.sub(r"\\[%s]([A-Za-z])"%latexdiacritics,r"\1",tmpstring)   
-  #1:1 Unicode:ASCII translations
-  tmpstring = tmpstring.translate(ASCIITRANS) 
-  #1:2 Unicode:ASCII translations
-  for r in REPLACEMENTS:
-    tmpstring = tmpstring.replace(r[0],r[1])
+    print("%s could not be parsed" % repr(s))    
+  tmpstring = dediacriticize(sortstring)
+  tmpstring = asciify(tmpstring) 
   if sortstring == tmpstring:    
     return s
   else:
@@ -42,6 +48,15 @@ def processline(s):
     return s.replace("%s@"%sortstring,"%s@"%tmpstring) 
   
 def processfile(filename): 
+  """Read a file and write the fixed output to another file with "mod" appended to its name
+  
+  Args: 
+    filename (str): the path to the file
+    
+  Returns:
+    None
+    
+  """
   print("Reading", filename)  
   with open(filename) as indexfile:
     lines = indexfile.readlines()
@@ -60,7 +75,7 @@ if __name__ == '__main__':
   s: subject index 
   l: language index
 
-  Usage 
+  Examples: 
   > python3 fixindex.py 
   fixes the author index only. Read: main.adx. Write: mainmod.adx
   > python3 fixindex.py a
