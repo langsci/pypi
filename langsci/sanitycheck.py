@@ -1,4 +1,18 @@
-# -*- coding: utf-8 -*-
+"""
+Check files of various types for conformity to Language Science Press guidelines. Currently the following 
+file types are checked: 
+
+
+* tex files from folder chapters/
+* bib files 
+* png/jpg files in forlder figures/
+
+Attributes:
+  SPELLD: A US-English dictionary 
+  TKNZR: A US_English tokenizer
+  LATEXTERMS: LaTeX terms which the spell checker should treat as conformant
+"""
+
 import re
 import glob
 import sys
@@ -10,9 +24,30 @@ import enchant
 from enchant.tokenize import get_tokenizer
 from PIL import Image
 
-class LSPError:
-  def __init__(self,fn,linenr,line,offendingstring,msg):
-    self.fn = fn.split('/')[-1]
+
+SPELLD = enchant.Dict("en_US") 
+TKNZR = get_tokenizer("en_US")
+LATEXTERMS = ("newpage","clearpage","textit","textbf","textsc","textwidth","tabref","figref","sectref","emph")
+
+class SanityError:
+  """A record of a potentially problematic passage
+  
+  Attributes:
+    filename (str): the path to the file where the error is found
+    linenr (int): the number of the line where the error is found 
+    line (str): the full line under consideration
+    offendingstring (str): the string which was identified as problematic
+    msg (str): information on why this string was found problematic
+    pre (str): left context of the offending string
+    post (str): right context of the offending string
+    ID (str): ID to uniquely refer to a given error in HTML-DOM
+    name (str): hexadecimal string used for colour coding based on msg
+    color (str): a rgb color string
+    bordercolor (str): a rgb color string, which is darker than color 
+  """
+  
+  def __init__(self,filename,linenr,line,offendingstring,msg):
+    self.filename = filename.split('/')[-1]
     self.linenr = linenr
     self.line = line
     self.offendingstring = offendingstring
@@ -20,61 +55,75 @@ class LSPError:
     self.pre =self.line.split(self.offendingstring)[0]
     self.post =self.line.split(self.offendingstring)[1]
     self.ID = uuid.uuid1()
-    self.name = str(hash(msg))[-6:]
+    self.name = str(hash(msg))[-6:]    
+    #compute rgb colors from msg
     t = textwrap.wrap(self.name,2)[-3:]
     self.color =  "rgb({},{},{})".format(int(t[0])+140,int(t[1])+140,int(t[2])+140)
     self.bordercolor = "rgb({},{},{})".format(int(t[0])+100,int(t[1])+100,int(t[2])+100)
  
     
   def __str__(self): 
-    return u"{linenr}:{offendingstring}\n\t{msg}".format(**self.__dict__).encode('utf8')
+    return "{linenr}: ... {offendingstring} ... \t{msg}".format(**self.__dict__)
 
-class LSPFile:
-  def __init__(self,fn):
-    self.fn = fn
-    self.content = open(fn).read().decode('utf8')
+class SanityFile:
+  """A file with information about potentially problematic passages
+  
+  Attributes:
+    filename (str): the path to the file
+    content (str): the content of the file 
+    lines ([]str): the lines of the file 
+    errors ([]SanityError): the list of found errors
+    spellerrors ([]SanityError): the list of words not found in the spell dictionary
+  
+  """
+  def __init__(self,filename):
+    self.filename = filename
+    self.content = open(filename).read()
     self.lines = self.split_(self.content)
     self.errors = []
-    self.spelld = enchant.Dict("en_UK") 
-    self.tknzr = get_tokenizer("en_UK")
-    self.spellerrors = []
-    self.latexterms = ("newpage","clearpage","textit","textbf","textsc","textwidth","tabref","figref","sectref","emph")
+    #self.spellerrors = []
+    
     
   def split_(self,c):
     result = self._removecomments(c).split('\n')
     return result
     
   def _removecomments(self,s):
+    """strip comments from file so that errors are not marked in comments"""
+    
     #negative lookbehind 
     result = re.sub('(?<!\\\\)%.*\n','\n',s)
     return result
-	    
+            
   def check(self):
     self.errors=[]
-    for i,l in enumerate(self.lines):
-      if '\\chk' in l: #the line is explicitely marked as being correct
-	continue 
-      for ap,msg in self.antipatterns:
-	m = re.search('(%s)'%ap,l)
-	if m != None:
-	  g = m.group(1)
-	  if g!='':	    
-	    self.errors.append(LSPError(self.fn,i,l,g,msg))	 
-      for posp,negp,msg in self.posnegpatterns:
-	posm = re.search('(%s)'%posp,l)
-	if posm==None:
-	  continue
-	g = posm.group(1)
-	negm = re.search(negp,l)
-	if negm==None:
-	  self.errors.append(LSPError(self.fn,i,l,g,msg)) 
-	  
+    for i,line in enumerate(self.lines):
+      if '\\chk' in line: #the line is explicitely marked as being correct
+        continue 
+      for antipattern,msg in self.antipatterns:
+        m = re.search('(%s)'%antipattern,line)
+        if m != None:
+          g = m.group(1)
+          if g!='':            
+            self.errors.append(SanityError(self.filename, i, line, g, msg))         
+      for positivepattern, negativepattern, msg in self.posnegpatterns:
+        posmatch = re.search('(%s)'%positivepattern,line)
+        if posmatch==None:
+          continue
+        # a potentiall incorrect behaviour is found, but could be saved by the presence of additional material
+        g = posmatch.group(1)
+        negmatch = re.search(negativepattern,line)
+        if negmatch==None: # the match required to make this line correct is not found
+          self.errors.append(SanityError(self.filename, i, line, g, msg)) 
+          
   def spellcheck(self):
-    result = sorted(list(set([t[0] for t in self.tknzr(self.content) if self.spelld.check(t[0])==False and t[0] not in self.latexterms])))
+    """return a list of all words which are neither known LaTeX terms nor found in the enchant dictionary
+    """
+    result = sorted(list(set([t[0] for t in TKNZR(self.content) if SPELLD.check(t[0])==False and t[0] not in LATEXTERMS])))
     self.spellerrors =  result
  
 
-class TexFile(LSPFile):  
+class TexFile(SanityFile):  
   antipatterns = (
     (r" et al.","Please use the citation commands \\citet and \\citep"),      #et al in main tex
     (r"setfont","You should not set fonts explicitely"),      #no font definitions
@@ -82,8 +131,7 @@ class TexFile(LSPFile):
     (r"([Tt]able|[Ff]igure|[Ss]ection|[Pp]art|[Cc]hapter\() *\\ref","It is often advisable to use the more specialized commands \\tabref, \\figref, \\sectref, and \\REF for examples"),      #no \ref
     #("",""),      #\ea\label
     #("",""),      #\section\label
-    (" \\footnote","Footnotes should not be preceded by a space"),
-    ("\\caption\{.*[^\.]\} +$","The last character of a caption should be a '.'"),      #captions end with .
+    (" \\footnote","Footnotes should not be preceded by a space"), 
     #("",""),      #footnotes end with .
     (r"\[[0-9]+,[0-9]+\]","Please use a space after the comma in lists of numbers "),      #no 12,34 without spacing
     ("\([^)]+\\cite[pt][^)]+\)","In order to avoid double parentheses, it can be a good idea to use \\citealt instead of \\citet or \\citep"),    
@@ -94,7 +142,7 @@ class TexFile(LSPFile):
     (r"\hline","Use \\midrule rather than \\hline in tables"),      
     (r"\gl[lt] *[a-z].*[\.?!] *\\\\ *$","Complete sentences should be capitalized in examples"), 
     (r"\section.*[A-Z].*[A-Z].*","Only capitalize this if it is a proper noun"), 
-    (r"\section.*[A-Z].*[A-Z].*","Only capitalize this if it is a proper noun"), 
+    (r"\s[ubs]+ection.*[A-Z].*[A-Z].*","Only capitalize this if it is a proper noun"), 
     (r"[ (][12][8901][0-9][0-9]","Please check whether this should be part of a bibliographic reference"), 
     (r"(?<!\\)[A-Z]{3,}","It is often a good idea to use \\textsc\{smallcaps} instead of ALLCAPS"), 
     ("[?!;\.,][A-Z]","Please use a space after punctuation (or use smallcaps in abbreviations)"),        
@@ -118,7 +166,7 @@ class TexFile(LSPFile):
 
 #year not in order in multicite
 
-class BibFile(LSPFile):
+class BibFile(SanityFile):
   
   antipatterns = (
     #("[Aa]ddress *=.*[,/].*[^ ]","No more than one place of publication. No indications of countries or provinces"), #double cities in address
@@ -135,84 +183,81 @@ class BibFile(LSPFile):
   filechecks = []
   spellerrors = []
 
-class ImgFile(LSPFile): 
-    def __init__(self,fn):
-        self.fn = fn  
+class ImgFile(SanityFile): 
+    def __init__(self,filename):
+        self.filename = filename  
         self.errors = [] 
         self.spellerrors = []
         self.latexterms = [] 
     
     def check(self): 
         try:
-            img = Image.open(self.fn)
+            img = Image.open(self.filename)
         except IOError:
-            print "could not open", self.fn
+            print("could not open", self.filename)
             return
         try:
             x,y = img.info['dpi']
             if x < 72 or y < 72:
-                print "low res for", self.fn.split                     
-                self.errors.append(LSPError(self.fn,' ',' ',' ',"low res"))	
+                printprint("low res for", self.filename.split)
+                self.errors.append(SanityError(self.filename,'low resolution', '', '', "%sx%sdpi, required 300"%(x,y)))        
         except KeyError:
             x,y =  img.size
             if x< 1500:
-                print "resolution of %s when printed full with: %i. Required: 300" %(self.fn.split('/')[-1],x/5)                                   
-                self.errors.append(LSPError(self.fn,' ',' ',' ',"low res"))	
+                estimatedresolution = x/5
+                print("resolution of %s when printed full with: %i. Required: 300" %(self.filename.split('/')[-1],estimatedresolution))
+                self.errors.append(SanityError(self.filename,'low resolution', ' ', ' ', "estimated %sdpi, required 300"%estimatedresolution))               
 
-   
 
-
-class LSPDir:
+class SanityDir:
   def __init__(self,dirname):
     self.dirname = dirname
     self.texfiles = self.findallfiles('tex')
     self.bibfiles = self.findallfiles('bib')
     self.pngfiles = self.findallfiles('png')
     self.jpgfiles = self.findallfiles('jpg')
-    self.errors={} 
+    self.texterrors = {}
+    self.imgerrors = {}
     
   def findallfiles(self, ext):
     matches = []
     for root, dirnames, filenames in os.walk(self.dirname):
       for filename in fnmatch.filter(filenames, '*.%s'%ext):
-	  matches.append(os.path.join(root, filename))
+          matches.append(os.path.join(root, filename))
     return matches
-  	    
+              
   def printErrors(self):
-    for fn in self.errors:
-      print fn
-      fileerrors = self.errors[fn]
-      print '%i possible errors found' % len(fileerrors)
-      for e in fileerrors:
-	try:
-	  print e
-	except TypeError:
-	  print e.__dict__
-	  raise
+    for filename in self.texterrors:
+      print(filename)
+      fileerrors = self.texterrors[filename]
+      print('%i possible errors found' % len(fileerrors))
+      #print(fileerrors)
+      for e in fileerrors: 
+          print(e) 
+    for filename in self.imgerrors:
+      print(filename)
+      fileerrors = self.imgerrors[filename]  
+      for e in fileerrors: 
+          print(e) 
     #print "the following words were not found in the dictionary:", self.spellerrors
   
   def check(self):
-    for tfn in self.texfiles:
-      t = TexFile(tfn)
+    for tfilename in self.texfiles:
+      t = TexFile(tfilename)
       t.check()
-      t.spellcheck()
-      self.errors[tfn] = [None,None]
-      self.errors[tfn][0] = t.errors
-      self.errors[tfn][1] = t.spellerrors
-    for bfn in self.bibfiles:
-      b = BibFile(bfn) 
+      #t.spellcheck()
+      self.texterrors[tfilename] = t.errors
+      #self.errors[tfilename][1] = t.spellerrors
+    for bfilename in self.bibfiles:
+      b = BibFile(bfilename) 
       b.check()
-      self.spellerrors = [] 
-      self.errors[bfn] = [None,None]
-      self.errors[bfn][0] = b.errors
-      self.errors[bfn][1] = b.spellerrors
-    for ifn in self.pngfiles+self.jpgfiles:
-      imgf = ImgFile(ifn) 
+      self.texterrors[bfilename] = b.errors
+      #self.errors[bfilename][1] = b.spellerrors
+    for ifilename in self.pngfiles+self.jpgfiles:
+      imgf = ImgFile(ifilename) 
       imgf.check()
-      self.spellerrors = [] 
-      self.errors[ifn] = [None,None]
-      self.errors[ifn][0] = imgf.errors
-      self.errors[ifn][1] = []
+      #self.spellerrors = [] 
+      self.imgerrors[ifilename] = imgf.errors
       
  
 
@@ -224,7 +269,7 @@ if __name__ == "__main__":
     d = sys.argv[1]
   except IndexError:
     d = '.'
-  lspdir = LSPDir(d)
-  print "checking %s" % ' '.join([f for f in lspdir.texfiles+lspdir.bibfiles])
-  lspdir.check()
-  lspdir.printErrors()
+  sanitydir = SanityDir(d)
+  print("checking %s with %i files" % (d,len(sanitydir.texfiles+sanitydir.bibfiles+sanitydir.pngfiles+sanitydir.jpgfiles)))
+  sanitydir.check()
+  sanitydir.printErrors()
