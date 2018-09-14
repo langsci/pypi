@@ -117,6 +117,7 @@ class Record():
       self.fields['pages'] = re.sub(r'([0-9])-([0-9])',r'\1--\2',pages)                 
     self.conformtitles() 
     self.conforminitials()
+    self.correctampersand()
     self.checketal()
     self.checkand()
     self.checkedition()
@@ -215,7 +216,16 @@ class Record():
     
     for t in ('author','editor'):
       if self.fields.get(t) != None: 
-        self.fields[t] = re.sub(r'([A-Z])\.([A-Z])', r'\1. \2',self.fields[t])
+        self.fields[t] = re.sub(r'([A-Z])\.([A-Z])', r'\1. \2',self.fields[t])   
+        
+  def correctampersand(self):
+    """
+    Replace & by " and " as required by BibTeX
+    """
+    
+    for t in ('author','editor'):
+      if self.fields.get(t) != None: 
+        self.fields[t] = self.fields[t].replace(r" \& ", " and ")
         
   def checkand(self):
     """
