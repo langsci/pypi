@@ -29,6 +29,8 @@ class TestBibConversion(unittest.TestCase):
       expected = """@book{Mufwene2001,\n\taddress = {Cambridge},\n\tauthor = {Mufwene, Salikoko},\n\tpublisher = {Cambridge University Press},\n\ttitle = {The Ecology of Language Evolution},\n\tyear = {2001}\n}\n"""
       record = langscibibtex.Record(s)
       self.assertEqual(record.bibstring, expected)
+      
+      #TODO add more and different entry types of varying complexity
     
         
 if __name__ == '__main__':
