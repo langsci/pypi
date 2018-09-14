@@ -12,7 +12,7 @@ from asciify import ASCIITRANS, REPLACEMENTS, is_ascii
 p = re.compile(r"\\indexentry \{(.*?)@")
 
    
-def _processline(s): 
+def processline(s): 
   if s.strip() == '':
     return s  
   #find the substring used for sorting
@@ -46,7 +46,7 @@ def processfile(filename):
     lines = indexfile.readlines()
   print("Found %i lines" % len(lines))
   #read all lines, process them and write them to output file
-  processedlines = list(map(_processline, lines))
+  processedlines = list(map(processline, lines))
   with open(filename.replace('.','mod.'),'w') as out:
     out.write(''.join(processedlines))
 
