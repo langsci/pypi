@@ -699,25 +699,39 @@ class Document:
         
         
         bibliography = ''
-        modtext = modtext.replace(r'\\textbf{References}','References')
-        modtext = modtext.replace('\\section{References}','References')
-        modtext = modtext.replace('\\chapter{References}','References') 
+        modtext = modtext.replace(r'\textbf{References}','References')
+        modtext = modtext.replace(r'\section{References}','References')
+        modtext = modtext.replace(r'\chapter{References}','References') 
         a = re.compile("\n\s*References\s*\n").split(modtext)
         if len(a)==2:
                 modtext = a[0]
                 refs = a[1].split('\n')
-                bibliography = '\n'.join([langscibibtex.Record(r).bibstring for r in refs])                
+                bibliography = '\n'.join([langscibibtex.Record(r).bibstring for r in refs])     
+                
+        
         return modtext+"\n\\begin{verbatim}%%move bib entries to  localbibliography.bib\n"+bibliography+'\\end{verbatim}'
             
 if __name__ == '__main__':
+    paperpreamble =r"""\documentclass[output=paper]{langsci/langscibook} 
+\author{\affiliation{}}
+\title{}
+\abstract{}
+\begin{document}
+\maketitle 
+"""
+    paperpostamble = "\n\\end{document}"
     fn = sys.argv[1]
     cwd = os.getcwd()
     d = convert(fn,tmpdir=cwd,wd=cwd)
     tx = d.text
-    mt = d.modtext
+    modtx = d.modtext
+    modtxch = paperpreamble + d.modtext + paperpostamble
     out1 = codecs.open("temporig.tex", "w", "utf-8")
     out2 = codecs.open("temp.tex", "w", "utf-8")
+    out3 = codecs.open("chapter.tex", "w", "utf-8")
     out1.write(tx)
-    out2.write(mt)
+    out2.write(modtx)
+    out3.write(modtxch)
     out1.close()
     out2.close()
+    out3.close()

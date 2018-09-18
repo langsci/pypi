@@ -2,7 +2,7 @@
 Perform sanity checks for Latex files in a git repository
 """
 
-from sanitycheck import LSPDir
+from sanitycheck import SanityDir
 import re
 import git 
 import os
@@ -46,11 +46,11 @@ def cloneorpull(url):
 if __name__ == "__main__":
     githuburl = sys.argv[1]
     d = cloneorpull(githuburl)
-    lspdir = LSPDir(os.path.join(d,'chapters'))
+    lspdir = SanityDir(os.path.join(d,'chapters'))
     print("checking %s" % ' '.join([f for f in lspdir.texfiles+lspdir.bibfiles]))
     lspdir.check()
     lspdir.printErrors()
-    imgdir =  LSPDir(os.path.join(d,'figures'))
+    imgdir =  SanityDir(os.path.join(d,'figures'))
     imgdir.check()
     imgdir.printErrors()
     

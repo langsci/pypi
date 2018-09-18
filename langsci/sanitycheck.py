@@ -25,9 +25,9 @@ from enchant.tokenize import get_tokenizer
 from PIL import Image
 
 
-SPELLD = enchant.Dict("en_US") 
-TKNZR = get_tokenizer("en_US")
-LATEXTERMS = ("newpage","clearpage","textit","textbf","textsc","textwidth","tabref","figref","sectref","emph")
+#SPELLD = enchant.Dict("en_US") 
+#TKNZR = get_tokenizer("en_US")
+#LATEXTERMS = ("newpage","clearpage","textit","textbf","textsc","textwidth","tabref","figref","sectref","emph")
 
 class SanityError:
   """A record of a potentially problematic passage
