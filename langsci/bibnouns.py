@@ -1,4 +1,22 @@
-"""Contains lists of proper nouns which should survice decapitalization in bibliographies"""
+"""
+Contains lists of proper nouns which should survice decapitalization in bibliographies
+
+Attributes:
+    CONTINENTNAMES: names for contintents
+    
+    OCEANNAMES: names for oceans
+    
+    CITIES: names for cities having hosted workshops and conferences or whose dialect has received attention 
+    
+    COUNTRIES: names of countries 
+    
+    LANGUAGENAMES: names of languages 
+    
+    OCCURREDREPLACEMENTS: other replacements which have occurred in books by Language Science Press
+    
+    EXCLUDES: legitimate proper nouns which should be excluded nevertheless since they are homographs with common words, e.g. the language "Some". 
+
+"""
 
 CONTINENTNAMES=["""Africa""",
 """Asia""",
@@ -13639,3 +13657,5 @@ OCCURREDREPLACEMENTS=[
 """Irish"""
   ]
   
+
+EXCLUDES = []
