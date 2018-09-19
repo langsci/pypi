@@ -6,7 +6,7 @@ import shutil
 import codecs
 import uuid
 import sys 
-import langscibibtex
+from langsci import langscibibtex
 
 WD = '/home/doc2tex'
 WD = '/tmp'

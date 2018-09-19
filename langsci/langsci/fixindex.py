@@ -5,6 +5,7 @@ The ways how the *dx files are generated varies between different versions of Te
 """
 
 import re, sys
+import langsci
 from asciify import ASCIITRANS, REPLACEMENTS, is_ascii, asciify
 from delatex import dediacriticize
 

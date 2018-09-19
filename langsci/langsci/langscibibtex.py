@@ -5,6 +5,7 @@ Conform a given inline bibliographical reference to BibTeX.
 import sys
 import re
 import pprint 
+import langsci
 import normalizebib
 
 

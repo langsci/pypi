@@ -1,4 +1,5 @@
 import unittest
+import langsci
 import fixindex
 import asciify
 import langscibibtex

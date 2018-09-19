@@ -5,14 +5,14 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="langsci",
-    version="0.0.1",
+    version="0.0.2",
     author="Sebastian Nordhoff",
     author_email="sebastian.nordhoff@langsci-press.org",
     description="Tools for open access books used at Language Science Press",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/langsci/pypi",
-    packages=setuptools.find_packages(),
+    packages=["langsci"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",

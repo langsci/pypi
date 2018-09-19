@@ -2,7 +2,7 @@
 Perform sanity checks for Latex files in a git repository
 """
 
-from sanitycheck import SanityDir
+from langsci.sanitycheck import SanityDir
 import re
 import git 
 import os

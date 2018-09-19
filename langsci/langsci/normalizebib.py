@@ -9,11 +9,12 @@ import sys
 import re
 import pprint
 import glob
+import string
+import argparse
+import langsci
 from asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS, asciify
 from bibnouns import LANGUAGENAMES, OCEANNAMES, COUNTRIES, CONTINENTNAMES, CITIES, OCCURREDREPLACEMENTS
 from delatex import dediacriticize
-import string
-import argparse
 
 keys = {} #store for all bibtex keys
 #The following fields will not be included in the normalizedfile
