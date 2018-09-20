@@ -36,20 +36,20 @@ if __name__  ==  "__main__":
                 if "%s{"%excluder in line:
                     included  =  False
                     print("Found excluder keyword %s:%s"%(excluder, line))
-                if included:
-                    for lg in lgs: 
-                        lg  =  lg.strip()
-                        if lg  ==  '':
-                            continue 
-                        #substitute "lg" with "\ili{lg}"
-                        line  =  re.sub('(?<!ili{)%s(?![\w}])'%lg, '\ili{%s}'%lg, line)
-                    for term in terms:
-                        term  =  term.strip() 
-                        if term  ==  '':
-                            continue
-                        #substitute "term" with "\isi{term}"
-                        line  =  re.sub('(?<!isi{|...[A-Za-z])%s(?![-_\w}])'%term, '\isi{%s}'%term, line) 
-                newlines.append(line)
+        if included:
+            for lg in lgs: 
+                lg  =  lg.strip()
+                if lg  ==  '':
+                    continue 
+                #substitute "lg" with "\ili{lg}"
+                line  =  re.sub('(?<!ili{)%s(?![\w}])'%lg, '\ili{%s}'%lg, line)
+            for term in terms:
+                term  =  term.strip() 
+                if term  ==  '':
+                    continue
+                #substitute "term" with "\isi{term}"
+                line  =  re.sub('(?<!isi{|...[A-Za-z])%s(?![-_\w}])'%term, '\isi{%s}'%term, line) 
+        newlines.append(line)
         #reassemble body
         content  =  "\n".join(newlines)  
         #compute stats
