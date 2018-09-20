@@ -33,7 +33,7 @@ BOOK = re.compile(u"{author}[., ]* {ed}[\., ]*{year}[\., ]*{title}\. +{pubaddr}{
                                                                           title=title,
                                                                           pubaddr=pubaddr,
                                                                           note=note))
-ARTICLE = re.compile(u"{author}[., ]*{year}[., ]*{title}\. +{journal}[\.,]? *{numbervolume}[\.,:] *{pages}{note}"\
+ARTICLE = re.compile(u"{author}[., ]*{year}[., ]*{title}\. +{journal}[\.,]? *{numbervolume}[\.,:]? *{pages}{note}"\
             .format(pages=pppages,
                     author=author,
                     year=year,
@@ -42,7 +42,7 @@ ARTICLE = re.compile(u"{author}[., ]*{year}[., ]*{title}\. +{journal}[\.,]? *{nu
                     title=title,
                     note=note)
                     )
-INCOLLECTION = re.compile(u"{author}[., ]*{year}[., ]*{title}\. In {editor} \([Ee]ds?\. *\)[\.,]? {booktitle}[\.,]? {pages}\. +{pubaddr}\.{note}"\
+INCOLLECTION = re.compile(u"{author}[., ]*{year}[., ]*{title}\. In {editor} \([Ee]ds?\. *\)[\.,]? {booktitle}[\.,] {pages}\. +{pubaddr}\.{note}"\
                       .format(author=author,
                               year=year,
                               title=title,

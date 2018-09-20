@@ -207,7 +207,7 @@ class Record():
       if self.fields.get(t) != None: 
         self.fields[t] = re.sub(r'([:\.\?!]) *([a-zA-Z])', self.upperme ,self.fields[t])
         self.fields[t] = re.sub(r'([A-Z][a-z]*[A-Z]+)', r"{\1}" ,self.fields[t])
-        self.fields[t] = re.sub(r' ([A-Z]) ', r" {{\1}} " ,self.fields[t])
+        self.fields[t] = re.sub(r' ([A-Z]) ', r" {{\1}} " ,self.fields[t]) 
         
   def conforminitials(self):
     """
@@ -226,6 +226,7 @@ class Record():
     
     for t in ('author','editor'):
       if self.fields.get(t) != None: 
+        self.fields[t] = self.fields[t].replace(r" & ", " and ")
         self.fields[t] = self.fields[t].replace(r" \& ", " and ")
         
   def checkand(self):
