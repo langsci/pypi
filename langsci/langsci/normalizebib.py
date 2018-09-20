@@ -154,10 +154,9 @@ class Record():
       try: 
         oldt = self.fields.get(t,'') 
         preservationt = oldt
-        m = PRESERVATIONPATTERN.search(preservationt)
-        if m:
-          for g in m.groups():
-            preservationt = preservationt.replace(g,"{%s}"%g)
+        for match in re.finditer(PRESERVATIONPATTERN,preservationt):
+            group = match.group(1)
+            preservationt = preservationt.replace(group,"{%s}"%group)
             if oldt != preservationt: 
               if 'nouns' in self.reporting:
                 print(oldt,' ==> ',preservationt)
@@ -218,6 +217,7 @@ class Record():
     for t in ('author','editor'):
       if self.fields.get(t) != None: 
         self.fields[t] = re.sub(r'([A-Z])\.([A-Z])', r'\1. \2',self.fields[t])   
+        self.fields[t] = re.sub(r' ([A-Z])}', r' \1.}',self.fields[t])   
         
   def correctampersand(self):
     """
@@ -458,7 +458,7 @@ def normalize(s, inkeysd={}, restrict=False):
   bibtexs = [Record(q,
                     inkeysd=inkeysd, 
                     restrict=restrict,
-                    reporting=['conferences']                    
+                    reporting=['conferences','nouns']                    
                     ).bibtex() 
               for q in rest
             ]

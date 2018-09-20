@@ -6,6 +6,7 @@ The ways how the *dx files are generated varies between different versions of Te
 
 import re, sys
 import langsci 
+
 try:
     from langsci.delatex import dediacriticize
 except ImportError:
