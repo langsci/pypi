@@ -6567,6 +6567,7 @@ LANGUAGENAMES=[
 """North Veluws""",
 """Westphalien""",
 """Middle Low German""",
+"""Saxon""",
 """Old Saxon""",
 """Creolese""",
 """Trinidadian Creole English""",
