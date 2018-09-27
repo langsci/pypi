@@ -4,9 +4,11 @@ Conform a given inline bibliographical reference to BibTeX.
 """
 import sys
 import re
-import pprint 
-import langsci
-import normalizebib
+import pprint  
+try:
+    import normalizebib
+except ImportError:
+    from langsci import normalizebib
 
 
  
