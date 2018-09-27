@@ -2,9 +2,9 @@ import re
 import shutil
 import uuid
 try:
-    import langscibibtex
+    import bibtools
 except ImportError:
-    from langsci import langscibibtex
+    from langsci import bibtools
 import os
 
 WD = '/home/doc2tex'
@@ -722,7 +722,7 @@ class Document:
         if len(a)==2:
                 modtext = a[0]
                 refs = a[1].split('\n')
-                bibliography = '\n'.join([langscibibtex.Record(r).bibstring for r in refs])     
+                bibliography = '\n'.join([bibtools.Record(r).bibstring for r in refs])     
                 
         
         return modtext+"\n\\begin{verbatim}%%move bib entries to  localbibliography.bib\n"+bibliography+'\\end{verbatim}' 

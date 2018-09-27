@@ -9,5 +9,5 @@ lines = open(filename).readlines()
 for l in lines: 
     if l.strip=='':
         continue
-    r = Record(l) 
+    r = Record(l,fromfile=False) 
     print(r.bibstring) 
