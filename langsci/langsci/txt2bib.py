@@ -1,5 +1,8 @@
 import sys
-from langscibibtex import Record 
+try:
+    from bibtools import Record 
+except ImportError:
+    from langsci.bibtools import Record
 
 filename = sys.argv[1]
 lines = open(filename).readlines()
