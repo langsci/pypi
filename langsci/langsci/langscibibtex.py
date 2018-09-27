@@ -187,11 +187,4 @@ class Record():
     self.bibstring = normalizebib.normalize(tmpbibstring) #this could be made in a more elegant way
 
   
-if __name__=="__main__":
-  filename = sys.argv[1]
-  lines = open(filename).readlines()
-  for l in lines:
-    if l.strip=='':
-      continue
-    r = Record(l) 
-    print(r.bibstring) 
+
