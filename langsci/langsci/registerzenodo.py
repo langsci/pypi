@@ -1,7 +1,7 @@
 try:
-    from langsci import zenodo
-except ImportError:
     import zenodo
+except ImportError:
+    from langsci import zenodo
 
 """
 usage: > python3 zenodo.py 7
@@ -17,7 +17,11 @@ The DOI assigned by Zenodo is collected and inserted into the file.
 book = zenodo.Book()  
 #for c in book.chapters:
 #pprint.pprint(c.metadata) 
-tokenfile = open('zenodo.token')
+try:
+    tokenfile = open('zenodo.token')
+except FileNotFoundError:
+    print("Token file not found. Please create a file 'zenodo.token', which must be readable.\nExiting")
+    raise SystemExit
 token = open('zenodo.token').read().strip()
 tokenfile.close()
 #print(token) 
