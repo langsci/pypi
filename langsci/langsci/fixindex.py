@@ -1,5 +1,8 @@
 import sys  
-from indextools import processfile
+try:
+    from indextools import processfile
+except ImportError:
+    from langsci.indextools import processfile
 
 if __name__ == '__main__':
     """

@@ -1,7 +1,10 @@
 import re
 import shutil
 import uuid
-import langscibibtex
+try:
+    import langscibibtex
+except ImportError:
+    from langsci import langscibibtex
 import os
 
 WD = '/home/doc2tex'
