@@ -26,7 +26,7 @@ class Book():
     #aggregate = [(a if a>threshold else 0) for a in aggregate]    
     aggregate = self.zeros2nones(aggregate)
     self.yaggregates =  aggregate
-    print self.ID, self.yaggregates
+    #print self.ID, self.yaggregates
   
   def zeros2nones(self,a):
     result = []
@@ -57,7 +57,7 @@ class Catalog():
     shapes = 'v^osp*D'    
     self.books = {} 
     for l in lines:
-      print l
+      #print l
       if l.strip()!='':
         ID, title = l.strip().split('\t') 
         ID = int(ID)
@@ -84,9 +84,7 @@ class Catalog():
             monthfactor = 2
         if int(book) == 49 and month == "2018_03": #book 49 had grossly inflated downloads in March 2018
             monthfactor = .005
-        effectivedownloads = int(self.monthstats[month][book]*monthfactor)
-        if month ==  '2018_03':
-            print effectivedownloads
+        effectivedownloads = int(self.monthstats[month][book]*monthfactor) 
         monthmaxs.append((effectivedownloads,book))
         if int(book) in self.books: #only aggregate books relevant for this category
           try: 
@@ -127,7 +125,12 @@ class Catalog():
           if bookID>1000: #secondedition 
               self.books[bookID] = Book(bookID,str(bookID),plt.cm.Set1(np.linspace(0, 1, 45)),'v^osp*D')      
     for x in sorted(lastmaxs)[::-1][:3]:
-        print ' ', x[1], x[0]
+        title = "??"
+        try:
+            title =  self.books[x[1]].title
+        except KeyError:
+            pass
+        print ' ', x[1], title , x[0]
     self.countrystats = dict([(d[-7:],CountryStats(os.path.join(d,'awstats.langsci-press.org.alldomains.html')).getCountries()) for d in self.dirs])   
         
   def setupPlot(self, labels, timeframe):  
@@ -204,10 +207,11 @@ class Catalog():
     #save file
     plt.savefig('cumulativeall%s.svg'%typ)
     plt.savefig('cumulativeall%s.png'%typ)
-    plt.close(fig)   
-    print "plotted cumulative graph"
-    print "total downloads of all %ss:"%typ, aggregatedownloads    
-    print "plotting invididual graphs: "
+    plt.close(fig)    
+    plt.cla()      
+    #print "plotted cumulative graph"
+    print "total downloads of all %s:"%typ, aggregatedownloads    
+    #print "plotting invididual graphs: "
     
     #individual plots
     for bookID in self.books:
@@ -233,9 +237,10 @@ class Catalog():
       bookax.text(len(origlabels), totaldownloads, '      %s'%totaldownloads, fontsize=12)       
       bookplt.savefig('%s.svg'%bookID)
       bookplt.savefig('%s.png'%bookID)
-      bookplt.close(fig)    
-      print bookID,  
-    print ''
+      bookplt.close(fig)   
+      bookplt.cla()      
+      #print bookID,  
+    #print ''
     return aggregatedownloads
    
   def plotCountries(self,threshold=12, typ=''):
@@ -287,6 +292,8 @@ class Catalog():
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),frameon=False,numpoints=1) 
     plt.savefig('%scountries.png'%typ) 
     plt.savefig('%scountries.svg'%typ) 
+    plt.close(fig)
+    plt.cal(fig)
          
 class Stats():
   def __init__(self,f):
@@ -371,17 +378,12 @@ class CountryStats(Stats):
                     
 if __name__=='__main__':
   multipleditions =(22,25,46,101,157,195)  
-  monographs = Catalog(booksfile='monographs.tsv')
-  editedvolumes = Catalog(booksfile='editedvolumes.tsv')
-  fourthousandvolumes = Catalog(booksfile='4000.tsv')
-  tenthousandvolumes = Catalog(booksfile='10000.tsv',)
-  
-  print "monograph plots"
-  md = monographs.matplotcumulative(fontsizetotal=7,typ='monograph')      
-  evd = editedvolumes.matplotcumulative(fontsizetotal=7,typ='editedvolume')   
-  fd = fourthousandvolumes.matplotcumulative(fontsizetotal=7,typ='4000')     
-  td = tenthousandvolumes.matplotcumulative(fontsizetotal=7,typ='10000', excludes=multipleditions)   
-  totaldownloads = md+evd+fd+td
+  totaldownloads = 0
+  for tsvfile in glob.glob("*tsv"):
+      catalog = Catalog(booksfile=tsvfile)
+      name = tsvfile.split('.')[0]
+      totaldownloads += catalog.matplotcumulative(fontsizetotal=7,typ=name, excludes=multipleditions)   
+      print "created files %s.png, %s.svg" % (name,name)
   print "total downloads combined", totaldownloads
   
   #print "country plot"
