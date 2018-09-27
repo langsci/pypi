@@ -2,13 +2,13 @@
 Perform sanity checks for Latex files in a git repository
 """
 
-from langsci.sanitycheck import SanityDir
 import re
 import git 
 import os
 import sys
 import subprocess
 
+from langsci.sanity import SanityDir
 
 def cloneorpull(url):
     """
