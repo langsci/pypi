@@ -1,6 +1,5 @@
 import re
 import shutil
-import codecs
 import uuid
 import langscibibtex
 import os
