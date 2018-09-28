@@ -147,8 +147,16 @@ class Chapter(Publication):
     self.metadata['imprint_isbn'] = self.bookisbn
     self.metadata['partof_title'] = self.booktitle        
     self.metadata['title']=self.title
-    self.metadata['description']=self.abstract
-    self.metadata['creators']=[{'name':au} for au in self.authors]  
+    self.metadata['description']=self.abstract 
+    #retrieve affiliations from texfile
+    authoraffiliations = CHAPTERAUTHORP.findall(preamble)
+    #store the affiliations in a dictionary
+    creatorsdic = {}
+    for authoraffiliation in authoraffiliations:
+        #["and", "John Smith", "Harvard"]. Ignore first element
+        creatorsdic[authoraffiliation[1]] = authoraffiliation[2].replace('\&','&')
+    #add affiliations where available in dictionary
+    self.metadata['creators'] = [{'name':au,'affiliation':creatorsdic.get(au,' ')} for au in self.authors]   
     self.metadata['keywords']=self.keywords
     #TODO needs affiliation
     #'creators': [{'name': 'Doe, John',
