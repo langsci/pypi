@@ -8,7 +8,10 @@ import os
 import sys
 import subprocess
 
-from langsci.sanity import SanityDir
+try:
+    from sanity import SanityDir
+except ImportError:
+    from langsci.sanity import SanityDir
 
 def cloneorpull(url):
     """
@@ -44,13 +47,22 @@ def cloneorpull(url):
     
     
 if __name__ == "__main__":
+    """
+    usage: 
+        python3 sanitygit.py https://www.github.com/langsci/42 
+    """ 
     githuburl = sys.argv[1]
+    ignorecodes = []
+    try:
+        ignorecodes  = sys.argv[2:]
+    except IndexError:
+        pass
     d = cloneorpull(githuburl)
-    lspdir = SanityDir(os.path.join(d,'chapters'))
+    lspdir = SanityDir(os.path.join(d,'chapters'),ignorecodes)
     print("checking %s" % ' '.join([f for f in lspdir.texfiles+lspdir.bibfiles]))
     lspdir.check()
     lspdir.printErrors()
-    imgdir =  SanityDir(os.path.join(d,'figures'))
+    imgdir =  SanityDir(os.path.join(d,'figures'),ignorecodes)
     imgdir.check()
     imgdir.printErrors()
     
