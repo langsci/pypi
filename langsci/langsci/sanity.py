@@ -2,7 +2,6 @@
 Check files of various types for conformity to Language Science Press guidelines. Currently the following 
 file types are checked: 
 
-
 * tex files from folder chapters/
 * bib files 
 * png/jpg files in forlder figures/
@@ -168,11 +167,11 @@ class TexFile(SanityFile):
     )
     
   filechecks = (
-    ("",""),    #src matches #imt
-    ("",""),     #words
-    ("",""),     #hyphens
-    ("",""),    #tabulars have lsptoprule
-    ("",""),    #US/UK                    
+    #("",""),    #src matches #imt
+    #("",""),     #words
+    #("",""),     #hyphens
+    #("",""),    #tabulars have lsptoprule
+    #("",""),    #US/UK                    
     )
    
 
