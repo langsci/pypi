@@ -3,6 +3,7 @@ import unittest
 import indextools
 import asciify
 import bibtools
+import delatex
 
 class TestFixIndex(unittest.TestCase):
     """ Test the adaption of the indexes
@@ -15,11 +16,30 @@ class TestFixIndex(unittest.TestCase):
         self.assertEqual(result, r"\indexentry {Ceplo, Slavomir@\v{C}{\'{e}}pl\"o, Slavomír|hyperpage}{2}")
         
         
+        
+class TestASCII(unittest.TestCase):
+    """ Test the adaption of the indexes
+    """
+        
+        
     def test_asciify(self):
         """ Test an isolated string
         """
         result = asciify.asciify("Nædéßoþ")
         self.assertEqual(result, "Naedessoth")
+        
+    def test_dediacriticize(self):
+        """ Test an isolated string
+        """
+        result = delatex.dediacriticize(r"Bád\'ag\'{a}p{\'{a}}")
+        self.assertEqual(result, "Bádagapa")
+        
+        
+        result = delatex.dediacriticize(r"Bád\'ag\'{a}p{\'{a}}", stripbraces=False)
+        self.assertEqual(result, "Bádagap{a}")
+        
+        result = delatex.dediacriticize(r"""\'{a}\`{a}\^{a}\~{a}\"{a}\={a}\.{a}\d{a}\v{a}\H{a}\u{a}\k{a}""")
+        self.assertEqual(result, "aaaaaaaaaaaa")
         
 class TestBibConversion(unittest.TestCase):
     """ Test the conversion of inline literature references to BibTex

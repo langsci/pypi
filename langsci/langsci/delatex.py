@@ -6,7 +6,7 @@ import re
 
 LATEXDIACRITICS = """'`^~"=.vdHuk"""
 
-def dediacriticize(s):
+def dediacriticize(s, stripbraces=True):
     """
     Remove all LaTeX styles diacritics from the input and return the bare string
      
@@ -33,9 +33,10 @@ def dediacriticize(s):
       str: the input string stripped of LaTeX diacritics
       
     """
-    
-    #get rid of Latex diacritics like {\'{e}}    
-    tmpstring = re.sub(r"{\\[%s]{([A-Za-z])}}"%LATEXDIACRITICS,r"\1",s)  
+    tmpstring = s    
+    if stripbraces:
+        #get rid of Latex diacritics like {\'{e}}    
+        tmpstring = re.sub(r"{\\[%s]{([A-Za-z])}}"%LATEXDIACRITICS,r"\1",tmpstring)  
     #get rid of Latex diacritics like \'{e}
     tmpstring = re.sub(r"\\[%s]{([A-Za-z])}"%LATEXDIACRITICS,r"\1",tmpstring)    
     #get rid of Latex diacritics like \'e
