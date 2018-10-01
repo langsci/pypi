@@ -79,8 +79,8 @@ class TestBibConversion(unittest.TestCase):
                                 ,"""@book{vanCoetsem2000,\n\taddress = {Heidelberg},\n\tauthor = {van Coetsem, Frans},\n\tpublisher = {Winter},\n\ttitle = {A general and unified theory of the transmission process in language contact},\n\tyear = {2000}\n}\n"""),
                     ("""Franks, Steven. 2005. Bulgarian clitics are positioned in the syntax. http://www.cogs.indiana.edu/people/homepages/franks/Bg_clitics_remark_dense.pdf (17 May, 2006.)"""
                                 ,"""@misc{Franks2005,\n\tauthor = {Franks, Steven},\n\tnote = {(17 May, 2006.)},\n\ttitle = {{Bulgarian} clitics are positioned in the syntax},\n\turl = {http://www.cogs.indiana.edu/people/homepages/franks/Bg_clitics_remark_dense.pdf},\n\tyear = {2005}\n}\n"""),
-                    #("""Iverson, Gregory K. 1983. Korean /s/. Journal of Phonetics 11. 191-200."""
-                                #,""""""),
+                    ("""Iverson, Gregory K. 1983. Korean /s/. Journal of Phonetics 11. 191-200."""
+                                ,"""@article{Iverson1983,\n\tauthor = {Iverson, Gregory K.},\n\tjournal = {Journal of Phonetics},\n\tpages = {191--200},\n\ttitle = {{Korean} /s/},\n\tvolume = {11},\n\tyear = {1983}}"""),
                     #("""Iverson, Gregory K. 1989. On the category supralaryngeal. Phonology 6. 285-303."""
                                 #,""""""),
                     #("""Johnson, Kyle, Mark Baker & Ian Roberts. 1989. Passive arguments raised. Linguistic Inquiry 20. 219-251."""
