@@ -93,8 +93,8 @@ class TestBibConversion(unittest.TestCase):
                                 ,"""@article{Murray1983,\n\tauthor = {Murray, Robert W. and Theo Vennemann},\n\tjournal = {Language},\n\tnumber = {3},\n\tpages = {514--528},\n\ttitle = {Sound change and syllable structure in {Germanic} phonology},\n\tvolume = {59},\n\tyear = {1983}\n}\n"""),
                     #("""Oxford English Dictionary , 2nd edn. 1989. Oxford: Oxford University Press."""
                                 #,""""""),
-                    ("""Pedersen, Johan. 2005. The Spanish impersonal se-construction. Constructions 1. http://www.constructions-online.de. (3 April, 2007.)"""
-                                ,"""@article{Pedersen2005,\n\tauthor = {Pedersen, Johan},\n\tjournal = {Constructions},\n\tnote = {(3 April, 2007.)},\n\ttitle = {The {Spanish} impersonal se-construction},\n\turl = {http://www.constructions-online.de},\n\tvolume = {1},\n\tyear = {2005}\n}\n"""),
+                    ("""Pedersen, Johan. 2005. The Spanish impersonal se-construction: Constructional variation and change. Constructions 1. http://www.constructions-online.de. (3 April, 2007.)"""
+                                ,"""@article{Pedersen2005,\n\tauthor = {Pedersen, Johan},\n\tjournal = {Constructions},\n\tnote = {(3 April, 2007.)},\n\ttitle = {The {Spanish} impersonal se-construction: {{C}}onstructional variation and change},\n\turl = {http://www.constructions-online.de},\n\tvolume = {1},\n\tyear = {2005}\n}\n"""),
                     #("""Rissanen, Matti. 1999. Syntax. In Roger Lass (ed.), Cambridge History of the English Language, vol. 3, 187-331. Cambridge & New York: Cambridge University Press."""
                                 #,""""""),
                     #("""Stewart, Thomas W., Jr. 2000. Mutation as morphology: Bases, stems, and shapes in Scottish Gaelic. Columbus, OH: The Ohio State University dissertation."""

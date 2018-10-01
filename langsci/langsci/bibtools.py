@@ -510,7 +510,7 @@ class Record():
     """
     if self.typ != 'article':
       return 
-    mandatory = ('author', 'year', 'title', 'journal', 'volume', 'pages') 
+    mandatory = ('author', 'year', 'title', 'journal', 'volume') 
     
     if self.fields.get('volume') == None and self.fields.get('number') != None:
       self.fields['volume'] = self.fields['number']      
