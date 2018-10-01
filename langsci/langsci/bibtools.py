@@ -167,7 +167,23 @@ class Record():
                 d["number"] = m.group('number')
                 d["volume"] = m.group('volume')
                 d["pages"] = m.group('pages')   
+                d["note"] = m.group('note') 
+        elif  bibpatterns.NUMBERVOLUME.search(s) and bibpatterns.URL.search(s) and bibpatterns.ONLINEARTICLE.search(s):     
+            print(3)
+            self.typ = "article"
+            m = bibpatterns.ONLINEARTICLE.search(s)
+            if m:
+                d["author"] = m.group('author')
+                d["title"] = m.group('title')
+                d["year"] = m.group('year')
+                d["journal"] = m.group('journal')
+                d["number"] = m.group('number')
+                d["volume"] = m.group('volume')    
+                d["url"] = m.group('url')    
+                print(d["url"])
                 d["note"] = m.group('note')   
+                
+                print(d["note"])
         elif bibpatterns.PUBADDR.search(s):
             self.typ = "book"  
             m = bibpatterns.BOOK.match(s) 
@@ -403,13 +419,20 @@ class Record():
     """
     make sure the url field contains the url and only the url
     """
-    url = self.fields.get('url','') 
-    if url != None and url.count(' ')>0:
-      self.errors.append("space in url")
-    nonsites = ('ebrary','degruyter','doi','myilibrary','academia','ebscohost')
-    for n in nonsites:
-      if url != None and  n in url:
-        self.errors.append("%s: urls should only be given for true repositories or for material not available elsewhere"%url)
+    url = self.fields.get('url',False) 
+    if url:
+        if url.endswith('.'):
+            print(4)
+            url = url[:-1]
+            print(url)
+            self.fields['url'] = url
+        
+        if url != None and url.count(' ')>0:
+            self.errors.append("space in url")
+        nonsites = ('ebrary','degruyter','doi','myilibrary','academia','ebscohost')
+        for n in nonsites:
+            if url != None and  n in url:
+                self.errors.append("%s: urls should only be given for true repositories or for material not available elsewhere"%url)
                 
   def checkurldate(self): 
     """
@@ -419,15 +442,14 @@ class Record():
     if not self.fields.get('urldate'): 
         url = self.fields.get('url',False)
         if url: 
-            try:                
-                newurl, urldate = url.split(' ')
+            substrings =  url.split(' ') 
+            if len(substrings) == 2:
+                newurl, urldate = substrings
                 if re.search('[12][0-9][0-9][0-9]', urldate):
                     for c in "[]()":#remove parentheses
                         urldate = urldate.replace(c,'')                     
                     self.fields['url'] = newurl        
                     self.fields['urldate'] = urldate
-            except ValueError:
-                pass
     else:
         if self.fields.get('url') == None:
             self.errors.append("urldate without url")
@@ -496,9 +518,9 @@ class Record():
     for m in mandatory:
       self.handleerror(m)
     if self.fields.get('pages') == None: #only check for pages if no electronic journal
-      if self.fields.get('url') == None:
-        self.fields['pages'] = r"{\biberror{no pages}}"
-        self.errors.append("missing pages")  
+      if self.fields.get('url') == None: 
+            self.fields['pages'] = r"{\biberror{no pages}}"
+            self.errors.append("missing pages")  
     auth = self.fields.get('author')
     if auth:
       self.addsortname(auth)

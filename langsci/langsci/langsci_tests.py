@@ -81,20 +81,20 @@ class TestBibConversion(unittest.TestCase):
                                 ,"""@misc{Franks2005,\n\tauthor = {Franks, Steven},\n\tnote = {(17 May, 2006.)},\n\ttitle = {{Bulgarian} clitics are positioned in the syntax},\n\turl = {http://www.cogs.indiana.edu/people/homepages/franks/Bg_clitics_remark_dense.pdf},\n\tyear = {2005}\n}\n"""),
                     ("""Iverson, Gregory K. 1983. Korean /s/. Journal of Phonetics 11. 191-200."""
                                 ,"""@article{Iverson1983,\n\tauthor = {Iverson, Gregory K.},\n\tjournal = {Journal of Phonetics},\n\tpages = {191--200},\n\ttitle = {{Korean} /s/},\n\tvolume = {11},\n\tyear = {1983}\n}\n"""),
-                    #("""Iverson, Gregory K. 1989. On the category supralaryngeal. Phonology 6. 285-303."""
-                                #,""""""),
-                    #("""Johnson, Kyle, Mark Baker & Ian Roberts. 1989. Passive arguments raised. Linguistic Inquiry 20. 219-251."""
-                                #,""""""),
-                    #("""Lahiri, Aditi (ed.). 2000. Analogy, leveling, markedness: Principles of change in phonology and morphology (Trends in Linguistics 127). Berlin: Mouton de Gruyter."""
-                                #,""""""),
-                    #("""McCarthy, John J. & Alan S. Prince. 1999. Prosodic morphology. In John A. Goldsmith (ed.), Phonological theory: The essential readings, 238-288. Malden, MA & Oxford: Blackwell."""
-                                #,""""""),
-                    #("""Murray, Robert W. & Theo Vennemann. 1983. Sound change and syllable structure in Germanic phonology. Language 59(3). 514-528."""
-                                #,""""""),
+                    ("""Iverson, Gregory K. 1989. On the category supralaryngeal. Phonology 6. 285-303."""
+                                ,"""@article{Iverson1989,\n\tauthor = {Iverson, Gregory K.},\n\tjournal = {Phonology},\n\tpages = {285--303},\n\ttitle = {On the category supralaryngeal},\n\tvolume = {6},\n\tyear = {1989}\n}\n"""),
+                    ("""Johnson, Kyle, Mark Baker & Ian Roberts. 1989. Passive arguments raised. Linguistic Inquiry 20. 219-251."""
+                                ,"""@article{Johnson1989,\n\tauthor = {Johnson, Kyle, Mark Baker and Ian Roberts},\n\tjournal = {Linguistic Inquiry},\n\tpages = {219--251},\n\ttitle = {Passive arguments raised},\n\tvolume = {20},\n\tyear = {1989}\n}\n"""),
+                    ("""Lahiri, Aditi (ed.). 2000. Analogy, leveling, markedness: Principles of change in phonology and morphology (Trends in Linguistics 127). Berlin: Mouton de Gruyter."""
+                                ,"""@book{Lahiri2000,\n\taddress = {Berlin},\n\tbooktitle = {Analogy, leveling, markedness: {{P}}rinciples of change in phonology and morphology},\n\teditor = {Lahiri, Aditi},\n\tnumber = {127},\n\tpublisher = {Mouton de Gruyter},\n\tseries = {Trends in Linguistics},\n\ttitle = {Analogy, leveling, markedness: {{P}}rinciples of change in phonology and morphology},\n\tyear = {2000}\n}\n"""),
+                    ("""McCarthy, John J. & Alan S. Prince. 1999. Prosodic morphology. In John A. Goldsmith (ed.), Phonological theory: The essential readings, 238-288. Malden, MA & Oxford: Blackwell."""
+                                ,"""@incollection{McCarthy1999,\n\taddress = {Malden, MA & Oxford},\n\tauthor = {McCarthy, John J. and Alan S. Prince},\n\tbooktitle = {Phonological theory: {{T}}he essential readings},\n\teditor = {John A. Goldsmith},\n\tpages = {238--288},\n\tpublisher = {Blackwell},\n\ttitle = {Prosodic morphology},\n\tyear = {1999}\n}\n"""),
+                    ("""Murray, Robert W. & Theo Vennemann. 1983. Sound change and syllable structure in Germanic phonology. Language 59(3). 514-528."""
+                                ,"""@article{Murray1983,\n\tauthor = {Murray, Robert W. and Theo Vennemann},\n\tjournal = {Language},\n\tnumber = {3},\n\tpages = {514--528},\n\ttitle = {Sound change and syllable structure in {Germanic} phonology},\n\tvolume = {59},\n\tyear = {1983}\n}\n"""),
                     #("""Oxford English Dictionary , 2nd edn. 1989. Oxford: Oxford University Press."""
                                 #,""""""),
-                    #("""Pedersen, Johan. 2005. The Spanish impersonal se-construction: Constructional variation and change. Constructions 1, http://www.constructions-online.de. (3 April, 2007.)"""
-                                #,""""""),
+                    ("""Pedersen, Johan. 2005. The Spanish impersonal se-construction. Constructions 1. http://www.constructions-online.de. (3 April, 2007.)"""
+                                ,"""@article{Pedersen2005,\n\tauthor = {Pedersen, Johan},\n\tjournal = {Constructions},\n\tnote = {(3 April, 2007.)},\n\ttitle = {The {Spanish} impersonal se-construction},\n\turl = {http://www.constructions-online.de},\n\tvolume = {1},\n\tyear = {2005}\n}\n"""),
                     #("""Rissanen, Matti. 1999. Syntax. In Roger Lass (ed.), Cambridge History of the English Language, vol. 3, 187-331. Cambridge & New York: Cambridge University Press."""
                                 #,""""""),
                     #("""Stewart, Thomas W., Jr. 2000. Mutation as morphology: Bases, stems, and shapes in Scottish Gaelic. Columbus, OH: The Ohio State University dissertation."""

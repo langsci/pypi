@@ -27,8 +27,9 @@ note = "(?P<note>.*)"
 numbervolume = "(?P<volume>[-\.0-9/]+) *(\((?P<number>[-0-9/]+)\))?"
 pubaddr = "(?P<address>.+) *:(?!/) *(?P<publisher>[^:][^\.]+)"
 seriesnumber = "(?P<newtitle>.*) \((?P<series>.*?) +(?P<number>[-\.0-9/]+)\)"
+url = r"(?P<url>(https?://)?www\.[a-zA-Z0-9-]+\.[-A-Za-z0-9\.]+(/[^ ]+)?)\.?"  
+NUMBERVOLUME = re.compile(numbervolume)
 SERIESNUMBER =  re.compile(seriesnumber)
-url = r"(https?://)?www\.[a-zA-Z0-9]+\.[A-Za-z0-9\.]+(/[^ ]+)?"  
 URL = re.compile(url)
 
 
@@ -45,6 +46,16 @@ ARTICLE = re.compile(u"{author}[., ]*{year}[., ]*{title}\. +{journal}[\.,]? *{nu
                     year=year,
                     journal=journal,
                     numbervolume=numbervolume,
+                    title=title,
+                    note=note)
+                    )
+ONLINEARTICLE = re.compile(u"{author}[., ]*{year}[., ]*{title}\. +{journal}[\.,]? *{numbervolume}[\.,:] *{url}.{note}"\
+            .format(pages=pppages,
+                    author=author,
+                    year=year,
+                    journal=journal,
+                    numbervolume=numbervolume,
+                    url=url,
                     title=title,
                     note=note)
                     )
