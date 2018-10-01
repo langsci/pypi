@@ -197,10 +197,11 @@ class Record():
                 d["editor"] = d["editor"].replace(' &', ' and ')
             except AttributeError:
                 return
-        if d["title"] and "http" in d["title"]:
-            t = d["title"].split("http:")[0]
-            d["url"] = "http:"+'http://'.join(d["title"].split("http:")[1:])
-            d["title"] = t
+        if d["note"] and "www" in d["note"]: 
+            url = re.search(bibpatterns.URL,d["note"]).group() 
+            if url != None:
+                d["note"] = d["note"].replace(url,'').strip()
+                d["url"] = url
         if d["title"]:
             m = bibpatterns.SERIESNUMBER.match(d["title"])
             if m:
@@ -212,7 +213,7 @@ class Record():
         authorpart = "Anonymous"
         yearpart = "9999" 
         try: 
-            authorpart = d["author"].split(',')[0].split(' ')[0] 
+            authorpart = d["author"].split(',')[0].replace(' ', '')
         except AttributeError: 
             authorpart = d["editor"].split(',')[0].split(' ')[0] 
         try:
@@ -246,8 +247,8 @@ class Record():
     self.checketal()
     self.checkand()
     self.checkedition()
-    self.checkurl()
     self.checkurldate()
+    self.checkurl()
     self.checkquestionmarks()
     self.checkarticle()
     self.checkbook()
@@ -413,11 +414,23 @@ class Record():
   def checkurldate(self): 
     """
     make sure the urldate field is only present when an url is actually given
-    """
+    """ 
     
-    if self.fields.get('urldate') != None:
-      if self.fields.get('url') == None:
-        self.errors.append("urldate without url")
+    if not self.fields.get('urldate'): 
+        url = self.fields.get('url',False)
+        if url: 
+            try:                
+                newurl, urldate = url.split(' ')
+                if re.search('[12][0-9][0-9][0-9]', urldate):
+                    for c in "[]()":#remove parentheses
+                        urldate = urldate.replace(c,'')                     
+                    self.fields['url'] = newurl        
+                    self.fields['urldate'] = urldate
+            except ValueError:
+                pass
+    else:
+        if self.fields.get('url') == None:
+            self.errors.append("urldate without url")
       
           
   def checkbook(self):
@@ -461,9 +474,9 @@ class Record():
     """
     
     try:
-        residue = name.translate({ord(i):None for i in string.ascii_letters+'- ,{}'})
+        residue = name.translate({ord(i):None for i in string.ascii_letters+'- ,{}.'})
     except  TypeError: #python2
-        residue = ''
+        residue = ''  
     if residue == '':
       pass
     else:

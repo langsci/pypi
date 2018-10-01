@@ -11,6 +11,7 @@ CONFERENCEPATTERN = re.compile("([A-Z][^ ]*[A-Z][A-Z-a-z]]+)") #Binnenmajuskeln 
 PROCEEDINGSPATTERN = re.compile("(.* (?:Proceedings|Workshop|Conference|Symposium).*)\}$") #Binnenmajuskeln should be kept
 
 
+
  
 #pattern definitions
 year = '\(? *(?P<year>[12][78901][0-9][0-9][a-f]?) *\)?' 
@@ -24,16 +25,19 @@ title = "(?P<title>.*?)"
 journal = "(?P<journal>.*?)"
 note = "(?P<note>.*)"
 numbervolume = "(?P<volume>[-\.0-9/]+) *(\((?P<number>[-0-9/]+)\))?"
-pubaddr = "(?P<address>.+) *:(?!/) *(?P<publisher>[^:]+[^\.\n])"
+pubaddr = "(?P<address>.+) *:(?!/) *(?P<publisher>[^:][^\.]+)"
 seriesnumber = "(?P<newtitle>.*) \((?P<series>.*?) +(?P<number>[-\.0-9/]+)\)"
 SERIESNUMBER =  re.compile(seriesnumber)
+url = r"(https?://)?www\.[a-zA-Z0-9]+\.[A-Za-z0-9\.]+(/[^ ]+)?"  
+URL = re.compile(url)
+
 
 #compiled regexes
-BOOK = re.compile(u"{author}[., ]* {ed}[\., ]*{year}[\., ]*{title}\. +{pubaddr}{note}".format(author=author,
+BOOK = re.compile(u"{author}[., ]* {ed}[\., ]*{year}[\., ]*{title}\. +{pubaddr}\. *{note}".format(author=author,
                                                                           ed=ed,
                                                                           year=year,
                                                                           title=title,
-                                                                          pubaddr=pubaddr,
+                                                                          pubaddr=pubaddr, 
                                                                           note=note))
 ARTICLE = re.compile(u"{author}[., ]*{year}[., ]*{title}\. +{journal}[\.,]? *{numbervolume}[\.,:]? *{pages}{note}"\
             .format(pages=pppages,
@@ -54,7 +58,7 @@ INCOLLECTION = re.compile(u"{author}[., ]*{year}[., ]*{title}\. In {editor} \([E
                               pubaddr=pubaddr,
                               note=note)
                               )
-MISC = re.compile("{author}[., ]*{year}[., ]*{title}\.? *(?P<note>.*)".format(author=author, year=year, title=title))
+MISC = re.compile("{author}[., ]*{year}[., ]*{title}\. *(?P<note>.*)".format(author=author, year=year, title=title))
 
 #regexes for telling entry types    
 EDITOR = re.compile("[0-9]{4}.*(\([Ee]ds?\.?\))") #make sure the editor of @incollection is only matched after the year
@@ -63,3 +67,4 @@ PUBADDR = re.compile(pubaddr)
 
 
 TYPKEYFIELDS = r"^([^\{]+)\{([^,]+),[\s\n\t]*((?:.|\n)*)\}"
+                                       
