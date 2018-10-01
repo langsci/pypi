@@ -340,13 +340,16 @@ class Record():
         
   def conforminitials(self):
     """
-    make sure that initials have a space between them
+    make sure that initials have a space between them and that initials have a period
     """
     
     for t in ('author','editor'):
       if self.fields.get(t) != None: 
         self.fields[t] = re.sub(r'([A-Z])\.([A-Z])', r'\1. \2',self.fields[t])   
-        self.fields[t] = re.sub(r' ([A-Z])}', r' \1.}',self.fields[t])   
+        #print(1,self.fields[t])
+        self.fields[t] = re.sub(' ([A-Z]$)', r' \1.',self.fields[t])   
+        #print(2,self.fields[t])
+                
         
   def correctampersand(self):
     """
