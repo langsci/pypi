@@ -88,23 +88,48 @@ class TestBibConversion(unittest.TestCase):
                     ("""Lahiri, Aditi (ed.). 2000. Analogy, leveling, markedness: Principles of change in phonology and morphology (Trends in Linguistics 127). Berlin: Mouton de Gruyter."""
                                 ,"""@book{Lahiri2000,\n\taddress = {Berlin},\n\tbooktitle = {Analogy, leveling, markedness: {{P}}rinciples of change in phonology and morphology},\n\teditor = {Lahiri, Aditi},\n\tnumber = {127},\n\tpublisher = {Mouton de Gruyter},\n\tseries = {Trends in Linguistics},\n\ttitle = {Analogy, leveling, markedness: {{P}}rinciples of change in phonology and morphology},\n\tyear = {2000}\n}\n"""),
                     ("""McCarthy, John J. & Alan S. Prince. 1999. Prosodic morphology. In John A. Goldsmith (ed.), Phonological theory: The essential readings, 238-288. Malden, MA & Oxford: Blackwell."""
-                                ,"""@incollection{McCarthy1999,\n\taddress = {Malden, MA & Oxford},\n\tauthor = {McCarthy, John J. and Alan S. Prince},\n\tbooktitle = {Phonological theory: {{T}}he essential readings},\n\teditor = {John A. Goldsmith},\n\tpages = {238--288},\n\tpublisher = {Blackwell},\n\ttitle = {Prosodic morphology},\n\tyear = {1999}\n}\n"""),
+                                ,"""@incollection{McCarthy1999,\n\taddress = {Malden, MA \& Oxford},\n\tauthor = {McCarthy, John J. and Alan S. Prince},\n\tbooktitle = {Phonological theory: {{T}}he essential readings},\n\teditor = {John A. Goldsmith},\n\tpages = {238--288},\n\tpublisher = {Blackwell},\n\ttitle = {Prosodic morphology},\n\tyear = {1999}\n}\n"""),
                     ("""Murray, Robert W. & Theo Vennemann. 1983. Sound change and syllable structure in Germanic phonology. Language 59(3). 514-528."""
                                 ,"""@article{Murray1983,\n\tauthor = {Murray, Robert W. and Theo Vennemann},\n\tjournal = {Language},\n\tnumber = {3},\n\tpages = {514--528},\n\ttitle = {Sound change and syllable structure in {Germanic} phonology},\n\tvolume = {59},\n\tyear = {1983}\n}\n"""),
                     #("""Oxford English Dictionary , 2nd edn. 1989. Oxford: Oxford University Press."""
                                 #,""""""),
                     ("""Pedersen, Johan. 2005. The Spanish impersonal se-construction: Constructional variation and change. Constructions 1. http://www.constructions-online.de. (3 April, 2007.)"""
                                 ,"""@article{Pedersen2005,\n\tauthor = {Pedersen, Johan},\n\tjournal = {Constructions},\n\tnote = {(3 April, 2007.)},\n\ttitle = {The {Spanish} impersonal se-construction: {{C}}onstructional variation and change},\n\turl = {http://www.constructions-online.de},\n\tvolume = {1},\n\tyear = {2005}\n}\n"""),
-                    #("""Rissanen, Matti. 1999. Syntax. In Roger Lass (ed.), Cambridge History of the English Language, vol. 3, 187-331. Cambridge & New York: Cambridge University Press."""
-                                #,""""""),
+                    ("""Rissanen, Matti. 1999. Syntax. In Roger Lass (ed.), Cambridge History of the English Language, vol. 3, 187-331. Cambridge & New York: Cambridge University Press."""
+                                ,"""@incollection{Rissanen1999,\n\taddress = {Cambridge \& New York},\n\tauthor = {Rissanen, Matti},\n\tbooktitle = {{Cambridge} History of the {English} Language},\n\teditor = {Roger Lass},\n\tpages = {187--331},\n\tpublisher = {Cambridge University Press},\n\ttitle = {Syntax},\n\tvolume = {3},\n\tyear = {1999}\n}\n"""),
                     #("""Stewart, Thomas W., Jr. 2000. Mutation as morphology: Bases, stems, and shapes in Scottish Gaelic. Columbus, OH: The Ohio State University dissertation."""
-                                #,""""""),
+                                #,"""
+#@book{Stewart2000,
+	#address = {Columbus, OH},
+	#author = {Stewart, Thomas W., Jr.},
+	#publisher = {The Ohio State University dissertation},
+	#title = {Mutation as morphology: {{B}}ases, stems, and shapes in {Scottish} Gaelic},
+	#year = {2000}
+#}
+#"""),
                     #("""Webelhuth, Gert (ed.). 1995. Government and binding theory and the minimalist program: Principles and parameters in syntactic theory. Oxford: Blackwell."""
-                                #,""""""),
+                                #,"""@book{Webelhuth1995,
+	#address = {Oxford},
+	#booktitle = {Government and binding theory and the minimalist program: {{P}}rinciples and parameters in syntactic theory},
+	#editor = {Webelhuth, Gert},
+	#publisher = {Blackwell."""},
+	#title = {Government and binding theory and the minimalist program: {{P}}rinciples and parameters in syntactic theory},
+	#year = {1995}
+#}
+#"""),
                     #("""Yu, Alan C. L. 2003. The morphology and phonology of infixation. Berkeley, CA: University of California dissertation."""
-                                #,""""""),
+                                #,"""
+#@book{Yu2003,
+	#address = {Berkeley, CA},
+	#author = {Yu, Alan C. L.},
+	#publisher = {University of California dissertation},
+	#title = {The morphology and phonology of infixation},
+	#year = {2003}
+#}
+#"""),
                     #(""""""      ,""""""),
-                    ("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith"""      ,"""@book{Smith2000,\n\taddress = {Newton},\n\tauthor = {Smith, John},\n\tpublisher = {Mypress},\n\ttitle = {Thoughts on stuff},\n\turl = {www.mypress.com/smith},\n\tyear = {2000}\n}\n"""),
+                    
+                  ("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith"""      ,"""@book{Smith2000,\n\taddress = {Newton},\n\tauthor = {Smith, John},\n\tpublisher = {Mypress},\n\ttitle = {Thoughts on stuff},\n\turl = {www.mypress.com/smith},\n\tyear = {2000}\n}\n"""),
                     #("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24)"""      ,""""""),
                     #("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24) and so on"""      ,""""""),
                     #("""bad Url"""      ,""""""),

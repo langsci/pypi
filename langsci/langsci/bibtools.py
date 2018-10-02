@@ -258,6 +258,7 @@ class Record():
     if pages != None: 
       self.fields['pages'] = re.sub(r'([0-9])-([0-9])',r'\1--\2',pages)                 
     self.conformtitles() 
+    self.checkvolumenumber()
     self.conforminitials()
     self.correctampersand()
     self.checketal()
@@ -354,6 +355,22 @@ class Record():
         self.fields[t] = re.sub(r'([:\.\?!]) *([a-zA-Z])', self.upperme ,self.fields[t])
         self.fields[t] = re.sub(r'([A-Z][a-z]*[A-Z]+)', r"{\1}" ,self.fields[t])
         self.fields[t] = re.sub(r' ([A-Z]) ', r" {{\1}} " ,self.fields[t]) 
+  
+  def checkvolumenumber(self):
+    if self.typ == "book":
+        m = bibpatterns.VOLUMEPATTERN.search(self.fields["title"])
+        if m != None:
+            vol = m.group(3)
+            print(vol)
+            self.fields["volume"] = vol 
+            self.fields["title"] = self.fields["title"].replace(m.group(),'')
+    if self.typ == "incollection":
+        m = bibpatterns.VOLUMEPATTERN.search(self.fields["booktitle"])
+        if m != None:
+            vol = m.group(3)
+            print(vol)
+            self.fields["volume"] = vol 
+            self.fields["booktitle"] = self.fields["booktitle"].replace(m.group(),'')
         
   def conforminitials(self):
     """
@@ -378,6 +395,10 @@ class Record():
         self.fields[t] = self.fields[t].replace(r" & ", " and ")
         self.fields[t] = self.fields[t].replace(r" \& ", " and ")
         self.fields[t] = self.fields[t].replace("  ", " ")
+
+    for t in ['address']:
+      if self.fields.get(t) != None: 
+        self.fields[t] = self.fields[t].replace(r" & ", " \& ")
         
   def checkand(self):
     """
