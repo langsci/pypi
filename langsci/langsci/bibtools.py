@@ -156,8 +156,9 @@ class Record():
                 d["publisher"] = m.group('publisher')
                 d["pages"] = m.group('pages')   
                 d["note"] = m.group('note')    
-        elif  bibpatterns.PAGES.search(s):      
+        elif  bibpatterns.ARTICLE.search(s):      
             self.typ = "article"
+            print(self.typ,s)
             m = bibpatterns.ARTICLE.search(s)
             if m:
                 d["author"] = m.group('author')
