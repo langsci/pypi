@@ -268,6 +268,7 @@ class Record():
     self.checkurl()
     self.checkquestionmarks()
     self.checkarticle()
+    self.checkthesis()
     self.checkbook()
     self.checkincollection()
     self.checklanguagenames()
@@ -475,7 +476,22 @@ class Record():
         if self.fields.get('url') == None:
             self.errors.append("urldate without url")
       
-          
+  def checkthesis(self):
+    if self.typ != 'book':
+      return     
+    print(1)
+    m = bibpatterns.THESISPATTERN.search(self.fields.get("publisher",""))  
+    if m != None:
+        print(m.groups())
+        self.typ = "thesis"
+        school = m.group(1)
+        self.fields["school"] = school 
+        thesistype = m.group(2)
+        if m.group(2) in ("doctoral","PhD"):
+            self.typ = "phdthesis"
+        del self.fields["publisher"]
+        
+      
   def checkbook(self):
     """
     perform some check for type book 

@@ -97,16 +97,8 @@ class TestBibConversion(unittest.TestCase):
                                 ,"""@article{Pedersen2005,\n\tauthor = {Pedersen, Johan},\n\tjournal = {Constructions},\n\tnote = {(3 April, 2007.)},\n\ttitle = {The {Spanish} impersonal se-construction: {{C}}onstructional variation and change},\n\turl = {http://www.constructions-online.de},\n\tvolume = {1},\n\tyear = {2005}\n}\n"""),
                     ("""Rissanen, Matti. 1999. Syntax. In Roger Lass (ed.), Cambridge History of the English Language, vol. 3, 187-331. Cambridge & New York: Cambridge University Press."""
                                 ,"""@incollection{Rissanen1999,\n\taddress = {Cambridge \& New York},\n\tauthor = {Rissanen, Matti},\n\tbooktitle = {{Cambridge} History of the {English} Language},\n\teditor = {Roger Lass},\n\tpages = {187--331},\n\tpublisher = {Cambridge University Press},\n\ttitle = {Syntax},\n\tvolume = {3},\n\tyear = {1999}\n}\n"""),
-                    #("""Stewart, Thomas W., Jr. 2000. Mutation as morphology: Bases, stems, and shapes in Scottish Gaelic. Columbus, OH: The Ohio State University dissertation."""
-                                #,"""
-#@book{Stewart2000,
-	#address = {Columbus, OH},
-	#author = {Stewart, Thomas W., Jr.},
-	#publisher = {The Ohio State University dissertation},
-	#title = {Mutation as morphology: {{B}}ases, stems, and shapes in {Scottish} Gaelic},
-	#year = {2000}
-#}
-#"""),
+                    ("""Stewart, Thomas W., Jr. 2000. Mutation as morphology: Bases, stems, and shapes in Scottish Gaelic. Columbus, OH: The Ohio State University dissertation."""
+                                ,"""@thesis{Stewart2000,\n\taddress = {Columbus, OH},\n\tauthor = {Stewart, Thomas W., Jr},\n\tschool = {The Ohio State University},\n\ttitle = {Mutation as morphology: {{B}}ases, stems, and shapes in {Scottish} {Gaelic}},\n\tyear = {2000}\n}\n"""),
                     #("""Webelhuth, Gert (ed.). 1995. Government and binding theory and the minimalist program: Principles and parameters in syntactic theory. Oxford: Blackwell."""
                                 #,"""@book{Webelhuth1995,
 	#address = {Oxford},
@@ -133,9 +125,9 @@ class TestBibConversion(unittest.TestCase):
                     #("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24)"""      ,""""""),
                     #("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24) and so on"""      ,""""""),
                     #("""bad Url"""      ,""""""),
-                    #(""""""     ,""""""),
+                    #("""masters thesis"""     ,""""""),
                     #("sortname",""""""),
-                    #("","""""")
+                    #("maitrise","""""")
                     )
         for s, expected in bibtests:
             record = bibtools.Record(s)
