@@ -103,10 +103,10 @@ class TestBibConversion(unittest.TestCase):
                                 ,"""@book{Webelhuth1995,\n\taddress = {Oxford},\n\tbooktitle = {Government and binding theory and the minimalist program: {{P}}rinciples and parameters in syntactic theory},\n\teditor = {Webelhuth, Gert},\n\tpublisher = {Blackwell},\n\ttitle = {Government and binding theory and the minimalist program: {{P}}rinciples and parameters in syntactic theory},\n\tyear = {1995}\n}\n"""),
                     ("""Yu, Alan C. L. 2003. The morphology and phonology of infixation. Berkeley, CA: University of California dissertation."""
                                 ,"""@thesis{Yu2003,\n\taddress = {Berkeley, CA},\n\tauthor = {Yu, Alan C. L.},\n\tschool = {University of California},\n\ttitle = {The morphology and phonology of infixation},\n\tyear = {2003}\n}\n"""),
-                    #(""""""      ,""""""),
-                    
-                  ("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith"""      ,"""@book{Smith2000,\n\taddress = {Newton},\n\tauthor = {Smith, John},\n\tpublisher = {Mypress},\n\ttitle = {Thoughts on stuff},\n\turl = {www.mypress.com/smith},\n\tyear = {2000}\n}\n"""),
-                    #("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24)"""      ,""""""),
+                    ("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith""",
+                                """@book{Smith2000,\n\taddress = {Newton},\n\tauthor = {Smith, John},\n\tpublisher = {Mypress},\n\ttitle = {Thoughts on stuff},\n\turl = {www.mypress.com/smith},\n\tyear = {2000}\n}\n"""),
+                    ("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24)""",
+                        """@book{Smith2000,\n\taddress = {Newton},\n\tauthor = {Smith, John.},\n\tpublisher = {Mypress},\n\ttitle = {Thoughts on stuff},\n\turl = {www.mypress.com/smith},\n\turldate = {2021-12-24}\n\tyear = {2000}\n}\n"""),
                     #("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24) and so on"""      ,""""""),
                     #("""bad Url"""      ,""""""),
                     #("""masters thesis"""     ,""""""),
