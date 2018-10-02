@@ -106,7 +106,7 @@ class TestBibConversion(unittest.TestCase):
                     #("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith""",
                                 #"""@book{Smith2000,\n\taddress = {Newton},\n\tauthor = {Smith, John},\n\tpublisher = {Mypress},\n\ttitle = {Thoughts on stuff},\n\turl = {www.mypress.com/smith},\n\tyear = {2000}\n}\n"""),
                     ("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24)""",
-                        """@book{Smith2000,\n\taddress = {Newton},\n\tauthor = {Smith, John},\n\tpublisher = {Mypress},\n\ttitle = {Thoughts on stuff},\n\turl = {www.mypress.com/smith},\n\turldate = {2021-12-24}\n\tyear = {2000}\n}\n"""),
+                        """@book{Smith2000,\n\taddress = {Newton},\n\tauthor = {Smith, John},\n\tpublisher = {Mypress},\n\ttitle = {Thoughts on stuff},\n\turl = {www.mypress.com/smith},\n\turldate = {2021-12-24},\n\tyear = {2000}\n}\n"""),
                     #("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24) and so on"""      ,""""""),
                     #("""bad Url"""      ,""""""),
                     #("""masters thesis"""     ,""""""),

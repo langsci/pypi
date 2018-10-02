@@ -158,7 +158,6 @@ class Record():
                 d["note"] = m.group('note')    
         elif  bibpatterns.ARTICLE.search(s):      
             self.typ = "article"
-            print(self.typ,s)
             m = bibpatterns.ARTICLE.search(s)
             if m:
                 d["author"] = m.group('author')
@@ -366,7 +365,6 @@ class Record():
         m = bibpatterns.VOLUMEPATTERN.search(self.fields["booktitle"])
         if m != None:
             vol = m.group(3)
-            print(vol)
             self.fields["volume"] = vol 
             self.fields["booktitle"] = self.fields["booktitle"].replace(m.group(),'')
         
@@ -441,9 +439,7 @@ class Record():
     url = self.fields.get('url',False) 
     if url:
         if url.endswith('.'):
-            print(4)
             url = url[:-1]
-            print(url)
             self.fields['url'] = url
         
         if url != None and url.count(' ')>0:
@@ -458,6 +454,7 @@ class Record():
     make sure the urldate field is only present when an url is actually given
     """ 
     
+    datefound = False
     if not self.fields.get('urldate'): 
         url = self.fields.get('url',False)
         if url: 
@@ -469,17 +466,28 @@ class Record():
                         urldate = urldate.replace(c,'')                     
                     self.fields['url'] = newurl        
                     self.fields['urldate'] = urldate
+        if datefound:
+            return
+        else: 
+            note = self.fields.get('note',False)
+        if note:
+            m = bibpatterns.URLDATE.search(note)
+            if m != None:
+                urldate = m.group(1)
+                for c in "[]()":#remove parentheses
+                    urldate = urldate.replace(c,'')                     
+                self.fields['urldate'] = urldate
+                self.fields['note'] = self.fields['note'].replace(m.group(0),'')
+            
     else:
         if self.fields.get('url') == None:
             self.errors.append("urldate without url")
       
   def checkthesis(self):
     if self.typ != 'book':
-      return     
-    print(1)
+      return  
     m = bibpatterns.THESISPATTERN.search(self.fields.get("publisher",""))  
     if m != None:
-        print(m.groups())
         self.typ = "thesis"
         school = m.group(1)
         self.fields["school"] = school 
