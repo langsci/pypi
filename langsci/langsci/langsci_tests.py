@@ -99,26 +99,10 @@ class TestBibConversion(unittest.TestCase):
                                 ,"""@incollection{Rissanen1999,\n\taddress = {Cambridge \& New York},\n\tauthor = {Rissanen, Matti},\n\tbooktitle = {{Cambridge} History of the {English} Language},\n\teditor = {Roger Lass},\n\tpages = {187--331},\n\tpublisher = {Cambridge University Press},\n\ttitle = {Syntax},\n\tvolume = {3},\n\tyear = {1999}\n}\n"""),
                     ("""Stewart, Thomas W., Jr. 2000. Mutation as morphology: Bases, stems, and shapes in Scottish Gaelic. Columbus, OH: The Ohio State University dissertation."""
                                 ,"""@thesis{Stewart2000,\n\taddress = {Columbus, OH},\n\tauthor = {Stewart, Thomas W., Jr},\n\tschool = {The Ohio State University},\n\ttitle = {Mutation as morphology: {{B}}ases, stems, and shapes in {Scottish} {Gaelic}},\n\tyear = {2000}\n}\n"""),
-                    #("""Webelhuth, Gert (ed.). 1995. Government and binding theory and the minimalist program: Principles and parameters in syntactic theory. Oxford: Blackwell."""
-                                #,"""@book{Webelhuth1995,
-	#address = {Oxford},
-	#booktitle = {Government and binding theory and the minimalist program: {{P}}rinciples and parameters in syntactic theory},
-	#editor = {Webelhuth, Gert},
-	#publisher = {Blackwell."""},
-	#title = {Government and binding theory and the minimalist program: {{P}}rinciples and parameters in syntactic theory},
-	#year = {1995}
-#}
-#"""),
-                    #("""Yu, Alan C. L. 2003. The morphology and phonology of infixation. Berkeley, CA: University of California dissertation."""
-                                #,"""
-#@book{Yu2003,
-	#address = {Berkeley, CA},
-	#author = {Yu, Alan C. L.},
-	#publisher = {University of California dissertation},
-	#title = {The morphology and phonology of infixation},
-	#year = {2003}
-#}
-#"""),
+                    ("""Webelhuth, Gert (ed.). 1995. Government and binding theory and the minimalist program: Principles and parameters in syntactic theory. Oxford: Blackwell."""
+                                ,"""@book{Webelhuth1995,\n\taddress = {Oxford},\n\tbooktitle = {Government and binding theory and the minimalist program: {{P}}rinciples and parameters in syntactic theory},\n\teditor = {Webelhuth, Gert},\n\tpublisher = {Blackwell},\n\ttitle = {Government and binding theory and the minimalist program: {{P}}rinciples and parameters in syntactic theory},\n\tyear = {1995}\n}\n"""),
+                    ("""Yu, Alan C. L. 2003. The morphology and phonology of infixation. Berkeley, CA: University of California dissertation."""
+                                ,"""@thesis{Yu2003,\n\taddress = {Berkeley, CA},\n\tauthor = {Yu, Alan C. L.},\n\tschool = {University of California},\n\ttitle = {The morphology and phonology of infixation},\n\tyear = {2003}\n}\n"""),
                     #(""""""      ,""""""),
                     
                   ("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith"""      ,"""@book{Smith2000,\n\taddress = {Newton},\n\tauthor = {Smith, John},\n\tpublisher = {Mypress},\n\ttitle = {Thoughts on stuff},\n\turl = {www.mypress.com/smith},\n\tyear = {2000}\n}\n"""),
