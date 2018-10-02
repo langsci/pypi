@@ -168,8 +168,7 @@ class Record():
                 d["volume"] = m.group('volume')
                 d["pages"] = m.group('pages')   
                 d["note"] = m.group('note') 
-        elif  bibpatterns.NUMBERVOLUME.search(s) and bibpatterns.URL.search(s) and bibpatterns.ONLINEARTICLE.search(s):     
-            print(3)
+        elif  bibpatterns.NUMBERVOLUME.search(s) and bibpatterns.URL.search(s) and bibpatterns.ONLINEARTICLE.search(s):   
             self.typ = "article"
             m = bibpatterns.ONLINEARTICLE.search(s)
             if m:
@@ -180,10 +179,7 @@ class Record():
                 d["number"] = m.group('number')
                 d["volume"] = m.group('volume')    
                 d["url"] = m.group('url')    
-                print(d["url"])
                 d["note"] = m.group('note')   
-                
-                print(d["note"])
         elif bibpatterns.PUBADDR.search(s):
             self.typ = "book"  
             m = bibpatterns.BOOK.match(s) 
