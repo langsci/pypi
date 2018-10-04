@@ -108,6 +108,8 @@ class TestBibConversion(unittest.TestCase):
                     ("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24)""",
                         """@book{Smith2000,\n\taddress = {Newton},\n\tauthor = {Smith, John},\n\tpublisher = {Mypress},\n\ttitle = {Thoughts on stuff},\n\turl = {www.mypress.com/smith},\n\turldate = {2021-12-24},\n\tyear = {2000}\n}\n"""),
                     #("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24) and so on"""      ,""""""),
+                    ("""Braun, Sabine & Sara Dicerto. 2016. The use of videoconferencing in proceedings conducted with the assistance of an interpreter. http://www.videoconference-interpreting.net/wp-content/uploads/2016/11/AVIDICUS3_Research_Report.pdf"""
+                        ,"""@misc{Braun2016,\n\tauthor = {Braun, Sabine and Sara Dicerto},\n\ttitle = {The use of videoconferencing in proceedings conducted with the assistance of an interpreter},\n\turl = {http://www.videoconference-interpreting.net/wp-content/uploads/2016/11/AVIDICUS3_Research_Report.pdf},\n\tyear = {2016}\n}\n"""),
                     #("""bad Url"""      ,""""""),
                     #("""masters thesis"""     ,""""""),
                     #("sortname",""""""),

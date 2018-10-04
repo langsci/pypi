@@ -639,10 +639,7 @@ class Record():
     recreate the bibtex record
     output fields will be sorted alphabetically
     remove all fields which are in excludefields
-    """ 
-     
-    if self.restrict and not self.inkeysd.get(self.key):
-      return False
+    """  
     s = """@%s{%s,\n\t%s\n}"""%(self.typ,
                                 self.key,
                                 ",\n\t".join(
@@ -665,12 +662,13 @@ def normalize(s, inkeysd={}, restrict=False):
   rest.sort() 
   rest = rest[::-1]  
   #create the new bibtex records
-  bibtexs = [Record(q,
+  bibtexs = [Record(record,
+		    fromfile=True,
                     inkeysd=inkeysd, 
                     restrict=restrict,
-                    reporting=['conferences','nouns']                    
+                    reporting=[]                    
                     ).bibtex() 
-              for q in rest
+              for record in rest
             ]
   #assemble output string
   rest = '\n\n'.join([b for b in bibtexs if b]) 
