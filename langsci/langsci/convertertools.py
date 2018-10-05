@@ -700,6 +700,8 @@ class Document:
         
         modtext = re.sub("\\\\item *\n+",'\\item ',modtext)
         
+        modtext = re.sub(r"\\begin{itemize}\n\\item (\\section{.*?})\\end{itemize}",r"\1",modtext)
+        
         modtext = re.sub("\\\\footnote\{ +",'\\\\footnote{',modtext)
         #put spaces on right side of formatting
         #right
