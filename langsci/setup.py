@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="langsci",
-    version="0.0.11",
+    version="0.0.13",
     author="Sebastian Nordhoff",
     author_email="sebastian.nordhoff@langsci-press.org",
     description="Tools for open access books used at Language Science Press",
