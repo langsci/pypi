@@ -71,7 +71,7 @@ def convert(fn, wd=WD, tmpdir=False):
     syscall = """w2l {} "{}" "{}" """.format(" ".join(w2loptions), odtfn, texfn)
     #print syscall
     os.system(syscall)
-    w2lcontent = open(texfn).read()
+    w2lcontent = open(texfn, encoding='utf-8').read()
     preamble, text = w2lcontent.split(r"\begin{document}")
     text = text.split(r"\end{document}")[0] 
     preamble=preamble.split('\n')

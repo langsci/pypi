@@ -80,7 +80,7 @@ class Book(Publication):
     Parse the file localmetadata.tex and retrieve the metadata
     """
     
-    localmetadataf = open('localmetadata.tex')
+    localmetadataf = open('localmetadata.tex', encoding='utf-8')
     localmetadata = localmetadataf.read()
     localmetadataf.close()
     self.title = TITLEP.search(localmetadata).group(1)
@@ -102,7 +102,7 @@ class Book(Publication):
     find all chapters in edited volumes which are referenced in main.tex 
     """
       
-    mainf = open('main.tex')
+    mainf = open('main.tex', encoding='utf-8')
     main = mainf.read()
     mainf.close()
     chapterpaths = INCLUDEPAPERP.findall(main) 
@@ -117,7 +117,7 @@ class Chapter(Publication):
   def __init__ (self,path,booktitle='',isbn=False):
     print("reading",path)
     Publication.__init__(self)
-    chapterf = open('chapters/%s.tex'%path)
+    chapterf = open('chapters/%s.tex'%path, encoding='utf-8')
     chapter = chapterf.read()
     chapterf.close()
     preamble = chapter.split('\\begin{document}')[0]
@@ -133,7 +133,7 @@ class Chapter(Publication):
     self.abstract = abstract 
     self.keywords = keywords
     self.pagerange = ''
-    for l in open('collection_tmp.bib').readlines():  
+    for l in open('collection_tmp.bib', encoding='utf-8').readlines():  
       if l.startswith("@incollection{chapters/%s,"%path):
         #print(path)
         self.pagerange = PAGERANGEP.search(l).group(1)  

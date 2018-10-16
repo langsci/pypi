@@ -77,7 +77,7 @@ class SanityFile:
   """
   def __init__(self,filename):
     self.filename = filename
-    self.content = open(filename).read()
+    self.content = open(filename, encoding='utf-8').read()
     self.lines = self.split_(self.content)
     self.errors = []
     #self.spellerrors = []
