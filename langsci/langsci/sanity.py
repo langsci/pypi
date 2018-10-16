@@ -218,7 +218,7 @@ class ImgFile(SanityFile):
             x,y = img.info['dpi']
             if x < 72 or y < 72:
                 printprint("low res for", self.filename.split)
-                self.errors.append(SanityError(self.filename,'low resolution', '', '', "%sx%sdpi, required 300"%(x,y)))        
+                self.errors.append(SanityError(self.filename, '', '','low resolution', "%sx%sdpi, required 300"%(x,y)))        
         except KeyError:
             x,y =  img.size
             if x< 1500:
