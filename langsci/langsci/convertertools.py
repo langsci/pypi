@@ -632,12 +632,12 @@ class Document:
     \z
 
         """,modtext)
-        modtext = re.sub("\\label\{(bkm:Ref[0-9]+)\}\(\)", """ea%\\1
-    \label{\\1}  
+        modtext = re.sub(r"\\label\{(bkm:Ref[0-9]+)\}\(\)", """ea%\\1
+    \\label{\\1}  
     \\\\gll \\\\newline  
         \\\\newline
     \\\\glt
-    \z
+    \\z
 
     """,modtext)
     
@@ -677,7 +677,7 @@ class Document:
         modtext = modtext.replace("& \\end{itemize}","& %%\\end{itemize}\n")
         
         
-        modtext = re.sub("""\n+\\z""","\\z",modtext) 
+        modtext = re.sub(r"""\n+\\z""","\\z",modtext) 
         modtext = re.sub("""\n\n+""","\n\n",modtext) 
         
         
