@@ -1,6 +1,8 @@
 import re
 import shutil
 import uuid
+import codecs
+
 try:
     import bibtools
 except ImportError:
@@ -104,7 +106,7 @@ class Document:
 \begin{document}
 \maketitle 
 """     
-        paperpostamble = "\n\\end{document}"
+        paperpostamble = "\n\\sloppy\\printbibliography[heading=subbibliography,notkeyword=this]\\end{document}"
         self.papertext = paperpreamble + self.modtext + paperpostamble
 
         
@@ -119,6 +121,10 @@ class Document:
         localcommands = codecs.open('localcommands.tex','a', encoding='utf-8')
         localpackages = codecs.open('localpackages.tex','a', encoding='utf-8')
         localcounters = codecs.open('localcounters.tex','a', encoding='utf-8') 
+        try: 
+            os.mkdir('./chapters')
+        except OSError:
+            pass         
         content =   codecs.open('chapters/filename.tex','w', encoding='utf-8') 
         contentorig =   codecs.open('chapters/filenameorig.tex','w', encoding='utf-8')  
         localcommands.write(self.commands)
