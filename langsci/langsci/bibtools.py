@@ -209,7 +209,7 @@ class Record():
                 d["editor"] = d["editor"].replace(' &', ' and ')
             except AttributeError:
                 return
-        if d["note"] and "www" in d["note"]: 
+        if d["note"] and re.search(bibpatterns.URL,d["note"]): 
             url = re.search(bibpatterns.URL,d["note"]).group() 
             if url != None:
                 d["note"] = d["note"].replace(url,'').strip()
