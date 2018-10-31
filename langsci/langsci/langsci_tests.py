@@ -112,13 +112,11 @@ class TestBibConversion(unittest.TestCase):
                         ,"""@misc{Braun2016,\n\tauthor = {Braun, Sabine and Sara Dicerto},\n\ttitle = {The use of videoconferencing in proceedings conducted with the assistance of an interpreter},\n\turl = {http://www.videoconference-interpreting.net/wp-content/uploads/2016/11/AVIDICUS3_Research_Report.pdf},\n\tyear = {2016}\n}\n"""),
                     #("""bad Url"""      ,""""""),
                     #("""masters thesis"""     ,""""""),
-                    #("Cleirac, Estienne. 1639. Explication des termes de marine employez dans les édicts, ordonnances et reglemens de l’Admirauté. Paris: M. Brunet.",""""""),
-                    #("Esquemelin, John. 1678. The buccaneers of America: A true account of the most remarkable assaults committed of late years upon the coasts of the West Indies by the buccaneers of Jamaica and Tortuga (both English and French). New York, NY: Dover Publications. (Reprinted 1967.)",""""""),
                     #("Parkvall, Mikael. 2005. Foreword. In Alan D. Corré (ed.), A glossary of lingua franca. https://minds.wisconsin.edu/bitstream/item/3920/edition2/edition3/foreword.htm (Accessed 2016-10-07).",""""""),
-                    #("Smith, John. 1627. A Sea Grammar. Amsterdam: Da Capo Press. (Reprinted 1968).",""""""),
                     #("maitrise",""""""),
                     #("maitrise",""""""),
                     #("maitrise","""""")
+                    #Maynor, Natalie. 1988. Written records of spoken language: How reliable are they? In Alan R. Thomas (ed.), Methods in dialectology: Proceedings of the sixth international conference held at the University College of North Wales, 3rd-7th August 1987, 109-120. Clevedon, PA: Multilingual Matters Ltd.
                     )
         for s, expected in bibtests:
             record = bibtools.Record(s)

@@ -15,7 +15,7 @@ THESISPATTERN = re.compile("(.*?)( doctoral)? dissertation")
 
  
 #pattern definitions
-year = '\(? *(?P<year>[12][78901][0-9][0-9][a-f]?) *\)?' 
+year = '\(? *(?P<year>[12][678901][0-9][0-9][a-f]?) *\)?' 
 pages = u"(?P<pages>[0-9xivXIV]+[-––]+[0-9xivXIV]+)"
 pppages = u"\(?[Pps\. ]*%s\)?"%pages
 author = "(?P<author>.*?)" #do not slurp the year
