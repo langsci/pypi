@@ -26,7 +26,8 @@ title = "(?P<title>.*?)"
 journal = "(?P<journal>.*?)"
 note = "(?P<note>.*)"
 numbervolume = "(?P<volume>[-\.0-9/]+) *(\((?P<number>[-0-9/]+)\))?"
-pubaddr = "(?P<address>.+) *:(?!/) *(?P<publisher>[^:][^\.]+)"
+pubaddr = "(?P<address>.+) *:(?!/) *(?P<publisher>[^:]\.?[^\.]+)"
+#                      for http://                For J. Smith              
 seriesnumber = "(?P<newtitle>.*) \((?P<series>.*?) +(?P<number>[-\.0-9/]+)\)"
 url = r"(?P<url>(https?://)?www\.[a-zA-Z0-9-]+\.[-A-Za-z0-9\.]+(/[^ ]+)?)\.?"  
 NUMBERVOLUME = re.compile(numbervolume)
@@ -34,7 +35,7 @@ SERIESNUMBER =  re.compile(seriesnumber)
 URL = re.compile(url)
 urlyear = "[12][0-9][0-9][0-9]"
 urlmonth = "[10]?[0-9]"
-urlday = "[123]?[0-9]" 
+urlday = "[0123]?[0-9]" 
 URLDATE = re.compile("[\[\(]?({urlyear}-{urlmonth}-{urlday}|{urlday}.{urlmonth}.{urlyear}|{urlday}/{urlmonth}/{urlyear}|{urlmonth}/{urlday}/{urlyear})[\]\)]?".format(urlyear=urlyear, urlday=urlday, urlmonth=urlmonth))
 
 #compiled regexes

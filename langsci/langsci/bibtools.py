@@ -222,17 +222,34 @@ class Record():
                 d["title"] = m.group('newtitle')
         #http
         #series volume
-        authorpart = "Anonymous"
+        creator = ''
+        creatorpart = "Anonymous"
         yearpart = "9999" 
         try: 
-            authorpart = d["author"].split(',')[0].replace(' ', '')
+            creatorpart = d["author"].split(',')[0].replace(' ', '')
+            creator = d["author"]
         except AttributeError: 
-            authorpart = d["editor"].split(',')[0].split(' ')[0] 
+            creatorpart = d["editor"].split(',')[0].split(' ')[0] 
+            creator = d["editor"]
         try:
             yearpart = d["year"][:4]
         except TypeError:
             return
-        self.key = authorpart+yearpart 
+        andcount = creator.count(' and ')
+        ampcount = creator.count('&')
+        authorcount = 1 + andcount + ampcount
+        print(creator,andcount,ampcount)
+        if authorcount > 2:
+            creatorpart += "EtAl"
+        if authorcount == 2: 
+            secondcreator = re.split(" and ",creator)[-1].strip()
+            if ',' in secondcreator:
+                creatorpart += secondcreator.split(',')[0]
+            elif ' ' in secondcreator:  
+                creatorpart += secondcreator.split(' ')[-1]
+            else:
+                creatorpart += secondcreator
+        self.key = creatorpart+yearpart 
         self.fields = d 
     self.conform() 
     self.report()
