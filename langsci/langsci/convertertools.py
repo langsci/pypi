@@ -661,6 +661,8 @@ class Document:
         modtext = re.sub("\nFigure ([0-9]+)[\.:] *(.*?)\n","\\\\begin{figure}\n\\caption{\\2}\n\\label{fig:key:\\1}\n\\end{figure}",modtext)
         modtext = re.sub("Figure ([0-9]+)","\\\\figref{fig:key:\\1}",modtext)
         modtext = re.sub("Section ([0-9\.]+)","\\\\sectref{sec:key:\\1}",modtext) 
+        modtext = re.sub("§ *([0-9\.]+)","\\\\sectref{sec:key:\\1}",modtext) 
+        modtext = re.sub(" \(([0-9s][0-9]*[a-h]?)\)"," \\\\REF{ex:key:\\1}",modtext) 
         modtext = re.sub("\\\\(begin|end){minipage}.*?\n",'',modtext)
         modtext = re.sub("\\\\begin{figure}\[h\]",'\\\\begin{figure}',modtext)
         
@@ -690,7 +692,7 @@ class Document:
         #merge useless chains of formatting
         modtext = re.sub("(\\\\textbf\{[^}]+)\}\\\\textbf\{","\\1",modtext)
         modtext = re.sub("(\\\\textit\{[^}]+)\}\\\\textit\{","\\1",modtext)
-        modtext = re.sub("(\\\\textsc\{[^}]+)\}\\\\textsc\{","\\1",modtext)
+        modtext = re.sub(r"(\\textit\{[^}]+)\}( *)\\textit\{","\\1\\2",modtext) #only for italics, we include spaces when condensing markup. For bold or sc, this would lead to problems in examples
         modtext = re.sub("(\\\\texttt\{[^}]+)\}\\\\texttt\{","\\1",modtext)
         modtext = re.sub("(\\\\emph\{[^}]+)\}\\\\emph\{","\\1",modtext)
         
