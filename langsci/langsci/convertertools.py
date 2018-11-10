@@ -535,15 +535,15 @@ class Document:
         modtext = modtext.replace("\\multicolumn{1}{l}{}","")
         modtext = modtext.replace("\\multicolumn{1}{l}","")
         #remove stupid Open Office styles 
-        modtext = re.sub("\\\\begin\\{styleLangSciSectioni\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioni\\}","\\section{ \\1}",modtext) #whitespace in front of capture due to some strange chars showing up without in Strik book
-        modtext = re.sub("\\\\begin\\{styleLangSciSectionii\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectionii\\}","\\subsection{ \\1}",modtext)
-        modtext = re.sub("\\\\begin\\{styleLangSciSectioniii\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioniii\\}","\\subsubsection{ \\1}",modtext)
-        modtext = re.sub("\\\\begin\\{styleLangSciSectioniv\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioniv\\}","\\subsubsubsection{ \\1}",modtext)
+        modtext = re.sub("\\\\begin\\{styleLangSciSectioni\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioni\\}","\\section{\\1}",modtext) 
+        modtext = re.sub("\\\\begin\\{styleLangSciSectionii\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectionii\\}","\\subsection{\\1}",modtext)
+        modtext = re.sub("\\\\begin\\{styleLangSciSectioniii\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioniii\\}","\\subsubsection{\\1}",modtext)
+        modtext = re.sub("\\\\begin\\{styleLangSciSectioniv\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioniv\\}","\\subsubsubsection{\\1}",modtext)
         
-        modtext = re.sub("\\\\begin\\{stylelsSectioni\\}\n+(.*?)\n+\\\\end\\{stylelsSectioni\\}","\\section{ \\1}",modtext) #whitespace in front of capture due to some strange chars showing up without in Strik book
-        modtext = re.sub("\\\\begin\\{stylelsSectionii\\}\n+(.*?)\n+\\\\end\\{stylelsSectionii\\}","\\subsection{ \\1}",modtext)
-        modtext = re.sub("\\\\begin\\{stylelsSectioniii\\}\n+(.*?)\n+\\\\end\\{stylelsSectioniii\\}","\\subsubsection{ \\1}",modtext)
-        modtext = re.sub("\\\\begin\\{stylelsSectioniv\\}\n+(.*?)\n+\\\\end\\{stylelsSectioniv\\}","\\subsubsubsection{ \\1}",modtext)
+        modtext = re.sub("\\\\begin\\{stylelsSectioni\\}\n+(.*?)\n+\\\\end\\{stylelsSectioni\\}","\\section{\\1}",modtext)
+        modtext = re.sub("\\\\begin\\{stylelsSectionii\\}\n+(.*?)\n+\\\\end\\{stylelsSectionii\\}","\\subsection{\\1}",modtext)
+        modtext = re.sub("\\\\begin\\{stylelsSectioniii\\}\n+(.*?)\n+\\\\end\\{stylelsSectioniii\\}","\\subsubsection{\\1}",modtext)
+        modtext = re.sub("\\\\begin\\{stylelsSectioniv\\}\n+(.*?)\n+\\\\end\\{stylelsSectioniv\\}","\\subsubsubsection{\\1}",modtext)
         
         modtext = re.sub(r"\\begin\{styleHeadingi}\n+(.*?)\n+\\end\{styleHeadingi\}","\\chapter{\\1}",modtext) 
         modtext = re.sub("\\\\begin\\{styleHeadingii\\}\n+(.*?)\n+\\\\end\\{styleHeadingii\\}","\\section{\\1}",modtext)
