@@ -156,7 +156,10 @@ class TexFile(SanityFile):
         (r"\\s[ubs]+ection.*[A-Z].*[A-Z].*","Only capitalize this if it is a proper noun"), 
         (r"[ (][12][8901][0-9][0-9]","Please check whether this should be part of a bibliographic reference"), 
         (r"(?<!\\)[A-Z]{3,}","It is often a good idea to use \\textsc\{smallcaps} instead of ALLCAPS"), 
-        (r"[?!;\.,][A-Z]","Please use a space after punctuation (or use smallcaps in abbreviations)"),        
+        (r"[?!;\.,][A-Z]","Please use a space after punctuation (or use smallcaps in abbreviations)"),    
+        (r"\\textsuperscript\{w\}","Please use Unicode ʷ for labialization instead of superscript w"),    
+        (r"\\textsuperscript\{j\}","Please use Unicode ʲ for palatalization instead of superscript j"),    
+        (r"\\textsuperscript\{h\}","Please use Unicode ʰ for aspiration instead of superscript h")
     )
 
   posnegpatterns = (
