@@ -199,6 +199,9 @@ class BibFile(SanityFile):
     ("[Tt]itle *=(.* )?[IVXLCDM]*[IVX]+[IVXLCDM]*[\.,\) ]","In order to keep the Roman numbers in capitals, enclose them in braces {}"), 
     ("\.[A-Z]","Please use a space after a period or an abbreviated name"), 
     ) 
+  
+  
+  posnegpatterns = []
 
 class ImgFile(SanityFile): 
     """ 
