@@ -12,11 +12,12 @@ paperhiveid = lsidformated['documentItems'][0]['id']
 paperhiverequest = requests.get('https://paperhive.org/api/discussions?documentItem=' + paperhiveid)
 paperhiveformated = json.loads(paperhiverequest.text)
 # get the number of pages
-numpages=int(sys.argv[2]) # replace with 
 pages = [] # create empty list for storage of pages
-for d in paperhiveformated['discussions']: # 'd' as in 'discussion'
-    for p in d['target']['selectors']['pdfTextPositions']: # 'p' as in 'page'
-        pages = pages + [p['pageNumber']]
+for discussion in paperhiveformated['discussions']:  
+    for page in discussion['target']['selectors']['pdfTextPositions']: 
+        pages += [page['pageNumber']] 
+
+numpages = max(pages) #stop at last page with comment, leaving further pages w/o comments out of the plot
 
 # and now for plotting
 n, bins, patches = plt.hist(pages,numpages)
