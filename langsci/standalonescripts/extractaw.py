@@ -48,6 +48,7 @@ class Catalog():
     #read ID and title of books from file
     print "reading", booksfile
     lines = open(booksfile).read().decode('utf8').split('\n') 
+    self.booksfile = booksfile
     #print lines
     #put ID as key and title as value in dictionary
     #self.books = dict([l.strip().split('\t') for l in lines if l.strip()!='']) 
@@ -294,6 +295,29 @@ class Catalog():
     plt.savefig('%scountries.svg'%typ) 
     plt.close(fig)
     plt.cal(fig)
+    
+    
+  def dumpcsv(self): 
+        maxID = max([self.books[book].ID for book in self.books if self.books[book].ID<1000]) 
+        columnheaders = [x for x in range(maxID+1)]
+        columnheaders[0] = '' 
+        rows = [columnheaders]
+        for month in sorted(self.monthstats):
+            row = [0 for x in range(maxID+1)]
+            row[0] = month
+            for book in self.books: 
+                if book in self.monthstats[month]:
+                    row[book] = self.monthstats[month][book] 
+            rows.append(row)
+        out = open('langsci%sdownloads.csv'%self.booksfile[:-4],'w')        
+        for row in rows:
+            out.write(','.join([str(x) for x in row]))
+            out.write('\n')
+        out.close()
+        
+              
+          
+      
          
 class Stats():
   def __init__(self,f):
@@ -354,6 +378,7 @@ class Stats():
       except KeyError:
         aggregationdictionary[k] = self.hits[k] 
     return aggregationdictionary
+
    
 class CountryStats(Stats):
   def __init__(self,f):
@@ -381,6 +406,7 @@ if __name__=='__main__':
   totaldownloads = 0
   for tsvfile in glob.glob("*tsv"):
       catalog = Catalog(booksfile=tsvfile)
+      catalog.dumpcsv()
       name = tsvfile.split('.')[0]
       totaldownloads += catalog.matplotcumulative(fontsizetotal=7,typ=name, excludes=multipleditions)   
       print "created files %s.png, %s.svg" % (name,name)
