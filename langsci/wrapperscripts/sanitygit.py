@@ -59,7 +59,7 @@ if __name__ == "__main__":
         pass
     d = cloneorpull(githuburl)
     lspdir = SanityDir(os.path.join(d,'.'),ignorecodes)
-    print("checking %s" % ' '.join([f for f in lspdir.texfiles+lspdir.bibfiles]))
+    print("checking %s" % '\n  '.join(['']+[f for f in lspdir.texfiles+lspdir.bibfiles]))
     lspdir.check()
     lspdir.printErrors()
     imgdir =  SanityDir(os.path.join(d,'figures'),ignorecodes)

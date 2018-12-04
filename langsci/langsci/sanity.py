@@ -52,7 +52,10 @@ class SanityError:
     self.offendingstring = offendingstring
     self.msg = msg
     self.pre =self.line.split(self.offendingstring)[0]
-    self.post =self.line.split(self.offendingstring)[1]
+    try:
+        self.post = self.line.split(self.offendingstring)[1]
+    except IndexError:
+        self.post = ''
     self.ID = uuid.uuid1()
     self.name = str(hash(msg))[-6:]    
     #compute rgb colors from msg
@@ -77,9 +80,14 @@ class SanityFile:
   """
   def __init__(self,filename):
     self.filename = filename
-    self.content = open(filename, encoding='utf-8').read()
-    self.lines = self.split_(self.content)
     self.errors = []
+    try:
+        self.content = open(filename, encoding='utf-8').read()
+    except UnicodeDecodeError:
+        print("file %s is not in proper Unicode encoding"%filename)
+        self.content = ''
+        self.errors = [SanityError(filename, 0, ' ', ' ', 'file not in Unicode, no analysis possible')]
+    self.lines = self.split_(self.content)
     #self.spellerrors = []
     
     
@@ -91,7 +99,11 @@ class SanityFile:
     """strip comments from file so that errors are not marked in comments"""
     
     #negative lookbehind 
-    result = re.sub('(?<!\\\\)%.*\n','\n',s)
+    try:
+        result = re.sub('(?<!\\\\)%.*\n','\n',s)
+    except TypeError:
+        print("%s could not be regexed"%s)
+        return s
     return result
             
   def check(self):
@@ -223,7 +235,7 @@ class ImgFile(SanityFile):
         try:
             x,y = img.info['dpi']
             if x < 72 or y < 72:
-                printprint("low res for", self.filename.split)
+                print("low res for", self.filename.split)
                 self.errors.append(SanityError(self.filename, '', '','low resolution', "%sx%sdpi, required 300"%(x,y)))        
         except KeyError:
             x,y =  img.size
@@ -259,16 +271,17 @@ class SanityDir:
     """
     
     matches = []
-    for root, dirnames, filenames in os.walk(self.dirname):
-      for filename in fnmatch.filter(filenames, '*.%s'%extension):
-          matches.append(os.path.join(root, filename))
-    return matches
+    localfiles = glob.glob('%s/local*'%self.dirname)
+    chapterfiles = glob.glob('%s/chapters/*tex'%self.dirname) 
+    for filename in fnmatch.filter(localfiles+chapterfiles, '*.%s'%extension):
+        matches.append(os.path.join(self.dirname, filename))
+    return sorted(matches)
               
   def printErrors(self):
     """
     Print all identified possible erros with metadata (filename, line number, reason
         """
-    for filename in self.texterrors:
+    for filename in sorted(self.texterrors):
       fileerrors = self.texterrors[filename]
       print('\n',70*'=','\n%s, %i possible errors found.' % (filename, len(fileerrors)),"Suppressing %i error codes: %s"%(len(self.ignorecodes),','.join(self.ignorecodes)),'\n',70*'=')
       #print(fileerrors)
@@ -286,8 +299,12 @@ class SanityDir:
     Check all files in the directory
     """
     
-    for tfilename in self.texfiles:
-      t = TexFile(tfilename)
+    for tfilename in self.texfiles: 
+      try:  
+        t = TexFile(tfilename)
+      except AttributeError:
+          print(tfilename)
+          continue
       t.check()
       #t.spellcheck()
       self.texterrors[tfilename] = t.errors
