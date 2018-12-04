@@ -164,11 +164,12 @@ class TexFile(SanityFile):
         (r"tabular.*\|","Vertical lines in tables should be avoided"),   
         (r"\\hline","Use \\midrule rather than \\hline in tables"),      
         (r"\\gl[lt] *[a-z].*[\.?!] *\\\\ *$","Complete sentences should be capitalized in examples"), 
+        (r"\\glt * ``","Use single quotes for translations."), 
         (r"\\section.*[A-Z].*[A-Z].*","Only capitalize this if it is a proper noun"), 
         (r"\\s[ubs]+ection.*[A-Z].*[A-Z].*","Only capitalize this if it is a proper noun"), 
         (r"[ (][12][8901][0-9][0-9]","Please check whether this should be part of a bibliographic reference"), 
         (r"(?<!\\)[A-Z]{3,}","It is often a good idea to use \\textsc\{smallcaps} instead of ALLCAPS"), 
-        (r"[?!;\.,][A-Z]","Please use a space after punctuation (or use smallcaps in abbreviations)"),    
+        (r"(?<![0-9])[?!;\.,][A-Z]","Please use a space after punctuation (or use smallcaps in abbreviations)"), #negative lookbehind for numbers because of lists of citation keys     
         (r"\\textsuperscript\{w\}","Please use Unicode ʷ for labialization instead of superscript w"),    
         (r"\\textsuperscript\{j\}","Please use Unicode ʲ for palatalization instead of superscript j"),    
         (r"\\textsuperscript\{h\}","Please use Unicode ʰ for aspiration instead of superscript h")
@@ -178,7 +179,7 @@ class TexFile(SanityFile):
     (r"\[sub]*section\{",r"\label","All sections should have a \\label. This is not necessary for subexamples."),
     #(r"\\ea.*",r"\label","All examples should have a \\label"),
     (r"\\gll\W+[A-Z]",r"[\.?!][ }]*\\\\ *$","All vernacular sentences should end with punctuation"),
-    (r"\\glt\W+[A-Z]",r"[\.?!]['’”ʼ]+[ }\\]*$","All translated sentences should end with punctuation"),
+    (r"\\glt\W+[A-Z]",r"[\.?!][}\\]*['’”ʼ]","All translated sentences should end with punctuation"),
     )
     
   filechecks = (
