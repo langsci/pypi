@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import glob
 import re 
 import os
@@ -11,10 +12,11 @@ import matplotlib.colors as mplcolors
 import pprint
 
 class Book():
-  def __init__(self, ID, title, colors, shapes):
+  def __init__(self, ID, title, colors, shapes,category):
     seed = hash(str(ID)+'a')+14
     self.ID = int(ID)
     self.title = title 
+    self.category = category 
     self.downloads = {}
     self.color = colors[seed%len(colors)]
     self.shape = shapes[seed%len(shapes)]    
@@ -44,25 +46,118 @@ class Book():
       
   
 class Catalog():
-  def __init__(self, booksfile='books.tsv'):
+  def __init__(self):
     #read ID and title of books from file
-    print "reading", booksfile
-    lines = open(booksfile).read().decode('utf8').split('\n') 
-    self.booksfile = booksfile
-    #print lines
-    #put ID as key and title as value in dictionary
-    #self.books = dict([l.strip().split('\t') for l in lines if l.strip()!='']) 
+    #print "reading", booksfile
+    #lines = open(booksfile).read().decode('utf8').split('\n') 
+    #self.booksfile = booksfile 
     #setup colors and shapes to select from
-    colors = plt.cm.Set1(np.linspace(0, 1, 45)) 
-    #colors = 'bgrcmyk'
-    shapes = 'v^osp*D'    
+    colors = plt.cm.Set1(np.linspace(0, 1, 45))  
+    shapes = 'v^osp*D'  
+    self.booklist = {
+      #(ID,title)
+      '10000':{
+                22:      u"The Alor-Pantar languages¹",
+                25:      u"Grammatical theory¹",
+                46:      u"Einführung in die grammatische Beschreibung¹",
+                76:      u"New directions in corpus-based translation studies",
+                81:      u"The future of dialects",
+                101:     u"Einführung in die grammatische Beschreibung²",
+                121:     u"Diversity in African languages",
+                151:     u"On looking into words",
+                157:     u"The Alor_Pantar languages²",
+                160:     u"A aquisição de língua materna e não materna",
+                195:     u"Grammatical theory²",
+                25195:   u"Grammatical theory",
+                46101:   u"Einführung in die grammatische Beschreibung",
+                22157:   u"The Alor-Pantar languages",
+                },
+      '4000':{
+                17:  u"A grammar of Pite Saami",
+                18:  u"A typology of marked-S languages",
+                48:  u"Natural causes",
+                49:  u"The Talking Heads experiment",
+                66:  u"A grammar of Yakkha",
+                73:  u"Grammaticalization in the North",
+                75:  u"Linguistic variation, identity construction and cognition",
+                88:  u"Thoughts on grammaticalization",
+                89:  u"The empirical base of linguistics",
+                91:  u"Roots of language",
+                94:  u"Advances in the study of Siouan",
+                96:  u"Dependencies in language",
+                108: u"Eyetracking and Applied Linguistics",
+                115: u"Order and structure in syntax II",
+                132: u"Empirical modelling of translation and interpreting",
+                144: u"Analyzing meaning",
+                156: u"Further investigations into the nature of phrasal compounds",
+                159: u"Order and structure in syntax I",
+                },
+      'editedvolumes': {
+                102: u"Crossroads between contrastive linguistics, translation studies and machine translation",
+                103: u"Annotation, exploitation and evaluation of parallel corpora",
+                106: u"Language technologies for a multilingual Europe",
+                107: u"New perspectives on cohesion and coherence: Implications for translation",
+                120: u"African linguistics on the prairie",
+                152: u"Unity and diversity in grammaticalization scenarios",
+                157: u"The Alor-Pantar languages²",
+                165: u"The lexeme in descriptive and theoretical morphology ",
+                167: u"On this and other worlds",
+                173: u"Diachrony of differential argument marking",
+                180: u"Learning context effects",
+                181: u"Quality aspects in institutional translation",
+                182: u"The languages of Malta",
+                183: u"Methods in prosody: A romance language perspective",
+                184: u"Multiword expressions: Insights from a multi-lingual perspective",
+                190: u"East Benue-Congo: Nouns, pronouns, and verbs",
+                199: u"René de Saussure and the theory of word formation",
+                201: u"Perspectives on information structure in Austronesian languages",
+                },
+        'monographs': {
+                16:  u"Prosodic Detail in Neapolitan Italian",
+                19:  u"Adjective attribution",
+                20:  u"Syntax und Valenz",
+                27:  u"Grammaire des constructions elliptiques ",
+                44:  u".",
+                50:  u"How mobile robots can self-organize a vocabulary",
+                51:  u"Language strategies for the domain of colour",
+                52:  u"The evolution of case grammar",
+                53:  u"The evolution of grounded spatial language",
+                67:  u"A grammar of Mauwake",
+                74:  u"A dictionary and grammatical outline of Chakali",
+                78:  u"A grammar of Papuan Malay",
+                82:  u"A grammar of Palula",
+                83:  u"A grammar of Yauyos Quechua",
+                97:  u"Die Sprachwissenschaft",
+                98:  u"The Ik Language",
+                109: u"Tone in Yongning Na",
+                111: u"Modeling information structure in a cross-linguistic perspective ",
+                116: u"Sprachliche Imitation",
+                118: u"A grammar of Moloko",
+                123: u"Attributive constructions in NENA",
+                124: u"A grammar of Rapa Nui",
+                134: u"Absolute Komplexität in der Nominalflexion",
+                137: u"Tonal placement in Tashlhiyt",
+                141: u"The Verb in Nyakyusa",
+                143: u"Sémantique formelle: Volume 1",
+                149: u"Beiträge zur deutschen Grammatik",
+                153: u"The semantic transparency of English compound nouns",
+                154: u"Dynamische Modellierung",
+                155: u"Morphologisch komplexe Wörter",
+                174: u"A typology of questions in Northeast Asia",
+                175: u"Distribution und Interpretation von Modalpartikel-Kombinationen",
+                176: u"The Unicode cookbook",
+                187: u"Can integrated subtitles improve the viewing experience",
+                191: u"The numeral system of Proto-Niger-Congo",
+                193: u"Deletion phenomena in comparative constructions",
+                195: u"Grammatical theory²",
+                210: u"Sound change, priming, salience",
+                224: u"Einführung in die grammatische Beschreibung"
+                }     
+        }
     self.books = {} 
-    for l in lines:
-      #print l
-      if l.strip()!='':
-        ID, title = l.strip().split('\t') 
-        ID = int(ID)
-        self.books[ID] = Book(ID, title, colors, shapes)
+    for category in self.booklist:
+      for ID in self.booklist[category]: 
+        self.books[ID] = Book(ID, self.booklist[category][ID], colors, shapes, category)
     #collect all directories with access information
     self.dirs = glob.glob('webreport_langsci-press.org_catalog_20[0-9][0-9]_[01][0-9]')
     #extract access data from all log files
@@ -147,7 +242,8 @@ class Catalog():
     #ax.axis('off')
     return fig, plt
   
-  def matplotcumulative(self,typ='',ID=False, legend=True, fontsizetotal=15, threshold=99, timeframe=13,excludes=[]):
+  def matplotcumulative(self, typ='',ID=False, legend=True, fontsizetotal=15, threshold=99, timeframe=13, excludes=[]):
+    category = typ
     """
     produce cumulative graph
     
@@ -177,12 +273,16 @@ class Catalog():
       self.books[bookID].computeYAggregates(labels, threshold)
       
     #cumulative plot  
+    print "plotting", typ
     for bookID in sorted(self.books.keys(), key=lambda k: self.books[k].yaggregates[-1],reverse=True): 
       book = self.books[bookID]
       if bookID in excludes: 
           #we exclude all books with multiple editions
           #the complete aggregates will still be correct since the combined editions will be counted
           continue
+      if bookID not in self.booklist[category]:
+        continue
+      print bookID,
       #compute total download data over all books
       try:
         totaldownloads = book.yaggregates[-1]
@@ -198,20 +298,22 @@ class Catalog():
       ax.plot(xs, ys, color=book.color, linewidth=1.5) 
       #plot marks
       ax.plot(xs, ys, book.shape, color=book.color, label="(%s) %s" % (ys[-2], book.title[:45])) 
-      
+    print ""  
     #position legend box
     if legend:
       box = ax.get_position()
       ax.set_position([box.x0, box.y0, box.width * 0.66, box.height]) 
+      if graphs == 0:
+        graphs = 1
       stretchfactor=25/graphs
       ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),frameon=False,numpoints=1,labelspacing=stretchfactor)     
     #save file
-    plt.savefig('cumulativeall%s.svg'%typ)
-    plt.savefig('cumulativeall%s.png'%typ)
+    plt.savefig('cumulativeall%s.svg'%category)
+    plt.savefig('cumulativeall%s.png'%category)
     plt.close(fig)    
     plt.cla()      
     #print "plotted cumulative graph"
-    print "total downloads of all %s:"%typ, aggregatedownloads    
+    print "total downloads of all %s:"%category, aggregatedownloads    
     #print "plotting invididual graphs: "
     
     #individual plots
@@ -309,11 +411,17 @@ class Catalog():
                 if book in self.monthstats[month]:
                     row[book] = self.monthstats[month][book] 
             rows.append(row)
-        out = open('langsci%sdownloads.csv'%self.booksfile[:-4],'w')        
+        out = open('langscidownloads.csv','w')        
         for row in rows:
             out.write(','.join([str(x) for x in row]))
             out.write('\n')
         out.close()
+        
+  def plot(self):
+      multipleditions =(22,25,46,101,157,195)  
+      for category in self.booklist:
+        catalog.matplotcumulative(fontsizetotal=7, typ=category, excludes=multipleditions)   
+  
         
               
           
@@ -402,15 +510,12 @@ class CountryStats(Stats):
 
                     
 if __name__=='__main__':
-  multipleditions =(22,25,46,101,157,195)  
   totaldownloads = 0
-  for tsvfile in glob.glob("*tsv"):
-      catalog = Catalog(booksfile=tsvfile)
-      catalog.dumpcsv()
-      name = tsvfile.split('.')[0]
-      totaldownloads += catalog.matplotcumulative(fontsizetotal=7,typ=name, excludes=multipleditions)   
-      print "created files %s.png, %s.svg" % (name,name)
-  print "total downloads combined", totaldownloads
+  catalog = Catalog()
+  catalog.dumpcsv()
+  catalog.plot()
+  print "created png and svg files"
+  #print "total downloads combined", totaldownloads
   
   #print "country plot"
   #Catalog(booksfile='allbooks.tsv').plotCountries(threshold=20,typ='all')
