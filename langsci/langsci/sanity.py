@@ -274,7 +274,8 @@ class SanityDir:
     matches = []
     localfiles = glob.glob('%s/local*'%self.dirname)
     chapterfiles = glob.glob('%s/chapters/*tex'%self.dirname) 
-    for filename in fnmatch.filter(localfiles+chapterfiles, '*.%s'%extension):
+    imgfiles = glob.glob('%s/figures/*'%self.dirname) 
+    for filename in fnmatch.filter(localfiles+chapterfiles+imgfiles, '*.%s'%extension):
         matches.append(os.path.join(self.dirname, filename))
     return sorted(matches)
               

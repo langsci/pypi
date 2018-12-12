@@ -30,7 +30,7 @@ Please also have a look at the lists of references, in particular missing capita
 Next to the Paperhive online annotation platform, you can also download the pdf from http://langsci.github.io/{githubid}/proofreading.pdf if you prefer. Having the correction at Paperhive in a central place has proven much more convenient for the authors, but it is up to you to choose your preferred method of proofreading.
 
 Guidelines for proofreaders can be found here
-http://langsci-press.org/public/downloads/LangSci_Guidelines_Proofreaders.pdf
+http://langsci.github.io/guidelines/latexguidelines/LangSci-guidelines-proofreading.pdf
 
 For most of the issues mentioned there, native competence is not necessary. We have every chapter checked by 2 people, at least one of which is a native speaker.
 
@@ -58,6 +58,6 @@ if __name__ == "__main__":
         #generate mail body
         mailbody = template.format(**locals()) 
         #launch mail program
-        thunderbirdoptionstring = """-compose "to=%s,subject='proofreading %s',format=2,body='%s'" """%(name,authorname,mailbody) 
+        thunderbirdoptionstring = """-compose "to=%s,subject='proofreading %s',format=2,from='sebastian.nordhoff@langsci-press.org',body='%s'" """%(name,authorname,mailbody) 
         os.system("thunderbird %s"%thunderbirdoptionstring)
             
