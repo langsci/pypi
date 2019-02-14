@@ -74,11 +74,9 @@ class Catalog():
                 },
       '4000':{
                 17:  u"A grammar of Pite Saami",
-                18:  u"A typology of marked-S languages",
                 48:  u"Natural causes",
                 49:  u"The Talking Heads experiment",
                 66:  u"A grammar of Yakkha",
-                73:  u"Grammaticalization in the North",
                 75:  u"Linguistic variation, identity construction and cognition",
                 88:  u"Thoughts on grammaticalization",
                 89:  u"The empirical base of linguistics",
@@ -91,13 +89,13 @@ class Catalog():
                 144: u"Analyzing meaning",
                 156: u"Further investigations into the nature of phrasal compounds",
                 159: u"Order and structure in syntax I",
+                120: u"African linguistics on the prairie",
                 },
       'editedvolumes': {
                 102: u"Crossroads between contrastive linguistics, translation studies and machine translation",
                 103: u"Annotation, exploitation and evaluation of parallel corpora",
                 106: u"Language technologies for a multilingual Europe",
                 107: u"New perspectives on cohesion and coherence: Implications for translation",
-                120: u"African linguistics on the prairie",
                 152: u"Unity and diversity in grammaticalization scenarios",
                 157: u"The Alor-Pantar languages²",
                 165: u"The lexeme in descriptive and theoretical morphology ",
@@ -106,13 +104,17 @@ class Catalog():
                 180: u"Learning context effects",
                 181: u"Quality aspects in institutional translation",
                 182: u"The languages of Malta",
-                183: u"Methods in prosody: A romance language perspective",
+                183: u"Methods in prosody: A Romance language perspective",
                 184: u"Multiword expressions: Insights from a multi-lingual perspective",
                 190: u"East Benue-Congo: Nouns, pronouns, and verbs",
                 199: u"René de Saussure and the theory of word formation",
                 201: u"Perspectives on information structure in Austronesian languages",
+                204: u"Multiword expressions at length and in depth: Extended papers from the MWE 2017 workshop",
+                209: u"Interpreting and technology"
                 },
         'monographs': {
+                73:  u"Grammaticalization in the North",
+                18:  u"A typology of marked-S languages",
                 16:  u"Prosodic Detail in Neapolitan Italian",
                 19:  u"Adjective attribution",
                 20:  u"Syntax und Valenz",
@@ -143,6 +145,7 @@ class Catalog():
                 153: u"The semantic transparency of English compound nouns",
                 154: u"Dynamische Modellierung",
                 155: u"Morphologisch komplexe Wörter",
+                163: u"A lexicalist account of argument structure",
                 174: u"A typology of questions in Northeast Asia",
                 175: u"Distribution und Interpretation von Modalpartikel-Kombinationen",
                 176: u"The Unicode cookbook",
@@ -150,8 +153,10 @@ class Catalog():
                 191: u"The numeral system of Proto-Niger-Congo",
                 193: u"Deletion phenomena in comparative constructions",
                 195: u"Grammatical theory²",
+                203: u"The acrolect in Jamaica",
                 210: u"Sound change, priming, salience",
-                224: u"Einführung in die grammatische Beschreibung"
+                212: u"A grammar of Komnzo",
+                224: u"Einführung in die grammatische Beschreibung³"
                 }     
         }
     self.books = {} 
@@ -396,7 +401,7 @@ class Catalog():
     plt.savefig('%scountries.png'%typ) 
     plt.savefig('%scountries.svg'%typ) 
     plt.close(fig)
-    plt.cal(fig)
+    #plt.cal(fig)
     
     
   def dumpcsv(self): 
@@ -518,5 +523,5 @@ if __name__=='__main__':
   #print "total downloads combined", totaldownloads
   
   #print "country plot"
-  #Catalog(booksfile='allbooks.tsv').plotCountries(threshold=20,typ='all')
-  #print 30*'-'    
+  #catalog.plotCountries(threshold=20,typ='all')
+  
