@@ -12,11 +12,11 @@ import matplotlib.colors as mplcolors
 import pprint
 
 class Book():
-  def __init__(self, ID, title, colors, shapes,category):
+  def __init__(self, ID, title, colors, shapes, category):
     seed = hash(str(ID)+'a')+14
     self.ID = int(ID)
     self.title = title 
-    self.category = category 
+    self.category = category  
     self.downloads = {}
     self.color = colors[seed%len(colors)]
     self.shape = shapes[seed%len(shapes)]    
@@ -70,9 +70,11 @@ class Catalog():
                 195:     u"Grammatical theory²",
                 25195:   u"Grammatical theory",
                 46101:   u"Einführung in die grammatische Beschreibung",
+                46101224:   u"Einführung in die grammatische Beschreibung",
                 22157:   u"The Alor-Pantar languages",
                 },
       '4000':{
+                144231: u"Analyzing meaning",
                 17:  u"A grammar of Pite Saami",
                 48:  u"Natural causes",
                 49:  u"The Talking Heads experiment",
@@ -83,80 +85,86 @@ class Catalog():
                 91:  u"Roots of language",
                 94:  u"Advances in the study of Siouan",
                 96:  u"Dependencies in language",
+                107: u"New perspectives on cohesion and coherence: Implications for translation",
                 108: u"Eyetracking and Applied Linguistics",
                 115: u"Order and structure in syntax II",
+                120: u"African linguistics on the prairie",
                 132: u"Empirical modelling of translation and interpreting",
                 144: u"Analyzing meaning",
                 156: u"Further investigations into the nature of phrasal compounds",
                 159: u"Order and structure in syntax I",
-                120: u"African linguistics on the prairie",
+                173: u"Diachrony of differential argument marking",
+                181: u"Quality aspects in institutional translation",
+                224: u"Einführung in die grammatische Beschreibung³"
                 },
+      '1000monographs':{
+                16:  u"Prosodic Detail in Neapolitan Italian",
+                18:  u"A typology of marked-S languages",
+                20:  u"Syntax und Valenz",
+                67:  u"A grammar of Mauwake",
+                73:  u"Grammaticalization in the North",
+                78:  u"A grammar of Papuan Malay",
+                82:  u"A grammar of Palula",
+                83:  u"A grammar of Yauyos Quechua",
+                50:  u"How mobile robots can self-organize a vocabulary",
+                52:  u"The evolution of case grammar",
+                53:  u"The evolution of grounded spatial language",
+                97:  u"Die Sprachwissenschaft",
+                98:  u"The Ik Language",
+                109: u"Tone in Yongning Na",
+                141: u"The Verb in Nyakyusa",
+                153: u"The semantic transparency of English compound nouns",
+                124: u"A grammar of Rapa Nui",
+                19:  u"Adjective attribution",
+                51:  u"Language strategies for the domain of colour",
+                27:  u"Grammaire des constructions elliptiques ",
+                74:  u"A dictionary and grammatical outline of Chakali",
+                143: u"Sémantique formelle: Volume 1",
+                176: u"The Unicode cookbook",
+               },
       'editedvolumes': {
                 102: u"Crossroads between contrastive linguistics, translation studies and machine translation",
                 103: u"Annotation, exploitation and evaluation of parallel corpora",
                 106: u"Language technologies for a multilingual Europe",
-                107: u"New perspectives on cohesion and coherence: Implications for translation",
                 152: u"Unity and diversity in grammaticalization scenarios",
                 157: u"The Alor-Pantar languages²",
                 165: u"The lexeme in descriptive and theoretical morphology ",
                 167: u"On this and other worlds",
-                173: u"Diachrony of differential argument marking",
                 180: u"Learning context effects",
-                181: u"Quality aspects in institutional translation",
                 182: u"The languages of Malta",
                 183: u"Methods in prosody: A Romance language perspective",
                 184: u"Multiword expressions: Insights from a multi-lingual perspective",
+                189: u"Advances in formal Slavic linguistics 2016",
                 190: u"East Benue-Congo: Nouns, pronouns, and verbs",
                 199: u"René de Saussure and the theory of word formation",
                 201: u"Perspectives on information structure in Austronesian languages",
                 204: u"Multiword expressions at length and in depth: Extended papers from the MWE 2017 workshop",
-                209: u"Interpreting and technology"
+                209: u"Interpreting and technology",
                 },
         'monographs': {
-                73:  u"Grammaticalization in the North",
-                18:  u"A typology of marked-S languages",
-                16:  u"Prosodic Detail in Neapolitan Italian",
-                19:  u"Adjective attribution",
-                20:  u"Syntax und Valenz",
-                27:  u"Grammaire des constructions elliptiques ",
                 44:  u".",
-                50:  u"How mobile robots can self-organize a vocabulary",
-                51:  u"Language strategies for the domain of colour",
-                52:  u"The evolution of case grammar",
-                53:  u"The evolution of grounded spatial language",
-                67:  u"A grammar of Mauwake",
-                74:  u"A dictionary and grammatical outline of Chakali",
-                78:  u"A grammar of Papuan Malay",
-                82:  u"A grammar of Palula",
-                83:  u"A grammar of Yauyos Quechua",
-                97:  u"Die Sprachwissenschaft",
-                98:  u"The Ik Language",
-                109: u"Tone in Yongning Na",
+                85:  u"A grammar of Pichi",
                 111: u"Modeling information structure in a cross-linguistic perspective ",
                 116: u"Sprachliche Imitation",
                 118: u"A grammar of Moloko",
                 123: u"Attributive constructions in NENA",
-                124: u"A grammar of Rapa Nui",
                 134: u"Absolute Komplexität in der Nominalflexion",
                 137: u"Tonal placement in Tashlhiyt",
-                141: u"The Verb in Nyakyusa",
-                143: u"Sémantique formelle: Volume 1",
                 149: u"Beiträge zur deutschen Grammatik",
-                153: u"The semantic transparency of English compound nouns",
                 154: u"Dynamische Modellierung",
                 155: u"Morphologisch komplexe Wörter",
                 163: u"A lexicalist account of argument structure",
                 174: u"A typology of questions in Northeast Asia",
                 175: u"Distribution und Interpretation von Modalpartikel-Kombinationen",
-                176: u"The Unicode cookbook",
                 187: u"Can integrated subtitles improve the viewing experience",
                 191: u"The numeral system of Proto-Niger-Congo",
                 193: u"Deletion phenomena in comparative constructions",
                 195: u"Grammatical theory²",
+                196: u"Problem solving activities",
                 203: u"The acrolect in Jamaica",
                 210: u"Sound change, priming, salience",
                 212: u"A grammar of Komnzo",
-                224: u"Einführung in die grammatische Beschreibung³"
+                231: u"Analyzing meaning²"
                 }     
         }
     self.books = {} 
@@ -194,23 +202,21 @@ class Catalog():
             aggregationdictionary[book][month] = 0       
       lastmaxs = monthmaxs
       #take care of second editions       
-      secondeditions = [(46,101),(25,195),(22,157)] 
-      for first,second in secondeditions:
-        firstdownloads = 0 
-        seconddownloads = 0 
+      secondeditions = [(46,101,224),(25,195),(22,157),(144,231)] 
+      for title in secondeditions:
+        editiondownloads = []
+        newkey = int(''.join([str(x) for x in title]))
+        for edition in title:
+            try:
+                editiondownloads.append(aggregationdictionary[edition][month])
+            except KeyError:
+                pass
+        combineddownloads = sum(editiondownloads)
         try:
-            firstdownloads = aggregationdictionary[first][month]
+            aggregationdictionary[newkey][month] = combineddownloads
         except KeyError:
-            pass
-        try:
-            seconddownloads = aggregationdictionary[second][month]
-        except KeyError:
-            pass 
-        try:
-            aggregationdictionary[int('%s%s'%(first,second))][month] = firstdownloads + seconddownloads
-        except KeyError:
-            aggregationdictionary[int('%s%s'%(first,second))] = {}                
-            aggregationdictionary[int('%s%s'%(first,second))][month] = firstdownloads + seconddownloads
+            aggregationdictionary[newkey] = {}                
+            aggregationdictionary[newkey][month] = combineddownloads
     try:  
       aggregationdictionary[52]["2016_06"] = 48 #logging was off in that month
     except KeyError:
@@ -224,7 +230,8 @@ class Catalog():
         self.books[bookID].downloads = aggregationdictionary[bookID]
       except KeyError:
           if bookID>1000: #secondedition 
-              self.books[bookID] = Book(bookID,str(bookID),plt.cm.Set1(np.linspace(0, 1, 45)),'v^osp*D')      
+              print(bookID)
+              self.books[bookID] = Book(bookID,str(bookID),plt.cm.Set1(np.linspace(0, 1, 45)),'v^osp*D','10000')      
     for x in sorted(lastmaxs)[::-1][:3]:
         title = "??"
         try:
@@ -423,7 +430,7 @@ class Catalog():
         out.close()
         
   def plot(self):
-      multipleditions =(22,25,46,101,157,195)  
+      multipleditions =(22,25,46,101,157,195,224,144,231)  
       for category in self.booklist:
         catalog.matplotcumulative(fontsizetotal=7, typ=category, excludes=multipleditions)   
   
