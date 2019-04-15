@@ -25,7 +25,8 @@ https://paperhive.org/documents/remote?type=langsci&id={githubid}
 You are assigned the following chapters:
 {chapterlist}
 
-Please also have a look at the lists of references, in particular missing capitalization.
+Please also have a look at the lists of references from your chapter, in particular missing capitalization.
+There is no need to flag words which spill over into the margin as this will be dealt with at a later stage in the process.
 
 Next to the Paperhive online annotation platform, you can also download the pdf from http://langsci.github.io/{githubid}/proofreading.pdf if you prefer. Having the correction at Paperhive in a central place has proven much more convenient for the authors, but it is up to you to choose your preferred method of proofreading.
 
