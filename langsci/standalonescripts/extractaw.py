@@ -57,100 +57,99 @@ class Catalog():
     self.booklist = {
       #(ID,title)
       '10000':{
+                46:      u"Einführung in die grammatische Beschreibung¹",
+                81:      u"The future of dialects",
                 22:      u"The Alor-Pantar languages¹",
                 25:      u"Grammatical theory¹",
-                46:      u"Einführung in die grammatische Beschreibung¹",
-                76:      u"New directions in corpus-based translation studies",
-                81:      u"The future of dialects",
-                101:     u"Einführung in die grammatische Beschreibung²",
-                121:     u"Diversity in African languages",
-                151:     u"On looking into words",
-                157:     u"The Alor_Pantar languages²",
                 160:     u"A aquisição de língua materna e não materna",
                 195:     u"Grammatical theory²",
                 25195:   u"Grammatical theory",
                 46101:   u"Einführung in die grammatische Beschreibung",
                 46101224:   u"Einführung in die grammatische Beschreibung",
+                151:     u"On looking into words",
+                121:     u"Diversity in African languages",
+                76:      u"New directions in corpus-based translation studies",
+                157:     u"The Alor_Pantar languages²",
                 22157:   u"The Alor-Pantar languages",
-                },
-      '4000':{
+                94:  u"Advances in the study of Siouan"
+                    },
+      '5000': {
+                
                 144231: u"Analyzing meaning",
-                17:  u"A grammar of Pite Saami",
                 48:  u"Natural causes",
                 49:  u"The Talking Heads experiment",
-                66:  u"A grammar of Yakkha",
-                75:  u"Linguistic variation, identity construction and cognition",
-                88:  u"Thoughts on grammaticalization",
-                89:  u"The empirical base of linguistics",
-                91:  u"Roots of language",
-                94:  u"Advances in the study of Siouan",
-                96:  u"Dependencies in language",
-                107: u"New perspectives on cohesion and coherence: Implications for translation",
+                101:     u"Einführung in die grammatische Beschreibung²",
                 108: u"Eyetracking and Applied Linguistics",
+                132: u"Empirical modelling of translation and interpreting",
+                159: u"Order and structure in syntax I",
                 115: u"Order and structure in syntax II",
                 120: u"African linguistics on the prairie",
-                132: u"Empirical modelling of translation and interpreting",
+                17:  u"A grammar of Pite Saami",
+                88:  u"Thoughts on grammaticalization",
+                66:  u"A grammar of Yakkha",
+                75:  u"Linguistic variation, identity construction and cognition",
+                89:  u"The empirical base of linguistics",
+                91:  u"Roots of language",
+                96:  u"Dependencies in language",
+                107: u"New perspectives on cohesion and coherence: Implications for translation",
                 144: u"Analyzing meaning",
                 156: u"Further investigations into the nature of phrasal compounds",
-                159: u"Order and structure in syntax I",
                 173: u"Diachrony of differential argument marking",
                 181: u"Quality aspects in institutional translation",
+                73:  u"Grammaticalization in the North",
+                82:  u"A grammar of Palula",
+                124: u"A grammar of Rapa Nui",
+                152: u"Unity and diversity in grammaticalization scenarios",
+                182: u"The languages of Malta",
+                20:  u"Syntax und Valenz",
+                18:  u"A typology of marked-S languages",
+                103: u"Annotation, exploitation and evaluation of parallel corpora",
+                204: u"Multiword expressions at length and in depth: Extended papers from the MWE 2017 workshop",
+                167: u"On this and other worlds",
+                165: u"The lexeme in descriptive and theoretical morphology ",
+                67:  u"A grammar of Mauwake",
+                189: u"Advances in formal Slavic linguistics 2016",
+                184: u"Multiword expressions: Insights from a multi-lingual perspective",
+                16:  u"Prosodic Detail in Neapolitan Italian",
+                19:  u"Adjective attribution",
+                201: u"Perspectives on information structure in Austronesian languages",
+                106: u"Language technologies for a multilingual Europe",
+                52:  u"The evolution of case grammar",
                 224: u"Einführung in die grammatische Beschreibung³"
                 },
-      '1000monographs':{
-                16:  u"Prosodic Detail in Neapolitan Italian",
-                18:  u"A typology of marked-S languages",
-                20:  u"Syntax und Valenz",
-                67:  u"A grammar of Mauwake",
-                73:  u"Grammaticalization in the North",
+      '1000':{
                 78:  u"A grammar of Papuan Malay",
-                82:  u"A grammar of Palula",
                 83:  u"A grammar of Yauyos Quechua",
                 50:  u"How mobile robots can self-organize a vocabulary",
-                52:  u"The evolution of case grammar",
                 53:  u"The evolution of grounded spatial language",
                 97:  u"Die Sprachwissenschaft",
                 98:  u"The Ik Language",
                 109: u"Tone in Yongning Na",
+                118: u"A grammar of Moloko",
                 141: u"The Verb in Nyakyusa",
                 153: u"The semantic transparency of English compound nouns",
-                124: u"A grammar of Rapa Nui",
-                19:  u"Adjective attribution",
                 51:  u"Language strategies for the domain of colour",
                 27:  u"Grammaire des constructions elliptiques ",
                 74:  u"A dictionary and grammatical outline of Chakali",
                 143: u"Sémantique formelle: Volume 1",
-                176: u"The Unicode cookbook",
-               },
-      'editedvolumes': {
+                176: u"The Unicode cookbook", 
                 102: u"Crossroads between contrastive linguistics, translation studies and machine translation",
-                103: u"Annotation, exploitation and evaluation of parallel corpora",
-                106: u"Language technologies for a multilingual Europe",
-                152: u"Unity and diversity in grammaticalization scenarios",
                 157: u"The Alor-Pantar languages²",
-                165: u"The lexeme in descriptive and theoretical morphology ",
-                167: u"On this and other worlds",
                 180: u"Learning context effects",
-                182: u"The languages of Malta",
                 183: u"Methods in prosody: A Romance language perspective",
-                184: u"Multiword expressions: Insights from a multi-lingual perspective",
-                189: u"Advances in formal Slavic linguistics 2016",
                 190: u"East Benue-Congo: Nouns, pronouns, and verbs",
                 199: u"René de Saussure and the theory of word formation",
-                201: u"Perspectives on information structure in Austronesian languages",
-                204: u"Multiword expressions at length and in depth: Extended papers from the MWE 2017 workshop",
                 209: u"Interpreting and technology",
-                },
-        'monographs': {
+                216: u"Bridging constructions",
+                149: u"Beiträge zur deutschen Grammatik",
+                220: u'Explanation in typology',
                 44:  u".",
                 85:  u"A grammar of Pichi",
                 111: u"Modeling information structure in a cross-linguistic perspective ",
                 116: u"Sprachliche Imitation",
-                118: u"A grammar of Moloko",
                 123: u"Attributive constructions in NENA",
                 134: u"Absolute Komplexität in der Nominalflexion",
                 137: u"Tonal placement in Tashlhiyt",
-                149: u"Beiträge zur deutschen Grammatik",
                 154: u"Dynamische Modellierung",
                 155: u"Morphologisch komplexe Wörter",
                 163: u"A lexicalist account of argument structure",
@@ -161,9 +160,11 @@ class Catalog():
                 193: u"Deletion phenomena in comparative constructions",
                 195: u"Grammatical theory²",
                 196: u"Problem solving activities",
+                200: u'Curso de semântica formal',
                 203: u"The acrolect in Jamaica",
                 210: u"Sound change, priming, salience",
                 212: u"A grammar of Komnzo",
+                219: u"Information structure in Isthmus Zapotec",
                 231: u"Analyzing meaning²"
                 }     
         }
@@ -242,9 +243,9 @@ class Catalog():
     self.countrystats = dict([(d[-7:],CountryStats(os.path.join(d,'awstats.langsci-press.org.alldomains.html')).getCountries()) for d in self.dirs])   
         
   def setupPlot(self, labels, timeframe):  
-    fig = plt.figure()
+    fig = plt.figure(figsize=(12,12))
     #use a wide picture
-    fig.set_figwidth(12)
+    #fig.set_figwidth(12) 
     #fig.add_subplot(ax)
      
     plt.rc('legend',**{'fontsize':9})
@@ -320,6 +321,10 @@ class Catalog():
       stretchfactor=25/graphs
       ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),frameon=False,numpoints=1,labelspacing=stretchfactor)     
     #save file
+    bottom, top = ax.get_ylim()
+    print top
+    ax.set_ylim(bottom=max(bottom,0),top=top)
+    print top
     plt.savefig('cumulativeall%s.svg'%category)
     plt.savefig('cumulativeall%s.png'%category)
     plt.close(fig)    
