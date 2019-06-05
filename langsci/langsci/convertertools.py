@@ -93,7 +93,7 @@ class Document:
         self.text = text
         self.modtext = self.getModtext()
         paperpreamble =r"""\documentclass[output=paper]{langsci/langscibook} 
-\author{\affiliation{}}
+\author{\affiliation{}\orcid{}}
 \title{}
 \abstract{}
 \IfFileExists{../localcommands.tex}{
