@@ -56,96 +56,100 @@ class Catalog():
     shapes = 'v^osp*D'  
     self.booklist = {
       #(ID,title)
-      '10000':{
-                46:      u"Einführung in die grammatische Beschreibung¹",
-                81:      u"The future of dialects",
+      'high':{
                 22:      u"The Alor-Pantar languages¹",
                 25:      u"Grammatical theory¹",
+                46:      u"Einführung in die grammatische Beschreibung¹",
+                48:  u"Natural causes",
+                49:  u"The Talking Heads experiment",
+                76:      u"New directions in corpus-based translation studies",
+                81:      u"The future of dialects",
+                94:  u"Advances in the study of Siouan",
+                101:     u"Einführung in die grammatische Beschreibung²",
+                108: u"Eyetracking and Applied Linguistics",
+                121:     u"Diversity in African languages",
+                132: u"Empirical modelling of translation and interpreting",
+                151:     u"On looking into words",
+                157:     u"The Alor_Pantar languages²",
                 160:     u"A aquisição de língua materna e não materna",
                 195:     u"Grammatical theory²",
                 25195:   u"Grammatical theory",
                 46101:   u"Einführung in die grammatische Beschreibung",
                 46101224:   u"Einführung in die grammatische Beschreibung",
-                151:     u"On looking into words",
-                121:     u"Diversity in African languages",
-                76:      u"New directions in corpus-based translation studies",
-                157:     u"The Alor_Pantar languages²",
-                22157:   u"The Alor-Pantar languages",
-                94:  u"Advances in the study of Siouan"
-                    },
-      '5000': {
-                
                 144231: u"Analyzing meaning",
-                48:  u"Natural causes",
-                49:  u"The Talking Heads experiment",
-                101:     u"Einführung in die grammatische Beschreibung²",
-                108: u"Eyetracking and Applied Linguistics",
-                132: u"Empirical modelling of translation and interpreting",
-                159: u"Order and structure in syntax I",
-                115: u"Order and structure in syntax II",
+                22157:   u"The Alor-Pantar languages",
                 120: u"African linguistics on the prairie",
                 17:  u"A grammar of Pite Saami",
-                88:  u"Thoughts on grammaticalization",
-                66:  u"A grammar of Yakkha",
-                75:  u"Linguistic variation, identity construction and cognition",
-                89:  u"The empirical base of linguistics",
-                91:  u"Roots of language",
+                159: u"Order and structure in syntax I",
                 96:  u"Dependencies in language",
-                107: u"New perspectives on cohesion and coherence: Implications for translation",
-                144: u"Analyzing meaning",
+                115: u"Order and structure in syntax II",
                 156: u"Further investigations into the nature of phrasal compounds",
                 173: u"Diachrony of differential argument marking",
                 181: u"Quality aspects in institutional translation",
-                73:  u"Grammaticalization in the North",
-                82:  u"A grammar of Palula",
-                124: u"A grammar of Rapa Nui",
+                },
+      'midrising':{
+                107: u"New perspectives on cohesion and coherence: Implications for translation",
+                144: u"Analyzing meaning",
                 152: u"Unity and diversity in grammaticalization scenarios",
                 182: u"The languages of Malta",
-                20:  u"Syntax und Valenz",
-                18:  u"A typology of marked-S languages",
                 103: u"Annotation, exploitation and evaluation of parallel corpora",
-                204: u"Multiword expressions at length and in depth: Extended papers from the MWE 2017 workshop",
-                167: u"On this and other worlds",
                 165: u"The lexeme in descriptive and theoretical morphology ",
-                67:  u"A grammar of Mauwake",
-                189: u"Advances in formal Slavic linguistics 2016",
                 184: u"Multiword expressions: Insights from a multi-lingual perspective",
-                16:  u"Prosodic Detail in Neapolitan Italian",
-                19:  u"Adjective attribution",
-                201: u"Perspectives on information structure in Austronesian languages",
-                106: u"Language technologies for a multilingual Europe",
-                52:  u"The evolution of case grammar",
-                224: u"Einführung in die grammatische Beschreibung³"
-                },
-      '1000':{
-                78:  u"A grammar of Papuan Malay",
-                83:  u"A grammar of Yauyos Quechua",
-                50:  u"How mobile robots can self-organize a vocabulary",
-                53:  u"The evolution of grounded spatial language",
-                97:  u"Die Sprachwissenschaft",
-                98:  u"The Ik Language",
-                109: u"Tone in Yongning Na",
-                118: u"A grammar of Moloko",
-                141: u"The Verb in Nyakyusa",
+                224: u"Einführung in die grammatische Beschreibung³",
                 153: u"The semantic transparency of English compound nouns",
-                51:  u"Language strategies for the domain of colour",
-                27:  u"Grammaire des constructions elliptiques ",
                 74:  u"A dictionary and grammatical outline of Chakali",
-                143: u"Sémantique formelle: Volume 1",
-                176: u"The Unicode cookbook", 
+                167: u"On this and other worlds",
+                189: u"Advances in formal Slavic linguistics 2016",
+                201: u"Perspectives on information structure in Austronesian languages",
+                204: u"Multiword expressions at length and in depth: Extended papers from the MWE 2017 workshop",
                 102: u"Crossroads between contrastive linguistics, translation studies and machine translation",
-                157: u"The Alor-Pantar languages²",
+                106: u"Language technologies for a multilingual Europe",
                 180: u"Learning context effects",
-                183: u"Methods in prosody: A Romance language perspective",
-                190: u"East Benue-Congo: Nouns, pronouns, and verbs",
-                199: u"René de Saussure and the theory of word formation",
                 209: u"Interpreting and technology",
+                190: u"East Benue-Congo: Nouns, pronouns, and verbs",
+                183: u"Methods in prosody: A Romance language perspective",
+                220: u'Explanation in typology',
+                143: u"Sémantique formelle: Volume 1",
+                27:  u"Grammaire des constructions elliptiques ",
+                176: u"The Unicode cookbook",
+               },
+      'midlateral':{
+                98:  u"The Ik Language",
+                124: u"A grammar of Rapa Nui",
+                78:  u"A grammar of Papuan Malay",
+                97:  u"Die Sprachwissenschaft",
+                82:  u"A grammar of Palula",
+                52:  u"The evolution of case grammar",
+                53:  u"The evolution of grounded spatial language",
+                51:  u"Language strategies for the domain of colour",
+                20:  u"Syntax und Valenz",
+                88:  u"Thoughts on grammaticalization",
+                89:  u"The empirical base of linguistics",
+                91:  u"Roots of language",
+                66:  u"A grammar of Yakkha",
+                75:  u"Linguistic variation, identity construction and cognition",
+                18:  u"A typology of marked-S languages",
+                73:  u"Grammaticalization in the North",
+                67:  u"A grammar of Mauwake",
+                19:  u"Adjective attribution",
+                16:  u"Prosodic Detail in Neapolitan Italian",
+                50:  u"How mobile robots can self-organize a vocabulary",
+                83:  u"A grammar of Yauyos Quechua",
+                109: u"Tone in Yongning Na",
+                141: u"The Verb in Nyakyusa",
+                
+        },
+      'low': {
+                111: u"Modeling information structure in a cross-linguistic perspective ",
+                118: u"A grammar of Moloko",
+                157: u"The Alor-Pantar languages²",
+                199: u"René de Saussure and the theory of word formation",
                 216: u"Bridging constructions",
                 149: u"Beiträge zur deutschen Grammatik",
-                220: u'Explanation in typology',
+                234: u"Beiträge zur deutsche Grammatik²",
+                202: u"Representation and parsing of multiword expressions: Current trends",
                 44:  u".",
                 85:  u"A grammar of Pichi",
-                111: u"Modeling information structure in a cross-linguistic perspective ",
                 116: u"Sprachliche Imitation",
                 123: u"Attributive constructions in NENA",
                 134: u"Absolute Komplexität in der Nominalflexion",
@@ -165,7 +169,13 @@ class Catalog():
                 210: u"Sound change, priming, salience",
                 212: u"A grammar of Komnzo",
                 219: u"Information structure in Isthmus Zapotec",
-                231: u"Analyzing meaning²"
+                231: u"Analyzing meaning²",
+                80:  u"Dual aspectual forms and event structure",
+                197: u"Syntax with oscillators and energy levels",
+                186: u"Analogical classification in formal grammar",
+                166: u"Ship English",
+                242: u"The spell-out algorithm and lexicalization patterns",
+                179: u"A tale of two dialect regions"
                 }     
         }
     self.books = {} 
@@ -245,11 +255,13 @@ class Catalog():
   def setupPlot(self, labels, timeframe):  
     fig = plt.figure(figsize=(12,12))
     #use a wide picture
-    #fig.set_figwidth(12) 
+    #fig.set_figwidth(12)
+    
     #fig.add_subplot(ax)
      
     plt.rc('legend',**{'fontsize':9})
     plt.xticks(range(len(labels)+1)[-timeframe:], [l[-5:].replace('_','/') for l in labels[-timeframe:]], fontsize = 10) 
+
     
     #fig.patch.set_visible(False)
     #ax.axis('off')
@@ -310,7 +322,9 @@ class Catalog():
       #plot line
       ax.plot(xs, ys, color=book.color, linewidth=1.5) 
       #plot marks
-      ax.plot(xs, ys, book.shape, color=book.color, label="(%s) %s" % (ys[-2], book.title[:45])) 
+      ax.plot(xs, ys, book.shape, color=book.color, label="(%s) %s" % (ys[-2], book.title[:45]))    
+    bottom, top = plt.ylim() 
+    plt.ylim(bottom=max(0,bottom),top=top)
     print ""  
     #position legend box
     if legend:
@@ -321,10 +335,6 @@ class Catalog():
       stretchfactor=25/graphs
       ax.legend(loc='center left', bbox_to_anchor=(1, 0.5),frameon=False,numpoints=1,labelspacing=stretchfactor)     
     #save file
-    bottom, top = ax.get_ylim()
-    print top
-    ax.set_ylim(bottom=max(bottom,0),top=top)
-    print top
     plt.savefig('cumulativeall%s.svg'%category)
     plt.savefig('cumulativeall%s.png'%category)
     plt.close(fig)    
