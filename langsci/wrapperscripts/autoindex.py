@@ -53,8 +53,8 @@ if __name__  ==  "__main__":
         #reassemble body
         content  =  "\n".join(newlines)  
         #compute stats
-        numberoflanguages  =  len(re.findall('\\ili{',content))
-        numberofterms  =  len(re.findall('\\isi{',content))
+        numberoflanguages  =  len(re.findall(r'\\ili{',content))
+        numberofterms  =  len(re.findall(r'\\isi{',content))
         #make sure directory indexed/ exists
         try: 
             os.mkdir('./indexed')
