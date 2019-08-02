@@ -379,7 +379,12 @@ class Record():
             self.fields["volume"] = vol 
             self.fields["title"] = self.fields["title"].replace(m.group(),'')
     if self.typ == "incollection":
-        m = bibpatterns.VOLUMEPATTERN.search(self.fields["booktitle"])
+        try:
+          m = bibpatterns.VOLUMEPATTERN.search(self.fields["booktitle"])
+        except KeyError:        
+          self.fields["booktitle"]="{\\biberror{no booktitle}}"
+          self.errors.append("no booktitle")
+          return
         if m != None:
             vol = m.group(3)
             self.fields["volume"] = vol 

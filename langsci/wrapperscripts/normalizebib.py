@@ -36,7 +36,7 @@ texdir = 'chapters'
 outfilename = 'sorted.bib' 
 
 texfiles = glob.glob('%s/*tex'%texdir)
-CITE = re.compile(r'\cite[yeargenltp]*(?:\[.*?\])?\{(.*?)\}')
+CITE = re.compile(r'\\cite[yeargenltp]*(?:\[.*?\])?\{(.*?)\}')
 #                                         pages     key  
 #accumulate the keys of cited works per tex-file
 citations = []
