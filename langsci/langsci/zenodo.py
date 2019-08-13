@@ -84,6 +84,7 @@ class Book(Publication):
     localmetadata = localmetadataf.read()
     localmetadataf.close()
     self.title = TITLEP.search(localmetadata).group(1)
+    print(self.title)
     authorstring = BOOKAUTHORP.search(localmetadata).group(1)
     authors = []
     for i, au in enumerate(LASTAND.split(authorstring)):
@@ -148,6 +149,10 @@ class Chapter(Publication):
     self.metadata['partof_title'] = self.booktitle        
     self.metadata['title']=self.title
     self.metadata['description']=self.abstract 
+    try:
+      self.metadata['partof_pages']=self.pagerange.replace('--','-') 
+    except TypeError:
+      self.metadata['partof_pages']=self.pagerange
     #retrieve affiliations from texfile
     authoraffiliations = CHAPTERAUTHORP.findall(preamble)
     #store the affiliations in a dictionary
@@ -158,7 +163,6 @@ class Chapter(Publication):
     #add affiliations where available in dictionary
     self.metadata['creators'] = [{'name':au,'affiliation':creatorsdic.get(au,' ')} for au in self.authors]   
     self.metadata['keywords']=self.keywords 
-    #self.metadata['partof_pages'] = chapter.pagerange
     #self.metadata['related_identifiers'] = [{'hasPart':self.bookisbn}] #unintuitive directionality of hasPart and isPart
 
 

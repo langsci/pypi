@@ -31,7 +31,7 @@ tokenfile.close()
 #print("BookDOI{%s}"%bookdoi)
 offset = 0
 try:
-    offset = sys.argv[1]
+    offset = int(sys.argv[1])
 except IndexError:
     pass
 for i, ch in enumerate(book.chapters[offset:]):    #for continuation if program stops in the middle of a book
@@ -46,6 +46,7 @@ for i, ch in enumerate(book.chapters[offset:]):    #for continuation if program 
         chapterDOI = ch.register(token)  
     except:
         print("%s at position %i from offset %i could not be registered"%(ch.path,i,offset))
+        break
     insertstring = "\\ChapterDOI{%s}\n"%chapterDOI  
     chapterf = open('chapters/%s.tex'%ch.path,'w')
     chapterf.write(chapterlines[0]) 
