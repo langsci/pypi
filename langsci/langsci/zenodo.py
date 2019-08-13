@@ -141,6 +141,7 @@ class Chapter(Publication):
         self.authors = [au.strip() for au in BIBAUTHORP.search(l).group(1).split(' and ')]
         self.title = BIBTITLEP.search(l).group(1)
         break #we have found the entry we are interested in
+    self.title = self.title.replace('{','').replace('}','')
     self.booktitle = booktitle
     if isbn:
       self.bookisbn = isbn    
