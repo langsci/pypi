@@ -2,31 +2,33 @@
 
 Attributes:
   keys: a dictionary of all BibTeX keys of the type "Smith2001", used for checking for duplicates
-  excludefields: fields which not be output in the normalized file
+  EXCLUDEFIELDS: fields which not be output in the normalized file
 """
 
-import sys
+#import sys
 import re
-import pprint
-import glob
+#import pprint
+#import glob
 import string
-import argparse
+#import argparse
 
 try:
-    from asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS, asciify
-    from bibnouns import LANGUAGENAMES, OCEANNAMES, COUNTRIES, CONTINENTNAMES, CITIES, OCCURREDREPLACEMENTS
+    #from asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS, asciify
+    from asciify import asciify
+    #from bibnouns import LANGUAGENAMES, OCEANNAMES, COUNTRIES, CONTINENTNAMES, CITIES, OCCURREDREPLACEMENTS
     from delatex import dediacriticize
     import bibpatterns
 except ImportError:
-    from langsci.asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS, asciify
-    from langsci.bibnouns import LANGUAGENAMES, OCEANNAMES, COUNTRIES, CONTINENTNAMES, CITIES, OCCURREDREPLACEMENTS
+    #from langsci.asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS, asciify
+    from langsci.asciify import asciify
+    #from langsci.bibnouns import LANGUAGENAMES, OCEANNAMES, COUNTRIES, CONTINENTNAMES, CITIES, OCCURREDREPLACEMENTS
     from langsci.delatex import dediacriticize
     from langsci import bibpatterns
 
 keys = {} #store for all bibtex keys
 
 #The following fields will not be included in the normalizedfile
-excludefields = ['abstract',
+EXCLUDEFIELDS = ['abstract',
                  'language',
                  'date-added',
                  'date-modified',
@@ -108,11 +110,11 @@ class Record():
                                     tp[1].strip()\
                                         .replace('\n', ' ')\
                                         .replace('\t', ' ')
-                                  ) for tp in [re.split('\s*=\s*', t, maxsplit=1)
-                                        for t in re.split('(?<=\})\s*,\s*\n',
-                                                            m.group(3).strip()
-                                                         )
-                                              ]
+                                   ) for tp in [re.split('\s*=\s*', t, maxsplit=1)
+                                                for t in re.split('(?<=\})\s*,\s*\n',
+                                                                  m.group(3).strip()
+                                                                 )
+                                               ]
                                   )
             except IndexError:
                 print(s)
@@ -262,14 +264,14 @@ class Record():
         analyze fields, report errors and correct as necessary
         """
 
-        if self.fields.get('editor') != None and self.fields.get('booktitle') == None:
+        if self.fields.get('editor') != None and self.fields.get('booktitle') is None:
             try:
                 self.fields['booktitle'] = self.fields['title']
             except KeyError:
                 self.errors.append("neither title nor booktitle")
         pages = self.fields.get('pages')
         if pages != None:
-            self.fields['pages'] = re.sub(r'([0-9])-([0-9])', r'\1--\2',pages)
+            self.fields['pages'] = re.sub(r'([0-9])-([0-9])', r'\1--\2', pages)
         self.conformtitles()
         self.checkvolumenumber()
         self.conforminitials()
@@ -292,21 +294,20 @@ class Record():
         """
         try:
             if len(self.errors) > 0:
-                restrict =  True
-                if restrict==False or self.inkeysd.get(self.key):
+                restrict = True
+                if restrict is False or self.inkeysd.get(self.key):
                     print(self.key, '\n  '.join(['  ']+self.errors))
         except AttributeError:
             pass
 
 
-    def upperme(self, match):
-        """
-        substitute a regex match with uppercase
-        """
-
-        return match.group(1) + ' {{' +match.group(2).upper()+'}}'
 
     def checklanguagenames(self):
+        """
+        check for proper nouns in titles.
+        These must be preserved from decapitalization
+        """
+
         #CONFERENCEPATTERN = re.compile("([A-Z][^ ]*[A-Z][A-Z-a-z]]+)") #Binnenmajuskeln should be kept
         #PROCEEDINGSPATTERN = re.compile("(.* (?:Proceedings|Workshop|Conference|Symposium).*)\}$") #Binnenmajuskeln should be kept
 
@@ -354,9 +355,6 @@ class Record():
                 pass
 
 
-
-
-
     def conformtitles(self):
         """
         uppercase and protect first word of subtitle
@@ -364,20 +362,32 @@ class Record():
         protect lone capitals
         """
 
+        def upperme(match):
+            """
+            substitute a regex match with uppercase
+            """
+
+            return match.group(1) + ' {{' +match.group(2).upper()+'}}'
+
         for t in ('title', 'booktitle'):
             if self.fields.get(t) != None:
-                self.fields[t] = re.sub(r'([:\.\?!]) *([a-zA-Z])', self.upperme, self.fields[t])
+                self.fields[t] = re.sub(r'([:\.\?!]) *([a-zA-Z])', upperme, self.fields[t])
                 self.fields[t] = re.sub(r'([A-Z][a-z]*[A-Z]+)', r"{\1}", self.fields[t])
                 self.fields[t] = re.sub(r' ([A-Z]) ', r" {{\1}} ", self.fields[t])
 
     def checkvolumenumber(self):
+        """
+        Check whether a volume number is given in the title.
+        If yes, extract that volume number
+        """
+        
         if self.typ == "book":
             m = bibpatterns.VOLUMEPATTERN.search(self.fields["title"])
             if m != None:
                 vol = m.group(3)
                 print(vol)
                 self.fields["volume"] = vol
-                self.fields["title"] = self.fields["title"].replace(m.group(),'')
+                self.fields["title"] = self.fields["title"].replace(m.group(), '')
         if self.typ == "incollection":
             try:
                 m = bibpatterns.VOLUMEPATTERN.search(self.fields["booktitle"])
@@ -388,7 +398,7 @@ class Record():
             if m != None:
                 vol = m.group(3)
                 self.fields["volume"] = vol
-                self.fields["booktitle"] = self.fields["booktitle"].replace(m.group(),'')
+                self.fields["booktitle"] = self.fields["booktitle"].replace(m.group(), '')
 
     def conforminitials(self):
         """
@@ -438,7 +448,7 @@ class Record():
         for t in ('author', 'editor'):
             if self.fields.get(t) != None:
                 if "et al" in self.fields[t]:
-                    self.fields[t] = self.fields[t].replace("et al","\\biberror{et al}")
+                    self.fields[t] = self.fields[t].replace("et al", "\\biberror{et al}")
                     self.errors.append("literal et al in  %s: %s"% (t, self.fields[t]))
 
     def checkedition(self):
@@ -446,9 +456,9 @@ class Record():
         check for the correct formatting of the edition field
         """
 
-        edn =  self.fields.get('edition')
+        edn = self.fields.get('edition')
         if edn:
-            edn = edn.replace('{','').replace('}', '').replace('"', '').strip()
+            edn = edn.replace('{', '').replace('}', '').replace('"', '').strip()
             try:
                 int(edn)
             except ValueError:
@@ -458,7 +468,7 @@ class Record():
         """
         make sure the url field contains the url and only the url
         """
-        url = self.fields.get('url',False)
+        url = self.fields.get('url', False)
         if url:
             if url.endswith('.'):
                 url = url[:-1]
@@ -491,7 +501,7 @@ class Record():
             if datefound:
                 return
             else:
-                note = self.fields.get('note',False)
+                note = self.fields.get('note', False)
             if note:
                 m = bibpatterns.URLDATE.search(note)
                 if m != None:
@@ -502,19 +512,24 @@ class Record():
                     self.fields['note'] = self.fields['note'].replace(m.group(0), '')
 
         else:
-            if self.fields.get('url') == None:
+            if self.fields.get('url') is None:
                 self.errors.append("urldate without url")
 
     def checkthesis(self):
+        """
+        check if a @book should rather be a @thesis and extract
+        relevant information from the title given
+        """
+
         if self.typ != 'book':
-          return
-        m = bibpatterns.THESISPATTERN.search(self.fields.get("publisher",""))
+            return
+        m = bibpatterns.THESISPATTERN.search(self.fields.get("publisher", ""))
         if m != None:
             self.typ = "thesis"
             school = m.group(1)
             self.fields["school"] = school
             thesistype = m.group(2)
-            if m.group(2) in ("doctoral", "PhD"):
+            if thesistype in ("doctoral", "PhD"):
                 self.typ = "phdthesis"
             del self.fields["publisher"]
 
@@ -538,7 +553,7 @@ class Record():
             number = self.fields.get('number')
             volume = self.fields.get('volume')
             if volume != None:
-                if number == None:
+                if number is None:
                     self.fields['number'] = volume
                     del self.fields['volume']
         #books should have either author or editor, but not both or none
@@ -554,7 +569,7 @@ class Record():
         else:
             self.errors.append("neither author nor editor")
 
-    def addsortname(self,name):
+    def addsortname(self, name):
         """
         add an additional field for sorting for names with diacritics
         """
@@ -576,13 +591,13 @@ class Record():
             return
         mandatory = ('author', 'year', 'title', 'journal', 'volume')
 
-        if self.fields.get('volume') == None and self.fields.get('number') != None:
+        if self.fields.get('volume') is None and self.fields.get('number') != None:
             self.fields['volume'] = self.fields['number']
             del self.fields['number']
         for m in mandatory:
             self.handleerror(m)
-        if self.fields.get('pages') == None: #only check for pages if no electronic journal
-            if self.fields.get('url') == None:
+        if self.fields.get('pages') is None: #only check for pages if no electronic journal
+            if self.fields.get('url') is None:
                 self.fields['pages'] = r"{\biberror{no pages}}"
                 self.errors.append("missing pages")
         auth = self.fields.get('author')
@@ -619,8 +634,8 @@ class Record():
         mandatory = ('author', 'year', 'title')
         for m in mandatory:
             self.handleerror(m)
-        if self.fields.get('pages') == None: #only check for pages if no electronic journal
-            if self.fields.get('url') == None:
+        if self.fields.get('pages') is None: #only check for pages if no electronic journal
+            if self.fields.get('url') is None:
                 self.fields['pages'] = r"{\biberror{no pages}}"
                 self.errors.append("missing pages")
         auth = self.fields.get('author')
@@ -647,12 +662,12 @@ class Record():
             if  self.fields[field] != None and '??' in self.fields[field]:
                 self.errors.append("?? in %s" % field)
 
-    def handleerror(self,m):
+    def handleerror(self, m):
         """
         check whether a mandatory field is present
         replace with error mark if not present
         """
-        if self.fields.get(m) == None:
+        if self.fields.get(m) is None:
             self.fields[m] = r"{\biberror{no %s}}" % m
             self.errors.append("missing %s"%m)
 
@@ -665,10 +680,10 @@ class Record():
         s = """@%s{%s,\n\t%s\n}"""%(self.typ,
                                     self.key,
                                     ",\n\t".join(
-                                         ["%s = %s" %(f, self.fields[f])
+                                        ["%s = %s" %(f, self.fields[f])
                                          for f in sorted(self.fields.keys())
-                                         if f not in excludefields
-                                         ]
+                                         if f not in EXCLUDEFIELDS
+                                        ]
                                     )
                                    )
         return s
@@ -676,6 +691,9 @@ class Record():
 
 
     def normalize(s, inkeysd={}, restrict=False):
+        """
+        normalize a bibtex record according to LangSci conventions
+        """
         a = s.split('\n@')
         #split preamble (if any) from records
         preamble = a[0]
@@ -689,10 +707,9 @@ class Record():
                           inkeysd=inkeysd,
                           restrict=restrict,
                           reporting=[]
-                          ).bibtex()
+                         ).bibtex()
                    for record in rest
                   ]
         #assemble output string
         rest = '\n\n'.join([b for b in bibtexs if b])
         return '\n'.join((preamble, rest))
-
