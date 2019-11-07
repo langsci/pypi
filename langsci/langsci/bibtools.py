@@ -13,15 +13,11 @@ import string
 #import argparse
 
 try:
-    #from asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS, asciify
     from asciify import asciify
-    #from bibnouns import LANGUAGENAMES, OCEANNAMES, COUNTRIES, CONTINENTNAMES, CITIES, OCCURREDREPLACEMENTS
     from delatex import dediacriticize
     import bibpatterns
 except ImportError:
-    #from langsci.asciify import ASCIITRANS, FRENCH_REPLACEMENTS, GERMAN_REPLACEMENTS, ICELANDIC_REPLACEMENTS, asciify
     from langsci.asciify import asciify
-    #from langsci.bibnouns import LANGUAGENAMES, OCEANNAMES, COUNTRIES, CONTINENTNAMES, CITIES, OCCURREDREPLACEMENTS
     from langsci.delatex import dediacriticize
     from langsci import bibpatterns
 
@@ -110,8 +106,8 @@ class Record():
                                     tp[1].strip()\
                                         .replace('\n', ' ')\
                                         .replace('\t', ' ')
-                                   ) for tp in [re.split('\s*=\s*', t, maxsplit=1)
-                                                for t in re.split('(?<=\})\s*,\s*\n',
+                                   ) for tp in [re.split(r'\s*=\s*', t, maxsplit=1)
+                                                for t in re.split(r'(?<=\})\s*,\s*\n',
                                                                   m.group(3).strip()
                                                                  )
                                                ]
@@ -256,7 +252,12 @@ class Record():
         self.conform()
         self.report()
         self.bibstring = "@%s{%s,\n\t"%(self.typ, self.key)
-        self.bibstring += ",\n\t".join(sorted(["%s = {%s}"%(f, self.fields[f]) for f in self.fields if self.fields[f] not in ('', None)]))
+        self.bibstring += ",\n\t".join(sorted(["%s = {%s}"%(f, self.fields[f]) 
+                                               for f
+                                               in self.fields
+                                               if self.fields[f] not in ('', None)
+                                              ])
+                                      )
         self.bibstring += "\n}\n"
 
     def conform(self):
@@ -308,8 +309,6 @@ class Record():
         These must be preserved from decapitalization
         """
 
-        #CONFERENCEPATTERN = re.compile("([A-Z][^ ]*[A-Z][A-Z-a-z]]+)") #Binnenmajuskeln should be kept
-        #PROCEEDINGSPATTERN = re.compile("(.* (?:Proceedings|Workshop|Conference|Symposium).*)\}$") #Binnenmajuskeln should be kept
 
         ts = ['title', 'booktitle']
         for t in ts:
@@ -380,7 +379,7 @@ class Record():
         Check whether a volume number is given in the title.
         If yes, extract that volume number
         """
-        
+
         if self.typ == "book":
             m = bibpatterns.VOLUMEPATTERN.search(self.fields["title"])
             if m != None:
@@ -687,8 +686,6 @@ class Record():
                                     )
                                    )
         return s
-
-
 
     def normalize(s, inkeysd={}, restrict=False):
         """
