@@ -23,6 +23,7 @@ INCLUDEPAPERP = re.compile(r"\n[\t ]*\\includepaper\{chapters/(.*?)\}")#only pap
 BOOKAUTHORP = re.compile(r"\\author{(.*?)}")
 LASTAND = re.compile(r"(\\lastand|\\and)")
 CHAPTERAUTHORP = re.compile(r"\\(author{|and|lastand)(.*?) *\\affiliation{(.*?)}")
+ORCIDSP = re.compile(r"\\(author{|and|lastand)(.*?) *\\orcid{(.*?)}")
 TITLEP = re.compile(r"\\title{(.*?)}")
 ISBNP = re.compile(r"\\lsISBNdigital}{(.*)}") 
 CHAPTERKEYWORDSP = re.compile(r"\\keywords{(.*?)}")

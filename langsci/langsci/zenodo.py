@@ -68,7 +68,7 @@ class Book(Publication):
     self.getBookMetadata()
     self.chapter = []
     self.getChapters()
-    self.metadata['publication_type'] = 'book'
+    self.metadata['publication_type'] = 'book' 
     #self.metadata['related_identifiers'] = [{'isAlternateIdentifier':self.digitalisbn}]    #currently not working on Zenodo
     self.metadata['title']=self.title
     self.metadata['description']=self.abstract
@@ -156,13 +156,20 @@ class Chapter(Publication):
       self.metadata['partof_pages']=self.pagerange
     #retrieve affiliations from texfile
     authoraffiliations = CHAPTERAUTHORP.findall(preamble)
+    orcidgroups = ORCIDSP.findall(preamble)
     #store the affiliations in a dictionary
     creatorsdic = {}
     for authoraffiliation in authoraffiliations:
         #["and", "John Smith", "Harvard"]. Ignore first element
-        creatorsdic[authoraffiliation[1]] = authoraffiliation[2].replace('\&','&')
-    #add affiliations where available in dictionary
-    self.metadata['creators'] = [{'name':au,'affiliation':creatorsdic.get(au,' ')} for au in self.authors]   
+        creatorsdic[authoraffiliation[1].strip()] = authoraffiliation[2].replace('\&','&')
+    print(creatorsdic)
+    orcidsdic = {}
+    for orcidgroup in orcidgroups:
+        #["and", "John Smith", "123456"]. Ignore first element
+        orcidauthorname = orcidgroup[1].split('\\')[0].strip() #split on \ to get rid of \affiliation...
+        orcidsdic[orcidauthorname] = orcidgroup[2].strip()
+        #add affiliations where available in dictionary
+        self.metadata['creators'] = [{'name':au,'affiliation':creatorsdic.get(au,' '),'orcid':orcidsdic.get(au,' ')} for au in self.authors]   
     self.metadata['keywords']=self.keywords 
     #self.metadata['related_identifiers'] = [{'hasPart':self.bookisbn}] #unintuitive directionality of hasPart and isPart
 
