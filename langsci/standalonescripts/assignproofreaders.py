@@ -43,22 +43,28 @@ Sebastian
 
 
 if __name__ == "__main__":
-    githubid = sys.argv[1] 
-    authorname = sys.argv[2] 
+    githubid = sys.argv[1]
+    authorname = sys.argv[2]
 
-    chapters = ['0']+[l.strip() for l in open("chapternames").readlines()] #add dummy 0 to make chapters start with '1'
-    assignments = open("assignments").readlines() 
-    duedate=(datetime.now() + timedelta(weeks=4)).strftime("%B %d")
-    
+    chapters = ["0"] + [
+        l.strip() for l in open("chapternames").readlines()
+    ]  # add dummy 0 to make chapters start with '1'
+    assignments = open("assignments").readlines()
+    duedate = (datetime.now() + timedelta(weeks=4)).strftime("%B %d")
+
     for l in assignments:
-        #parse the chapternames file
+        # parse the chapternames file
         name = l.split()[0]
         chapternumbers = l.split()[1:]
-        #collate all assigned chapters
-        chapterlist = '\n'.join("* %s %s"%(i,chapters[int(i)]) for i in chapternumbers)	
-        #generate mail body
-        mailbody = template.format(**locals()) 
-        #launch mail program
-        thunderbirdoptionstring = """-compose "to=%s,subject='proofreading %s',format=2,from='sebastian.nordhoff@langsci-press.org',body='%s'" """%(name,authorname,mailbody) 
-        os.system("thunderbird %s"%thunderbirdoptionstring)
-            
+        # collate all assigned chapters
+        chapterlist = "\n".join(
+            "* %s %s" % (i, chapters[int(i)]) for i in chapternumbers
+        )
+        # generate mail body
+        mailbody = template.format(**locals())
+        # launch mail program
+        thunderbirdoptionstring = (
+            """-compose "to=%s,subject='proofreading %s',format=2,from='sebastian.nordhoff@langsci-press.org',body='%s'" """
+            % (name, authorname, mailbody)
+        )
+        os.system("thunderbird %s" % thunderbirdoptionstring)
