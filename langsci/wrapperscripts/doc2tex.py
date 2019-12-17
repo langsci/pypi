@@ -3,13 +3,13 @@ import os
 import codecs
 
 try:
-    from  convertertools import convert
+    from convertertools import convert
 except ImportError:
     from langsci.convertertools import convert
 
 filename = sys.argv[1]
 currentworkingdirectory = os.getcwd()
-doc = convert(filename,tmpdir=currentworkingdirectory,wd=currentworkingdirectory)
+doc = convert(filename, tmpdir=currentworkingdirectory, wd=currentworkingdirectory)
 
 out1 = codecs.open("temporig.tex", "w", "utf-8")
 out1.write(doc.text)

@@ -3,7 +3,7 @@ Perform sanity checks for Latex files in a git repository
 """
 
 import re
-import git 
+import git
 import os
 import sys
 import subprocess
@@ -12,6 +12,7 @@ try:
     from sanity import SanityDir
 except ImportError:
     from langsci.sanity import SanityDir
+
 
 def cloneorpull(url):
     """
@@ -26,11 +27,11 @@ def cloneorpull(url):
       str: the file path to the local repo
       
     """
-    m = re.search('langsci/([0-9]{2,}a?)',url)
+    m = re.search("langsci/([0-9]{2,}a?)", url)
     githubID = m.group(1)
     print("GitHub ID found:", githubID)
-    giturl = "https://github.com/langsci/%s.git"%githubID
-    gitdir = os.path.join(os.getcwd(),githubID)
+    giturl = "https://github.com/langsci/%s.git" % githubID
+    gitdir = os.path.join(os.getcwd(), githubID)
     print("git repo is ", giturl)
     try:
         git.Repo.clone_from(giturl, gitdir)
@@ -40,29 +41,31 @@ def cloneorpull(url):
         cwd = os.getcwd()
         print(gitdir)
         os.chdir(gitdir)
-        subprocess.call(["git","pull"]) 
+        subprocess.call(["git", "pull"])
         os.chdir(cwd)
         print("pulled")
-    return gitdir 
-    
-    
+    return gitdir
+
+
 if __name__ == "__main__":
     """
     usage: 
         python3 sanitygit.py https://www.github.com/langsci/42 
-    """ 
+    """
     githuburl = sys.argv[1]
     ignorecodes = []
     try:
-        ignorecodes  = sys.argv[2:]
+        ignorecodes = sys.argv[2:]
     except IndexError:
         pass
     d = cloneorpull(githuburl)
-    lspdir = SanityDir(os.path.join(d,'.'),ignorecodes)
-    print("checking %s" % '\n  '.join(['']+[f for f in lspdir.texfiles+lspdir.bibfiles]))
+    lspdir = SanityDir(os.path.join(d, "."), ignorecodes)
+    print(
+        "checking %s"
+        % "\n  ".join([""] + [f for f in lspdir.texfiles + lspdir.bibfiles])
+    )
     lspdir.check()
     lspdir.printErrors()
-    imgdir =  SanityDir(os.path.join(d,'figures'),ignorecodes)
+    imgdir = SanityDir(os.path.join(d, "figures"), ignorecodes)
     imgdir.check()
     imgdir.printErrors()
-    
