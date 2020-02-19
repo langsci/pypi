@@ -22,8 +22,10 @@ p = re.compile(r"\\indexentry \{(.*)\|hyper")
 
 
 
+ignoredic={}
 
 def processline(s):
+    global ignoredic
     """Conform the input string to the index requirements and return the conformed string
 
   To conform the string, first LaTex diacritics like {\'{e}} are removed. Then, Unicode
@@ -48,29 +50,23 @@ def processline(s):
         items = p.match(s).group(1).split("@")
         sortstring = items[0]
         has_at = False
-        print(len(items))
         if len(items)>1:
             has_at = True
-            print(has_at)
     except AttributeError:
         print("%s could not be parsed" % repr(s))
         return ""
     processedstring = asciify(dediacriticize(sortstring))
     if sortstring == processedstring:
-        #print(3)
         return s
     else:
-        #print("%s => %s" % (sortstring, processedstring))
+        if sortstring not in ignoredic:
+            print("%s => %s" % (sortstring, processedstring))
+            ignoredic[sortstring] = True
         if has_at:
-            print(4)
-            print(s,items)
             result = s.replace("%s@" % sortstring, "%s@" % processedstring)
-            print(result)
             return result
         else:
-            #print(5)
             result = s.replace(sortstring, "%s@%s" % (processedstring,sortstring))
-            #print(result)
             return result
 
 
