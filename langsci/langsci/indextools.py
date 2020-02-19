@@ -17,22 +17,25 @@ except ImportError:
 
 # the LaTeX index entries consist of the string to be displayed (after the "@")
 # and the string used for sorting (before the "@").
-p = re.compile(r"\\indexentry \{(.*?)@")
+p = re.compile(r"\\indexentry \{(.*)\|hyper")
+
+
+
 
 
 def processline(s):
     """Conform the input string to the index requirements and return the conformed string
-  
-  To conform the string, first LaTex diacritics like {\'{e}} are removed. Then, Unicode 
-  is translated to ASCII  
-    
-  Args: 
+
+  To conform the string, first LaTex diacritics like {\'{e}} are removed. Then, Unicode
+  is translated to ASCII
+
+  Args:
     s (str): the input string
-    
+
   Returns:
     str:  the output string
-    
-  Example: 
+
+  Example:
     >>> print(processline("\v{C}{\'{e}}pl\"o, Slavomír")
     Ceplo, Slavomir
   """
@@ -41,29 +44,45 @@ def processline(s):
         return s
     # find the substring used for sorting
     m = p.match(s)
-    sortstring = ""
     try:
-        sortstring = m.groups(1)[0]
+        items = p.match(s).group(1).split("@")
+        sortstring = items[0]
+        has_at = False
+        print(len(items))
+        if len(items)>1:
+            has_at = True
+            print(has_at)
     except AttributeError:
         print("%s could not be parsed" % repr(s))
-    tmpstring = dediacriticize(sortstring)
-    tmpstring = asciify(tmpstring)
-    if sortstring == tmpstring:
+        return ""
+    processedstring = asciify(dediacriticize(sortstring))
+    if sortstring == processedstring:
+        #print(3)
         return s
     else:
-        print("%s => %s" % (sortstring, tmpstring))
-        return s.replace("%s@" % sortstring, "%s@" % tmpstring)
+        #print("%s => %s" % (sortstring, processedstring))
+        if has_at:
+            print(4)
+            print(s,items)
+            result = s.replace("%s@" % sortstring, "%s@" % processedstring)
+            print(result)
+            return result
+        else:
+            #print(5)
+            result = s.replace(sortstring, "%s@%s" % (processedstring,sortstring))
+            #print(result)
+            return result
 
 
 def processfile(filename):
     """Read a file and write the fixed output to another file with "mod" appended to its name
-  
-  Args: 
+
+  Args:
     filename (str): the path to the file
-    
+
   Returns:
     None
-    
+
   """
     print("Reading", filename)
     with open(filename, encoding="utf-8") as indexfile:
