@@ -17,7 +17,7 @@ except ImportError:
 
 class Publication:
     """
-  A Publication holds all the metadata which are 
+  A Publication holds all the metadata which are
   generic for books and papers
   """
 
@@ -56,8 +56,8 @@ class Publication:
 
 
 class Book(Publication):
-    """ 
-  A full-length publication, either a monograph or an edited volume 
+    """
+  A full-length publication, either a monograph or an edited volume
   """
 
     def __init__(self):
@@ -109,7 +109,7 @@ class Book(Publication):
 
     def getChapters(self):
         """
-    find all chapters in edited volumes which are referenced in main.tex 
+    find all chapters in edited volumes which are referenced in main.tex
     """
 
         mainf = open("main.tex", encoding="utf-8")
@@ -180,8 +180,11 @@ class Chapter(Publication):
             creatorsdic[authoraffiliation[1].strip()] = authoraffiliation[2].replace(
                 "\&", "&"
             )
-        print(creatorsdic)
         orcidsdic = {}
+        if len(orcidgroups) > 0:
+            if len(orcidgroups) != len(authoraffiliations):
+                print("In a given chapter, all authors must have a value for orcid, or none. In chapter %s, there are %i authors, but only %i orcid fields. Please provide an empty \\orcid{ } field for the missing author(s)" % (path,len(authoraffiliations),len(orcidgroups)))
+                raise ValueError
         for orcidgroup in orcidgroups:
             # ["and", "John Smith", "123456"]. Ignore first element
             orcidauthorname = (
@@ -189,13 +192,17 @@ class Chapter(Publication):
             )  # split on \ to get rid of \affiliation...
             orcidsdic[orcidauthorname] = orcidgroup[2].strip()
             # add affiliations where available in dictionary
-            self.metadata["creators"] = [
-                {
-                    "name": au,
-                    "affiliation": creatorsdic.get(au, " "),
-                    "orcid": orcidsdic.get(au, " "),
-                }
-                for au in self.authors
-            ]
+        self.metadata["creators"] = [
+            {
+                "name": au,
+                "affiliation": creatorsdic.get(au, " "),
+                "orcid": orcidsdic.get(au, ""),
+            }
+            for au in self.authors
+        ]
+        print(self.metadata["creators"])
+        for i,c in enumerate(self.metadata["creators"]):
+            if c["orcid"] in (None,""," "):
+                del self.metadata["creators"][i]["orcid"]
         self.metadata["keywords"] = self.keywords
-        # self.metadata['related_identifiers'] = [{'hasPart':self.bookisbn}] #unintuitive directionality of hasPart and isPart
+        #self.metadata['related_identifiers'] = [{'hasPart':self.bookisbn}] #unintuitive directionality of hasPart and isPart
