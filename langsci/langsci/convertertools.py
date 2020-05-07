@@ -563,7 +563,7 @@ class Document:
         #collapse newlines
         modtext = re.sub("\n*\\\\\\\\\n*",'\\\\\\\\\n',modtext) 
         #bib
-        authorchars = "[Mac]*[A-Z][-a-záéíóúaèìòùâeîôûñäëïöü]+"
+        authorchars = "[A-Z][-a-záéíóúaèìòùâeîôûñäëïöüA-Z]+"
         yearchars = "[12][0-9]{3}[a-z]?"
         modtext = re.sub("\((%s) +et al\.?  +(%s): *([0-9,-]+)\)"%(authorchars,yearchars),
                          "\\citep[\\3]{\\1EtAl\\2}",
