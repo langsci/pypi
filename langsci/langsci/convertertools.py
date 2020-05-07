@@ -97,6 +97,7 @@ class Document:
 \title{}
 \abstract{}
 \IfFileExists{../localcommands.tex}{
+  \addbibresource{localbibliography.bib}
   \input{../localpackages}
   \input{../localcommands} 
   \input{../localhyphenation} 
