@@ -105,8 +105,9 @@ class Document:
 
 \begin{document}
 \maketitle 
+%\shorttitlerunninghead{}%%use this for an abridged title in the page headers
 """     
-        paperpostamble = "\n\\sloppy\\printbibliography[heading=subbibliography,notkeyword=this]\\end{document}"
+        paperpostamble = "\n\\sloppy\\printbibliography[heading=subbibliography,notkeyword=this]\n\\end{document}"
         self.papertext = paperpreamble + self.modtext + paperpostamble
 
         
