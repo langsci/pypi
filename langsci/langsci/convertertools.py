@@ -690,6 +690,8 @@ class Document:
 
         modtext = modtext.replace("begin{tabular}","begin{tabularx}{\\textwidth}")
         modtext = modtext.replace("end{tabular}","end{tabularx}")
+        modtext = modtext.replace("\\hhline","%\\hhline%%replace by cmidrule")
+
 
         modtext = re.sub(r"\\setcounter{[^}]+\}\{0\}",'',modtext)
 
@@ -730,7 +732,7 @@ class Document:
         
         modtext = re.sub("\\\\item *\n+",'\\item ',modtext)
         
-        modtext = re.sub(r"\\begin{itemize}\n\\item (\\section{.*?})\\end{itemize}",r"\1",modtext)
+        modtext = re.sub(r"\\begin{itemize}\n\\item *(\\section{.*?})\\end{itemize}",r"\1",modtext)
         
         modtext = re.sub("\\\\footnote\{ +",'\\\\footnote{',modtext)
         #put spaces on right side of formatting
