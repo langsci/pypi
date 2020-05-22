@@ -534,9 +534,11 @@ class Document:
         modtext = re.sub("X\|","X",modtext)
         modtext = re.sub("\|X","X",modtext)
         modtext = re.sub(r"\\fontsize\{.*?\}\\selectfont","",modtext)
+        #remove stupid multicolumns and center multicolumns
         modtext = modtext.replace("\\multicolumn{1}{l}{}","")
         modtext = modtext.replace("\\multicolumn{1}{l}","")
-        #remove stupid Open Office styles 
+        modtext = modtext.replace("}{X}{","}{c}{")
+        #remove stupid Open Office styles
         modtext = re.sub("\\\\begin\\{styleLangSciSectioni\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioni\\}","\\section{\\1}",modtext) 
         modtext = re.sub("\\\\begin\\{styleLangSciSectionii\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectionii\\}","\\subsection{\\1}",modtext)
         modtext = re.sub("\\\\begin\\{styleLangSciSectioniii\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioniii\\}","\\subsubsection{\\1}",modtext)
@@ -614,7 +616,7 @@ class Document:
         modtext = re.sub("(%s) et al\.? +(%s)"%(authorchars,yearchars),
                          "\\citealt{\\1EtAl\\2}",
                          modtext)    
-        #conflate
+        #integrate ampersands
         modtext = re.sub(r"(%s) \\& \\citet{"%authorchars,
                          "\\citet{\\1",
                          modtext)  
@@ -627,9 +629,21 @@ class Document:
         modtext = re.sub(r"(%s) and \\citealt{"%authorchars,
                          "\\citealt{\\1",
                          modtext)   
-        modtext = re.sub(r"([A-Z][a-z]+)\}[,;] \\citealt{",
+        #Smith (2000, 2001)
+        modtext = re.sub(r"(%s)\((%s), *(%s)\)"%(authorchars, yearchars, yearchars),
+                         r"\\citet{\1\2,\3\2}",
+                         modtext)
+        #Smith 2000, 2001
+        modtext = re.sub(r"\\citealt{(%s)(%s)}[,;] (%s)"%(authorchars, yearchars, yearchars),
+                         r"\\citealt{\1\2,\3\2}",
+                         modtext)
+        #condense chains of citations
+        modtext = re.sub(r"(\\citealt{%s)\}[,;] \\citealt{"%authorchars,
                          "\\1,",
-                         modtext)        
+                         modtext)
+        modtext = re.sub(r"(\\citet{%s)\}[,;] \\citealt{"%authorchars,
+                         "\\1,",
+                         modtext)
         #examples
         modtext = modtext.replace("\n()", "\n\\ea \n \\gll \\\\\n   \\\\\n \\glt\n\\z\n\n")
         modtext = re.sub("\n\(([0-9]+)\)", """\n\ea%\\1
@@ -669,10 +683,10 @@ class Document:
         modtext = re.sub("\\\\begin{figure}\[h\]",'\\\\begin{figure}',modtext)
         
         
-        modtext = re.sub("(begin\{tabular\}[^\n]*)",r"""\1
+        modtext = re.sub("(begin\{tabular\}[^\n]*)",r"""\1\n
 \lsptoprule""",modtext) 
         modtext = re.sub(r"\\end{tabular}\n*",r"""\lspbottomrule
-\end{tabular}\n""",modtext) 
+\end{tabular}\n""",modtext)
 
         modtext = modtext.replace("begin{tabular}","begin{tabularx}{\\textwidth}")
         modtext = modtext.replace("end{tabular}","end{tabularx}")
@@ -694,17 +708,23 @@ class Document:
         #merge useless chains of formatting
         modtext = re.sub("(\\\\textbf\{[^}]+)\}\\\\textbf\{","\\1",modtext)
         modtext = re.sub("(\\\\textit\{[^}]+)\}\\\\textit\{","\\1",modtext)
-        modtext = re.sub(r"(\\textit\{[^}]+)\}( *)\\textit\{","\\1\\2",modtext) #only for italics, we include spaces when condensing markup. For bold or sc, this would lead to problems in examples
         modtext = re.sub("(\\\\texttt\{[^}]+)\}\\\\texttt\{","\\1",modtext)
         modtext = re.sub("(\\\\emph\{[^}]+)\}\\\\emph\{","\\1",modtext)
         
-        
-        #TODO propagate textbf in gll
-        
-        for s in ('textit','textbf','textsc','texttt','emph'):
-          i=1
-          while i!=0:
-            modtext,i = re.subn(r'\\%s\{([^\}]+) '%s,r'\\%s{\1} \\%s{'%(s,s),modtext) 
+        #remove all textits from sourcelines
+        i = 1
+        while i != 0:
+            modtext, i = re.subn(r'(\\gll.*)\\textit',
+                             r'\1',
+                             modtext)
+
+        #bold and smallcaps are used in example environments, so we want them to enclose only minimal words
+        for s in ('textbf','textsc'):
+            i = 1
+            while i != 0:
+                modtext,i = re.subn(r'\\%s\{([^\}]+) '%s,
+                                    r'\\%s{\1} \\%s{'%(s,s),
+                                    modtext)
             
         modtext = re.sub("\\\\includegraphics\[.*?width=\\\\textwidth\]\{","%please move the includegraphics inside the {figure} environment\n%%\includegraphics[width=\\\\textwidth]{figures/",modtext)
         
