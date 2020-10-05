@@ -695,14 +695,16 @@ class Document:
 
         modtext = re.sub(r"\\setcounter{[^}]+\}\{0\}",'',modtext)
 
-        modtext = re.sub("""listWWNum[ivxlc]+level[ivxlc]+""","itemize",modtext) 
-        modtext = re.sub("""listL[ivxlc]+level[ivxlc]+""","itemize",modtext) 
-        
-        modtext = modtext.replace("& \\begin{itemize}\n\\item","& \n%%\\begin{itemize}\\item\n")  
-        modtext = modtext.replace("\\end{itemize}\\\\\n","\\\\\n%%\\end{itemize}\n")  
+
+        modtext = re.sub("""listWWNum[ivxlc]+level[ivxlc]+""","itemize",modtext)
+        modtext = re.sub("""listL[ivxlc]+level[ivxlc]+""","itemize",modtext)
+
+
+        modtext = modtext.replace("& \\begin{itemize}\n\\item","& \n%%\\begin{itemize}\\item\n")
+        modtext = modtext.replace("\\end{itemize}\\\\\n","\\\\\n%%\\end{itemize}\n")
         modtext = modtext.replace("& \\end{itemize}","& %%\\end{itemize}\n")
-        
-        
+
+
         modtext = re.sub(r"""\n+\\z""","\\z",modtext) 
         modtext = re.sub("""\n\n+""","\n\n",modtext) 
         
@@ -732,7 +734,14 @@ class Document:
         
         modtext = re.sub("\\\\item *\n+",'\\item ',modtext)
         
-        modtext = re.sub(r"\\begin{itemize}\n\\item *(\\section{.*?})\\end{itemize}",r"\1",modtext)
+        modtext = re.sub(r"\\begin{itemize}\n\\item *(\\section{.*?})\n\\end{itemize}",r"\1",modtext)
+
+
+        modtext = re.sub(r"\\begin{itemize}\n\\item \\begin{itemize}\n\\item (\\subsection{.*?})\n\\end{itemize}\n\\end{itemize}",r"\1",modtext)
+
+
+
+        modtext = re.sub(r"\\begin{itemize}\n\\item *(\\section{.*?})\n\n\\begin{itemize}\n\\item (\\subsection{.*?})\n\\end{itemize}\n\\end{itemize}",r"\1\n\2",modtext)
         
         modtext = re.sub("\\\\footnote\{ +",'\\\\footnote{',modtext)
         #put spaces on right side of formatting
