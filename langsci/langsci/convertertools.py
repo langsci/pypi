@@ -750,8 +750,7 @@ class Document:
         #left
         modtext = re.sub("\\\\text(it|bf|sc|tt|up|rm)\\{ +",' \\\\text\\1{',modtext)
         modtext = re.sub("\\\\text(it|bf|sc|tt|up|rm)\\{([!?\(\)\[\]\.\,\>]*)\\}",'\\2',modtext)
-        
-        
+        modtext = re.sub(r"\\tablefirsthead\{\}\n\n\\tabletail\{\}\n\\tablelasttail\{\}","",modtext)
         
         #duplicated section names 
         modtext = re.sub("(chapter|section|paragraph)\[.*?\](\{.*\}.*)","\\1\\2",modtext)
