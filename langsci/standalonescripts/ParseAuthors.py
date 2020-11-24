@@ -19,6 +19,7 @@ warnings = []
 
 
 
+
 def append_authors(line):
     authors_dict = {}
     line = line[line.find('\\author')+8:line.rfind('}')]
@@ -86,6 +87,9 @@ def create_database(id):
                 chapterdict["author"] = append_authors(line)
 
         chapterdict_list.append(chapterdict)
+        if "\\{" in chapterdict:
+            logfile.write("WARNING: \\{ detected in chapter %s. This will likely break the parsing of that line.")
+            print("WARNING: \\{ detected in chapter %s. This will likely break the parsing of that line.")
     metadata_dict["chapter"] = chapterdict_list
     return(metadata_dict)
 
@@ -99,7 +103,11 @@ def make_jsons(id):
 
 for id in range(startid,endid+1):
     print("Processing book %s" % str(id))
+    if os.path.exists("%s.log" % str(id)):
+        os.remove("%s.log")
+    print("Logging in %s.log" % str(id))
+    logfile = open("%s.log" % str(id), "a")
     make_jsons(id)
-
+    logfile.close()
 
 
