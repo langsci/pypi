@@ -21,14 +21,15 @@ class Publication:
   generic for books and papers
   """
 
-    def __init__(self):
+    def __init__(self, extracommunities=[]):
+        communities = ["langscipress"] + extracommunities
         self.metadata = {
             "upload_type": "publication",
             "access_right": "open",
             "license": "cc-by",
             "imprint_publisher": "Language Science Press",
             "imprint_place": "Berlin",
-            "communities": [{"identifier": "langscipress"}],
+            "communities": [{"identifier": c} for c in communities],
             "prereserve_doi": True,
             "language": "eng",
         }
@@ -60,7 +61,7 @@ class Book(Publication):
   A full-length publication, either a monograph or an edited volume
   """
 
-    def __init__(self):
+    def __init__(self, extracommunities=[]):
         Publication.__init__(self)
         self.title = None
         self.authors = []
@@ -127,9 +128,9 @@ class Chapter(Publication):
   A chapter in an edited volume
   """
 
-    def __init__(self, path, booktitle="", isbn=False):
+    def __init__(self, path, booktitle="", isbn=False, extracommunities=[]):
         print("reading", path)
-        Publication.__init__(self)
+        Publication.__init__(self, extracommunities=extracommunities)
         chapterf = open("chapters/%s.tex" % path, encoding="utf-8")
         chapter = chapterf.read()
         chapterf.close()

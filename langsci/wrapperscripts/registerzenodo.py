@@ -16,7 +16,18 @@ The metadata is collected and a corresponding entry is created on Zenodo.
 The DOI assigned by Zenodo is collected and inserted into the file. 
 """
 
-book = zenodo.Book()
+offset = 0
+try:
+    offset = int(sys.argv[1])
+except IndexError:
+    pass
+extracommunities = []
+try:
+    extracommunities = int(sys.argv[2])
+except IndexError:
+    pass
+
+book = zenodo.Book(extracommunities=extracommunities)
 # for c in book.chapters:
 # pprint.pprint(c.metadata)
 try:
@@ -31,11 +42,8 @@ tokenfile.close()
 # print(token)
 # bookdoi = book.register(token)
 # print("BookDOI{%s}"%bookdoi)
-offset = 0
-try:
-    offset = int(sys.argv[1])
-except IndexError:
-    pass
+
+
 for i, ch in enumerate(
     book.chapters[offset:]
 ):  # for continuation if program stops in the middle of a book
@@ -47,7 +55,7 @@ for i, ch in enumerate(
             print("DOI already present in %s" % ch.path)
             raise IOError
     try:
-        chapterDOI = ch.register(token)
+        chapterDOI = ch.register(token, extracommunities=extracommunities)
     except:
         print(
             "%s at position %i from offset %i could not be registered"
