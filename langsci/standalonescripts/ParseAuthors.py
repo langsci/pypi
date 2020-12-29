@@ -78,7 +78,7 @@ def create_database(id): #this might need to be broken up further
                 line = re.sub(r'\\newlineCover*','',line)
                 chaptertitle = (line[line.find('\\title{')+7:line.find('}')])
                 chapterdict["chaptername"] = chaptertitle
-            elif "\\author" in line and not "%" in line[0: line.find("chapter")]:
+            elif "\\author" in line and not "%" in line[0: line.find("author")]:
                 chapterdict["authors"] = append_authors(line)
 
         chapterdict_list.append(chapterdict)
@@ -96,11 +96,6 @@ def make_jsons(id):
         json.dump(create_database(id), outputfile, indent=4)
     outputfile.close()
 
-def make_chapterauthors(id):
-    print("Finding chapter authors for book %s" % str(id))
-    database = create_database(id)
-    
-  
 def full_table(startid,endid):
     for id in range(startid,endid+1):
         print("Processing book %s" % str(id))
@@ -132,7 +127,12 @@ def chapterauthors_table(startid,endid):
                         chapterauthors_list = []
                         chapterfile = requests.get('%s%s%schapters/%s.tex' % (masterurl1, str(id), masterurl2, chaptername)).text
                         print("Reading chapter %s" % chaptername)
-                        if "\\author" in line and not "%" in line[0: line.find("chapter")]:
+                        if "\\author" in line and not "%" in line[0: line.find("author")]:
                             chapterdict["authors"] = append_authors(line)
+                            return(chapterdict)
+
+def chapterdict_to_csv(chapterdict):
+    pd.DataFrame(chapterdict).to_csv('chapterauthors.csv', index=False)
 
 full_table(startid,endid)
+
