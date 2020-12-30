@@ -1,5 +1,16 @@
 #!/usr/bin/python
 
+################################################################################################
+# Looks up and prints langsci metadata information to various file formats.                    #
+# Currently supports printing full book information with 'ParseAuthors.py full startid (endid)'#
+# and just author information with 'ParseAuthors.py authors startid (endid)                    #
+# endids are optional, it just parses the book from startid without them                       #
+# less nested csv for 'full' to come.                                                          #
+################################################################################################
+
+
+
+
 import sys
 import os.path
 import shutil
@@ -8,9 +19,14 @@ import re
 import json
 import pandas
 
+operation = sys.argv[1]
+startid = int(sys.argv[2])
 
-startid = int(sys.argv[1])
-endid = int(sys.argv[2])
+if sys.argv[3]:
+    endid = int(sys.argv[3])
+else:
+    endid = startid
+    
 masterurl1 = 'https://raw.githubusercontent.com/langsci/'
 masterurl2 = '/master/'
 langscigiturl = 'https://github.com/langsci/'
@@ -108,11 +124,11 @@ def full_table(startid,endid):
 
 def chapterauthors_table(startid,endid):
         chapternames = []
-        chapterdict_list = []
+        authors_list = []
         for id in range(startid,endid+1):
             print("Processing book %s" % str(id))
             if os.path.exists("%s.log" % str(id)):
-                os.remove("%s.log")
+                os.remove("%s.log" % str(id))
             print("Logging in %s.log" % str(id))
             logfile = open("%s.log" % str(id), "a")
             print("Reading main.tex for book number %s"%(str(id)))
@@ -122,17 +138,22 @@ def chapterauthors_table(startid,endid):
                     chapternames.append(line[line.find('\\include{chapters/')+18:line.find('}')])
                 elif "\\includepaper{" in line and not "%" in line[0: line.find("\\include")]:
                     chapternames.append(line[line.find('\\includepaper{chapters')+23:line.find('}')])
-                    for chaptername in chapternames: 
-                        chapterdict = {"chapterfilename":chaptername}
-                        chapterauthors_list = []
-                        chapterfile = requests.get('%s%s%schapters/%s.tex' % (masterurl1, str(id), masterurl2, chaptername)).text
-                        print("Reading chapter %s" % chaptername)
-                        if "\\author" in line and not "%" in line[0: line.find("author")]:
-                            chapterdict["authors"] = append_authors(line)
-                            return(chapterdict)
+        for chaptername in chapternames: 
+            chapterfile = requests.get('%s%s%schapters/%s.tex' % (masterurl1, str(id), masterurl2, chaptername)).text
+            print("Reading chapter %s" % chaptername)
+            for line in chapterfile.splitlines():
+                if "\\author" in line and not "%" in line[0: line.find("author")]:
+                    authors_list.extend(append_authors(line))
+        pandas.DataFrame(authors_list).to_csv('chapterauthors.csv', index=False)
 
-def chapterdict_to_csv(chapterdict):
-    pd.DataFrame(chapterdict).to_csv('chapterauthors.csv', index=False)
+    
 
-full_table(startid,endid)
+
+
+if operation == 'full':
+    full_table(startid,endid)
+elif operation == 'authors':
+    chapterauthors_table(startid,endid)
+else:
+    print("Operation not recognized")
 
