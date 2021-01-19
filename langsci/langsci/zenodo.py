@@ -8,6 +8,8 @@ import json
 import pprint
 import re
 import sys
+from pyglottolog import Glottolog
+glottolog = Glottolog('.')
 
 try:
     from texpatterns import *
@@ -143,9 +145,22 @@ class Chapter(Publication):
         keywords = []
         try:
             keywords = [
-                x.strip() for x in CHAPTERKEYWORDSP.search(preamble).group(1).split(",")
-            ]
-        except:
+                    x.strip()
+                    for x in KEYWORDSEPARATOR.split(
+                        CHAPTERKEYWORDSP.search(preamble).group(1)
+                    )
+                ]
+        except AttributeError:
+            pass
+        glottocodes = []
+        try:
+            glottocodes = [
+                    x.strip()
+                    for x in KEYWORDSEPARATOR.split(
+                        GLOTTOCODESP.search(preamble).group(1)
+                    )
+                ]
+        except AttributeError:
             pass
         self.path = path.strip()
         self.abstract = abstract
@@ -211,4 +226,5 @@ class Chapter(Publication):
         self.metadata["keywords"] = self.keywords
         self.metadata['related_identifiers'] = [{'relation':'isPartOf', 'identifier':self.bookisbn},
                                                 {'relation':'isPartOf', 'identifier':self.bookDOI}]
-        #pprint.pprint(self.metadata)
+        self.metadata['subjects'] = [{"term":glottolog.languoid(code).name , "identifier":f"https://glottolog.org/resource/languoid/id/{code}", "scheme":"url"} for code in glottocodes]
+        pprint.pprint(self.metadata)
