@@ -28,6 +28,7 @@ CHAPTERAUTHORP = re.compile(r"\\(author{|and|lastand)(.*?) *\\affiliation{(.*?)}
 ORCIDSP = re.compile(r"\\(author{|and|lastand)(.*?) *\\orcid{(.*?)}")
 TITLEP = re.compile(r"\\title{(.*?)}")
 ISBNP = re.compile(r"\\lsISBNdigital}{(.*)}")
+DOIP = re.compile(r"\\BookDOI{(.*)}")
 CHAPTERKEYWORDSP = re.compile(r"\\keywords{(.*?)}")
 ABSTRACTP = re.compile(r"\\abstract{(.*?)[}\n]")
 BACKBODYP = re.compile(r"\\BackBody{(.*?)[}\n]")

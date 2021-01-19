@@ -70,6 +70,7 @@ class Book(Publication):
         self.digitalisbn = None
         self.getBookMetadata()
         self.chapter = []
+        self.extracommunities = extracommunities
         self.getChapters()
         self.metadata["publication_type"] = "book"
         # self.metadata['related_identifiers'] = [{'isAlternateIdentifier':self.digitalisbn}]    #currently not working on Zenodo
@@ -107,6 +108,7 @@ class Book(Publication):
         except:
             pass
         self.digitalisbn = ISBNP.search(localmetadata).group(1)
+        self.bookDOI = DOIP.search(localmetadata).group(1)
 
     def getChapters(self):
         """
@@ -118,7 +120,7 @@ class Book(Publication):
         mainf.close()
         chapterpaths = INCLUDEPAPERP.findall(main)
         self.chapters = [
-            Chapter(cp, booktitle=self.title, isbn=self.digitalisbn)
+            Chapter(cp, booktitle=self.title, isbn=self.digitalisbn, bookDOI=self.bookDOI, extracommunities=self.extracommunities)
             for cp in chapterpaths
         ]
 
@@ -128,7 +130,7 @@ class Chapter(Publication):
   A chapter in an edited volume
   """
 
-    def __init__(self, path, booktitle="", isbn=False, extracommunities=[]):
+    def __init__(self, path, booktitle="", isbn=False, bookDOI=False, extracommunities=[]):
         print("reading", path)
         Publication.__init__(self, extracommunities=extracommunities)
         chapterf = open("chapters/%s.tex" % path, encoding="utf-8")
@@ -162,6 +164,8 @@ class Chapter(Publication):
         self.booktitle = booktitle
         if isbn:
             self.bookisbn = isbn
+        if isbn:
+            self.bookDOI = bookDOI
         self.metadata["publication_type"] = "section"
         self.metadata["imprint_isbn"] = self.bookisbn
         self.metadata["partof_title"] = self.booktitle
@@ -201,9 +205,10 @@ class Chapter(Publication):
             }
             for au in self.authors
         ]
-        print(self.metadata["creators"])
         for i,c in enumerate(self.metadata["creators"]):
             if c["orcid"] in (None,""," "):
                 del self.metadata["creators"][i]["orcid"]
         self.metadata["keywords"] = self.keywords
-        #self.metadata['related_identifiers'] = [{'hasPart':self.bookisbn}] #unintuitive directionality of hasPart and isPart
+        self.metadata['related_identifiers'] = [{'relation':'isPartOf', 'identifier':self.bookisbn},
+                                                {'relation':'isPartOf', 'identifier':self.bookDOI}]
+        #pprint.pprint(self.metadata)

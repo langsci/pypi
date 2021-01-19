@@ -55,8 +55,8 @@ for i, ch in enumerate(
             print("DOI already present in %s" % ch.path)
             raise IOError
     try:
-        chapterDOI = ch.register(token, extracommunities=extracommunities)
-    except:
+        chapterDOI = ch.register(token)
+    except IndexError:
         print(
             "%s at position %i from offset %i could not be registered"
             % (ch.path, i, offset)
