@@ -646,7 +646,8 @@ class Document:
                          modtext)
         #examples
         modtext = modtext.replace("\n()", "\n\\ea \n \\gll \\\\\n   \\\\\n \\glt\n\\z\n\n")
-        modtext = re.sub("\n\(([0-9]+)\)", """\n\ea%\\1
+        #only up to number (1999)
+        modtext = re.sub("\n\((1?[0-9]?[0-9]?[0-9])\)", """\n\ea%\\1
     \label{ex:key:\\1}
     \\\\gll\\\\newline
         \\\\newline
@@ -672,13 +673,13 @@ class Document:
 
 
         modtext = re.sub("\n\\\\textit{Table ([0-9]+)[\.:] *(.*?)}\n","%%please move \\\\begin{table} just above \\\\begin{tabular . \n\\\\begin{table}\n\\caption{\\2}\n\\label{tab:key:\\1}\n\\end{table}",modtext)
-        modtext = re.sub("\nTable ([0-9]+)[\.:] *(.*?) *\n","%%please move \\\\begin{table} just above \\\\begin{tabular\n\\\\begin{table}\n\\caption{\\2}\n\\label{tab:\\1}\n\\end{table}",modtext)#do not add } after tabular
+        modtext = re.sub("\nTable ([0-9]+)[\.:] *(.*?) *\n","%%please move \\\\begin{table} just above \\\\begin{tabular\n\\\\begin{table}\n\\caption{\\2}\n\\label{tab:key:\\1}\n\\end{table}",modtext)#do not add } after tabular
         modtext = re.sub("Table ([0-9]+)","\\\\tabref{tab:key:\\1}",modtext) 
         modtext = re.sub("\nFigure ([0-9]+)[\.:] *(.*?)\n","\\\\begin{figure}\n\\caption{\\2}\n\\label{fig:key:\\1}\n\\end{figure}",modtext)
         modtext = re.sub("Figure ([0-9]+)","\\\\figref{fig:key:\\1}",modtext)
         modtext = re.sub("Section ([0-9\.]+)","\\\\sectref{sec:key:\\1}",modtext) 
         modtext = re.sub("§ *([0-9\.]+)","\\\\sectref{sec:key:\\1}",modtext) 
-        modtext = re.sub(" \(([0-9s][0-9]*[a-h]?)\)"," \\\\REF{ex:key:\\1}",modtext) 
+        modtext = re.sub(" \(([0-9][0-9]*[a-h]?)\)"," \\\\REF{ex:key:\\1}",modtext)
         modtext = re.sub("\\\\(begin|end){minipage}.*?\n",'',modtext)
         modtext = re.sub("\\\\begin{figure}\[h\]",'\\\\begin{figure}',modtext)
         

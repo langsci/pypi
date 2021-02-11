@@ -673,6 +673,7 @@ class Record():
                                     ]
                                 )
         )
+    s = s.replace(',,',',')
     return s
 
 
