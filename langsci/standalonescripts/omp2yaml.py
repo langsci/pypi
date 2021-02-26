@@ -250,101 +250,6 @@ title: %s-%s
 permalink: /chapters/%s-%s
 ---"""
 
-#check repeating contributors; author/editor; tbls/other
-xmlbooktemplate =f"""<Product>
-    <RecordReference>langsci-press.org/{book_id}</RecordReference>
-    <NotificationType>03</NotificationType>
-    <RecordSourceType>01</RecordSourceType>
-    <RecordSourceIdentifierType>05</RecordSourceIdentifierType>
-    <RecordSourceIdentifier>978-3-98554</RecordSourceIdentifier>
-    <RecordSourceName>Language Science Press</RecordSourceName>
-    <ProductIdentifier>
-        <ProductIDType>06</ProductIDType>
-        <IDValue>{doi}</IDValue>
-    </ProductIdentifier>
-    <ProductIdentifier>
-        <ProductIDType>15</ProductIDType>
-        <IDValue>{isbn}</IDValue>
-    </ProductIdentifier>
-    <ProductForm>DG</ProductForm>
-    <EpubType>002</EpubType>
-    <SeriesIdentifier>
-        <SeriesIDType>02</SeriesIDType>
-        <IDValue>{issn}</IDValue>
-    </SeriesIdentifier>
-    <TitleOfSeries>{seriesname}</TitleOfSeries>
-    <Title>
-        <TitleType>01</TitleType>
-        <TitleText textcase="01">{bookmaintitle}</TitleText>
-        <Subtitle> textcase="01">{booksubtitle}</Subtitle>
-    </Title>
-    <Contributor>
-        <SequenceNumber>{contributorsequencenumber}</SequenceNumber>
-        <ContributorRole>A01 author /B01 editor </ContributorRole>
-        <NamesBeforeKey>{first_name} {middle_name}</NamesBeforeKey>
-        <KeyNames>{last_name}</KeyNames>
-        <ProfessionalAffiliation>
-            <Affiliation>{affiliation}</Affiliation>
-        </ProfessionalAffiliation>
-        <BiographicalNote>{biosketch}</BiographicalNote>
-    </Contributor>
-    <NumberWithinSeries>{seriesnumber}</NumberWithinSeries>
-    <EditionNumber>{edition}</EditionNumber>
-    <Language>
-        <LanguageRole>01</LanguageRole>
-        <LanguageCode>{language}</LanguageCode>
-    </Language>
-    <NumberOfPages>{numberofpages}</NumberOfPages>
-    <BASICMainSubject>LAN009000</BASICMainSubject>
-    <AudienceCode>06 (general) 05 (tbls)</AudienceCode>
-    <OtherText>
-        <TextTypeCode>01</TextTypeCode>
-        <Text>{blurb}</Text>
-    </OtherText>
-    <OtherText>
-        <TextTypeCode>05</TextTypeCode>
-        <Text>{reviewquote}</Text>
-    </OtherText>
-    <MediaFile>
-        <MediaFileTypeCode>04</MediaFileTypeCode>
-         <MediaFileFormatCode>09</MediaFileFormatCode>
-         <MediaFileLinkTypeCode>01<MediaFileLinkTypeCode>
-         <MediaFileLink>{coverurl}</MediaFileLink>
-    </MediaFile>
-    <ProductWebsite>
-        <WebsiteRole>02<WebsiteRole>
-        <ProductWebsiteLink>{bookurl}</ProductWebsiteLink>
-    </ProductWebsite>
-
-    <Imprint>
-        <ImprintName>Language Science Press</ImprintName>
-    </Imprint>
-    <Publisher>
-        <PublishingRole>01</PublishingRole>
-        <PublisherName>Language Science Press</PublisherName>
-        <NameCodeType>05</NameCodeType>
-        <NameCodeType>978-3-98554</NameCodeType>
-        <Website>
-                <WebsiteRole>01</WebsiteRole>
-                <WebsiteLink>https://www.langsci-press.org</WebsiteLink>
-        </Website>
-    </Publisher>
-    <CityOfPublication>Berlin</CityOfPublication>
-    <CountryOfPublication>DE</CountryOfPublication>
-    <PublishingStatus>04</PublishingStatus>
-    <PublicationDate>{year}</PublicationDate>
-    <Measure>
-        <MeasureTypeCode>01</MeasureTypeCode>
-        <Measurement>24.00</Measurement>
-        <MeasureUnitCode>cm</MeasureUnitCode>
-    </Measure>
-    <Measure>
-        <MeasureTypeCode>02</MeasureTypeCode>
-        <Measurement>17.00</Measurement>
-        <MeasureUnitCode>cm</MeasureUnitCode>
-    </Measure>
-</Product>
-"""
 
 def to_yaml():
     for book in books:
@@ -359,13 +264,110 @@ def to_yaml():
 
 
 def to_onix():
+
+    #check repeating contributors; author/editor; tbls/other
+    xmlbooktemplate =f"""<Product>
+        <RecordReference>langsci-press.org/{books[book][book_id]}</RecordReference>
+        <NotificationType>03</NotificationType>
+        <RecordSourceType>01</RecordSourceType>
+        <RecordSourceIdentifierType>05</RecordSourceIdentifierType>
+        <RecordSourceIdentifier>978-3-98554</RecordSourceIdentifier>
+        <RecordSourceName>Language Science Press</RecordSourceName>
+        <ProductIdentifier>
+            <ProductIDType>06</ProductIDType>
+            <IDValue>{doi}</IDValue>
+        </ProductIdentifier>
+        <ProductIdentifier>
+            <ProductIDType>15</ProductIDType>
+            <IDValue>{isbn}</IDValue>
+        </ProductIdentifier>
+        <ProductForm>DG</ProductForm>
+        <EpubType>002</EpubType>
+        <SeriesIdentifier>
+            <SeriesIDType>02</SeriesIDType>
+            <IDValue>{issn}</IDValue>
+        </SeriesIdentifier>
+        <TitleOfSeries>{seriesname}</TitleOfSeries>
+        <Title>
+            <TitleType>01</TitleType>
+            <TitleText textcase="01">{bookmaintitle}</TitleText>
+            <Subtitle> textcase="01">{booksubtitle}</Subtitle>
+        </Title>
+        <Contributor>
+            <SequenceNumber>{contributorsequencenumber}</SequenceNumber>
+            <ContributorRole>A01 author /B01 editor </ContributorRole>
+            <NamesBeforeKey>{first_name} {middle_name}</NamesBeforeKey>
+            <KeyNames>{last_name}</KeyNames>
+            <ProfessionalAffiliation>
+                <Affiliation>{affiliation}</Affiliation>
+            </ProfessionalAffiliation>
+            <BiographicalNote>{biosketch}</BiographicalNote>
+        </Contributor>
+        <NumberWithinSeries>{seriesnumber}</NumberWithinSeries>
+        <EditionNumber>{edition}</EditionNumber>
+        <Language>
+            <LanguageRole>01</LanguageRole>
+            <LanguageCode>{language}</LanguageCode>
+        </Language>
+        <NumberOfPages>{numberofpages}</NumberOfPages>
+        <BASICMainSubject>LAN009000</BASICMainSubject>
+        <AudienceCode>06 (general) 05 (tbls)</AudienceCode>
+        <OtherText>
+            <TextTypeCode>01</TextTypeCode>
+            <Text>{blurb}</Text>
+        </OtherText>
+        <OtherText>
+            <TextTypeCode>05</TextTypeCode>
+            <Text>{reviewquote}</Text>
+        </OtherText>
+        <MediaFile>
+            <MediaFileTypeCode>04</MediaFileTypeCode>
+            <MediaFileFormatCode>09</MediaFileFormatCode>
+            <MediaFileLinkTypeCode>01<MediaFileLinkTypeCode>
+            <MediaFileLink>{coverurl}</MediaFileLink>
+        </MediaFile>
+        <ProductWebsite>
+            <WebsiteRole>02<WebsiteRole>
+            <ProductWebsiteLink>{bookurl}</ProductWebsiteLink>
+        </ProductWebsite>
+
+        <Imprint>
+            <ImprintName>Language Science Press</ImprintName>
+        </Imprint>
+        <Publisher>
+            <PublishingRole>01</PublishingRole>
+            <PublisherName>Language Science Press</PublisherName>
+            <NameCodeType>05</NameCodeType>
+            <NameCodeType>978-3-98554</NameCodeType>
+            <Website>
+                    <WebsiteRole>01</WebsiteRole>
+                    <WebsiteLink>https://www.langsci-press.org</WebsiteLink>
+            </Website>
+        </Publisher>
+        <CityOfPublication>Berlin</CityOfPublication>
+        <CountryOfPublication>DE</CountryOfPublication>
+        <PublishingStatus>04</PublishingStatus>
+        <PublicationDate>{year}</PublicationDate>
+        <Measure>
+            <MeasureTypeCode>01</MeasureTypeCode>
+            <Measurement>24.00</Measurement>
+            <MeasureUnitCode>cm</MeasureUnitCode>
+        </Measure>
+        <Measure>
+            <MeasureTypeCode>02</MeasureTypeCode>
+            <Measurement>17.00</Measurement>
+            <MeasureUnitCode>cm</MeasureUnitCode>
+        </Measure>
+    </Product>
+    """
+
     for book in books:
         with open("onix-xml/%s.xml"%book, 'w') as xmlout:
-            xmlout.write("")
-        for chapter in books[book]['chapters']:
-            chapternumber = chapter['number']
-            with open("onix-xml/%s-%s.xml"%(book,chapternumber), 'w') as chapterout:
-                chapterout.write("")
+            xmlout.write(xmlbooktemplate)
+        #for chapter in books[book]['chapters']:
+            #chapternumber = chapter['number']
+            #with open("onix-xml/%s-%s.xml"%(book,chapternumber), 'w') as chapterout:
+                #chapterout.write("")
 
 if __name__ == "__main__":
     to_onix()
