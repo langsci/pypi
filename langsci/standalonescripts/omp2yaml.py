@@ -265,7 +265,7 @@ def to_yaml():
 
 def to_onix():
 
-    #check repeating contributors; author/editor; tbls/other
+    #check repeating contributors; author/editor; sequence number;  tbls/other; issn
     xmlbooktemplate ="""<Product>
         <RecordReference>langsci-press.org/{bookid}</RecordReference>
         <NotificationType>03</NotificationType>
@@ -279,7 +279,7 @@ def to_onix():
         </ProductIdentifier>
         <ProductIdentifier>
             <ProductIDType>15</ProductIDType>
-            <IDValue>{isbn}</IDValue>
+            <IDValue>{isbndigital}</IDValue>
         </ProductIdentifier>
         <ProductForm>DG</ProductForm>
         <EpubType>002</EpubType>
@@ -288,38 +288,23 @@ def to_onix():
             <IDValue>{issn}</IDValue>
         </SeriesIdentifier>
         <TitleOfSeries>{seriesname}</TitleOfSeries>
+        <NumberWithinSeries>{seriesnumber}</NumberWithinSeries>
         <Title>
             <TitleType>01</TitleType>
-            <TitleText textcase="01">{bookmaintitle}</TitleText>
-            <Subtitle> textcase="01">{booksubtitle}</Subtitle>
+            <TitleText textcase="01">{title}</TitleText>{subtitlestring}
         </Title>
-        <Contributor>
-            <SequenceNumber>{contributorsequencenumber}</SequenceNumber>
-            <ContributorRole>A01 author /B01 editor </ContributorRole>
-            <NamesBeforeKey>{first_name} {middle_name}</NamesBeforeKey>
-            <KeyNames>{last_name}</KeyNames>
-            <ProfessionalAffiliation>
-                <Affiliation>{affiliation}</Affiliation>
-            </ProfessionalAffiliation>
-            <BiographicalNote>{biosketch}</BiographicalNote>
-        </Contributor>
-        <NumberWithinSeries>{seriesnumber}</NumberWithinSeries>
+        {contributorstring}
         <EditionNumber>{edition}</EditionNumber>
         <Language>
             <LanguageRole>01</LanguageRole>
             <LanguageCode>{language}</LanguageCode>
         </Language>
-        <NumberOfPages>{numberofpages}</NumberOfPages>
         <BASICMainSubject>LAN009000</BASICMainSubject>
-        <AudienceCode>06 (general) 05 (tbls)</AudienceCode>
+        <AudienceCode>{audiencecode}</AudienceCode>
         <OtherText>
             <TextTypeCode>01</TextTypeCode>
             <Text>{blurb}</Text>
-        </OtherText>
-        <OtherText>
-            <TextTypeCode>05</TextTypeCode>
-            <Text>{reviewquote}</Text>
-        </OtherText>
+        </OtherText>{reviewstring}
         <MediaFile>
             <MediaFileTypeCode>04</MediaFileTypeCode>
             <MediaFileFormatCode>09</MediaFileFormatCode>
@@ -330,7 +315,6 @@ def to_onix():
             <WebsiteRole>02<WebsiteRole>
             <ProductWebsiteLink>{bookurl}</ProductWebsiteLink>
         </ProductWebsite>
-
         <Imprint>
             <ImprintName>Language Science Press</ImprintName>
         </Imprint>
@@ -347,7 +331,7 @@ def to_onix():
         <CityOfPublication>Berlin</CityOfPublication>
         <CountryOfPublication>DE</CountryOfPublication>
         <PublishingStatus>04</PublishingStatus>
-        <PublicationDate>{year}</PublicationDate>
+        <PublicationDate>{publicationdate}</PublicationDate>
         <Measure>
             <MeasureTypeCode>01</MeasureTypeCode>
             <Measurement>24.00</Measurement>
@@ -361,10 +345,93 @@ def to_onix():
     </Product>
     """
 
+    seriesd = {
+        "algad": ['African Language Grammars and Dictionaries','2512-4862'],
+        "cal": ['Contemporary African Linguistics','2511-7726'],
+        "cam": ['Contact and Multilingualism','2700-855X'],
+        "cfls": ['Conceptual Foundations of Language Science','2363-877X'],
+        "classics": ['Classics in Linguistics','2366-374X'],
+        "cmle": ['Computational Models of Language Evolution','2364-7809'],
+        "eotms": ['Empirically Oriented Theoretical Morphology and Syntax','2366-3529'],
+        "eurosla": ['Eurosla Studies','2626-2665'],
+        "hpls": ['History and Philosophy of the Language Sciences','2629-172X'],
+        "loc": ['Languages of the Caucasus','2699-0156'],
+        "lv": ['Language Variation','2366-7818'],
+        "mi": ['Morphological Investigations','2567-742X'],
+        "nccs": ['Niger-Congo Comparative Studies','2627-0048'],
+        "ogs": ['Open Generative Syntax','2568-7336'],
+        "osl": ['Open Slavic Linguistics','2627-8332'],
+        "pmwe": ['Phraseology and Multiword Expressions','2625-3127'],
+        "scl": ['Studies in Caribbean Languages','2627-1834'],
+        "sidl": ['Studies in Diversity Linguistics','2363-5568'],
+        "silp": ['Studies in Laboratory Phonology','2363-5576'],
+        "tbls": ['Textbooks in Language Sciences','2364-6209'],
+        "tgdi": ['Topics at the Grammar-Discourse Interface','2567-3335'],
+        "tmnlp": ['Translation and Multilingual Natural Language Processing','2364-8899'],
+    }
+
+    authortemplate = """<Contributor>
+            <SequenceNumber>{}</SequenceNumber>
+            <ContributorRole>A01</ContributorRole>
+            <NamesBeforeKey>{} {}</NamesBeforeKey>
+            <KeyNames>{}</KeyNames>
+            <BiographicalNote>{}</BiographicalNote>
+        </Contributor>"""
+
+    editortemplate = """<Contributor>
+            <SequenceNumber>{}</SequenceNumber>
+            <ContributorRole>B01</ContributorRole>
+            <NamesBeforeKey>{} {}</NamesBeforeKey>
+            <KeyNames>{}</KeyNames>
+            <BiographicalNote>{}</BiographicalNote>
+        </Contributor>"""
+
+    reviewtemplate = """
+        <OtherText>
+            <TextTypeCode>05</TextTypeCode>
+            <Text>{}</Text>
+        </OtherText>"""
+
+
+
     for book in books:
+        if book != 81:
+            continue
         with open("onix-xml/%s.xml"%book, 'w') as xmlout:
-            pprint.pprint(books[book])
-            xmlout.write(xmlbooktemplate.format(**books[book]))
+            d = books[book]
+            pprint.pprint(d)
+            d['subtitlestring'] = ""
+            subtitle = d.get('booksubtitle', False)
+            if subtitle:
+                d['subtitlestring'] = f"\n            <subtitle>{subtitle}</subtitle>"
+            d['isbndigital'] = books[book]['isbns']['digital']
+            d['seriesname'] = seriesd[d['series']][0]
+            d['audiencecode'] = '06' #academic
+            if d['series'] == 'tbls':
+                  d['audiencecode'] = '05' #higher education
+            d['issn'] = seriesd[d['series']][1]
+            d['contributorstring'] = ""
+            offset = 1
+            d['contributorstring']  += "\n        ".join([authortemplate.format(i+offset,au[0],au[1],au[2],au[3]) for i,au in enumerate(d['creators']['authors'])])
+            offset += len(d['creators']['authors'])
+            d['contributorstring']  += "\n        ".join([editortemplate.format(i+offset,au[0],au[1],au[2],au[3]) for i,au in enumerate(d['creators']['editors'])])
+            #try:
+                #d['first_name'] = d['creators']['authors'][0][0]
+                #d['middle_name'] = d['creators']['authors'][0][1]
+                #d['last_name'] = d['creators']['authors'][0][2]
+                #d['biosketch'] = d['creators']['authors'][0][3]
+            #except IndexError:
+                #d['first_name'] = d['creators']['editors'][0][0]
+                #d['middle_name'] = d['creators']['editors'][0][1]
+                #d['last_name'] = d['creators']['editors'][0][2]
+                #d['biosketch'] = d['creators']['editors'][0][3]
+            d['edition'] = 1
+            d['language'] = 'en'
+            d['reviewstring'] = ""
+            d['reviewstring'] += "        ".join(reviewtemplate.format(review['money_quote']) for review in d['reviews'])
+            d['coverurl'] = "https://langsci-press.org/$$$call$$$/submission/cover/cover?submissionId=%s"%d['bookid']
+            d['bookurl'] = "https://langsci-press.org/catalog/book/%s"%d['bookid']
+            xmlout.write(xmlbooktemplate.format(**d))
         #for chapter in books[book]['chapters']:
             #chapternumber = chapter['number']
             #with open("onix-xml/%s-%s.xml"%(book,chapternumber), 'w') as chapterout:
