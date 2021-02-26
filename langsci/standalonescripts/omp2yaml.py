@@ -1,6 +1,7 @@
 import pprint
 import yaml
 from sqlalchemy import create_engine
+from langdetect import detect_langs, lang_detect_exception
 
 # reviews
 # select * from langsci_submission_links; #old style reviews
@@ -264,8 +265,6 @@ def to_yaml():
 
 
 def to_onix():
-
-    #check repeating contributors; author/editor; sequence number;  tbls/other; issn
     xmlbooktemplate ="""<Product>
         <RecordReference>langsci-press.org/{bookid}</RecordReference>
         <NotificationType>03</NotificationType>
@@ -359,6 +358,7 @@ def to_onix():
         "lv": ['Language Variation','2366-7818'],
         "mi": ['Morphological Investigations','2567-742X'],
         "nccs": ['Niger-Congo Comparative Studies','2627-0048'],
+        "mcnc": ['Niger-Congo Comparative Studies','2627-0048'],
         "ogs": ['Open Generative Syntax','2568-7336'],
         "osl": ['Open Slavic Linguistics','2627-8332'],
         "pmwe": ['Phraseology and Multiword Expressions','2625-3127'],
@@ -395,11 +395,11 @@ def to_onix():
 
 
     for book in books:
-        if book != 81:
+        if book in (16,17,18,19):
             continue
         with open("onix-xml/%s.xml"%book, 'w') as xmlout:
             d = books[book]
-            pprint.pprint(d)
+            #pprint.pprint(d)
             d['subtitlestring'] = ""
             subtitle = d.get('booksubtitle', False)
             if subtitle:
@@ -415,18 +415,15 @@ def to_onix():
             d['contributorstring']  += "\n        ".join([authortemplate.format(i+offset,au[0],au[1],au[2],au[3]) for i,au in enumerate(d['creators']['authors'])])
             offset += len(d['creators']['authors'])
             d['contributorstring']  += "\n        ".join([editortemplate.format(i+offset,au[0],au[1],au[2],au[3]) for i,au in enumerate(d['creators']['editors'])])
-            #try:
-                #d['first_name'] = d['creators']['authors'][0][0]
-                #d['middle_name'] = d['creators']['authors'][0][1]
-                #d['last_name'] = d['creators']['authors'][0][2]
-                #d['biosketch'] = d['creators']['authors'][0][3]
-            #except IndexError:
-                #d['first_name'] = d['creators']['editors'][0][0]
-                #d['middle_name'] = d['creators']['editors'][0][1]
-                #d['last_name'] = d['creators']['editors'][0][2]
-                #d['biosketch'] = d['creators']['editors'][0][3]
             d['edition'] = 1
-            d['language'] = 'en'
+            try:
+                toplanguage = detect_langs(" ".join([d['title'], d['booksubtitle']]))[0].lang
+            except:
+                pprint.pprint(d)
+            if toplanguage not in ["en", "fr", "de", "pt", "es", "zh"]:
+                print("Unexpected language %s for %s. Reverting to 'en'" % (toplanguage, book))
+                toplanguage = 'en'
+            d['language'] = toplanguage
             d['reviewstring'] = ""
             d['reviewstring'] += "        ".join(reviewtemplate.format(review['money_quote']) for review in d['reviews'])
             d['coverurl'] = "https://langsci-press.org/$$$call$$$/submission/cover/cover?submissionId=%s"%d['bookid']
