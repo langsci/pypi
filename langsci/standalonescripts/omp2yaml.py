@@ -266,8 +266,8 @@ def to_yaml():
 def to_onix():
 
     #check repeating contributors; author/editor; tbls/other
-    xmlbooktemplate =f"""<Product>
-        <RecordReference>langsci-press.org/{books[book][book_id]}</RecordReference>
+    xmlbooktemplate ="""<Product>
+        <RecordReference>langsci-press.org/{bookid}</RecordReference>
         <NotificationType>03</NotificationType>
         <RecordSourceType>01</RecordSourceType>
         <RecordSourceIdentifierType>05</RecordSourceIdentifierType>
@@ -363,7 +363,8 @@ def to_onix():
 
     for book in books:
         with open("onix-xml/%s.xml"%book, 'w') as xmlout:
-            xmlout.write(xmlbooktemplate)
+            pprint.pprint(books[book])
+            xmlout.write(xmlbooktemplate.format(**books[book]))
         #for chapter in books[book]['chapters']:
             #chapternumber = chapter['number']
             #with open("onix-xml/%s-%s.xml"%(book,chapternumber), 'w') as chapterout:
