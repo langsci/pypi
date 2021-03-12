@@ -178,7 +178,8 @@ def get_reviews(book_id):
     reviews = [list(x) for x in conn.execute(rezensionselector % book_id).fetchall()]
     return [{"reviewer_name": t[0],
              "money_quote": t[1].replace('<em','<span>').replace('</em>','</span>')\
-                    .replace('<it>','<span style="font-style:italic;">').replace('</it>','</span>'),
+                    .replace('<it>','<span style="font-style:italic;">').replace('</it>','</span>')\
+                    .replace('allowfullscreen>','allowfullscreen="true">') ,
              "date": t[2],
              "link": t[3],
              "link_name": t[4]
@@ -232,7 +233,10 @@ books = {
         "blurb": get_one(abstractselector, t[0])\
                     .replace('<em','<span').replace('</em>','</span>')\
                     .replace('<it>','<span style="font-style:italic">').replace('</it>','</span>')\
-                    .replace('<blockquote>','<blockquote><p>').replace('</blockquote>','</p></blockquote>')                ,
+                    .replace('<blockquote>','<blockquote><p>').replace('</blockquote>','</p></blockquote>')\
+                    .replace('<hr>','<hr />')\
+                    .replace('<br>','<br />')\
+                    .replace('align="justify"',''),
         "doi": get_doi(t[0]),
         "isbns": get_isbns(t[0]),
         "remote_urls": get_urls(t[0]),
@@ -461,8 +465,10 @@ def to_onix():
 
 
     for book in books:
-        if book in (16,17,18,19, 22, 25, 159, 192, 46,214,143,186,48,121,52,157,149,51,196,107,191,234,132,120,248,153,210,78,53):
+        if book in (16,17,18,19,22,25):
             continue
+        #if book not in (159, 192, 46,214,143,186,48,121,52,157,149,51,196,107,191,234,132,120,248,153,210,78,53):
+            #continue
         #if book not in (200,):
             #continue
         with open("onix-xml/%s.xml"%book, 'w') as xmlout:
@@ -490,7 +496,7 @@ def to_onix():
                 pprint.pprint(d)
             if toplanguage not in ["en", "fr", "de", "pt", "es", "zh"]:
                 print("Unexpected language %s for %s." % (toplanguage, book))
-            lgcode23 = {'de':'ger', 'fr':'fra', 'es':'esp', 'ro': 'por', 'zh': 'cmn'  }
+            lgcode23 = {'de':'ger', 'fr':'fre', 'es':'esp', 'ro': 'por', 'zh': 'cmn'  }
             toplanguage = lgcode23.get(toplanguage, 'eng')
             #d['blurb'] = escape(d['blurb'])
             d['language'] = toplanguage
@@ -499,13 +505,14 @@ def to_onix():
             d['coverurl'] = "https://langsci-press.org/$$$call$$$/submission/cover/cover?submissionId=%s"%d['bookid']
             d['bookurl'] = "https://langsci-press.org/catalog/book/%s"%d['bookid']
             d['collectionsequence'] = ''
-            if d['seriesnumber'].strip() != '':
+            try:
+                d['seriesnumber'] = int(d['seriesnumber'])
                 d['collectionsequence']=f"""<CollectionSequence>
                 <CollectionSequenceType>02</CollectionSequenceType>
                 <CollectionSequenceNumber>{d['seriesnumber']}</CollectionSequenceNumber>
             </CollectionSequence>
             """
-            else:
+            except ValueError:
                 print(f"series number missing for {d['bookid']}")
 
             myxmlstring = xmlheader+xmlbooktemplate.format(**d).replace("&nbsp;",' ')+xmlfooter
