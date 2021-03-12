@@ -2,10 +2,18 @@ import pprint
 import yaml
 from sqlalchemy import create_engine
 from langdetect import detect_langs, lang_detect_exception
+from xml.sax.saxutils import escape
+from datetime import datetime
+from lxml import etree
+from io import StringIO
 
 # reviews
 # select * from langsci_submission_links; #old style reviews
 
+
+schemafilename = "ONIX_BookProduct_3.0_reference.xsd"
+schemacontent = open(schemafilename).read()
+schemaXML = etree.parse(StringIO(schemacontent))
 
 subtitleselector = """select setting_value
 from submission_settings
@@ -251,6 +259,30 @@ title: %s-%s
 permalink: /chapters/%s-%s
 ---"""
 
+#<ONIXMessage release="3.0" xmlns="http://ns.editeur.org/​onix/​3.0/​reference">
+
+#xmlheader = """<?xml version="1.0" encoding="UTF-8"?>
+xmlheader = """<?xml version="1.0"?>
+<ONIXMessage release="3.0">
+<Header>
+    <Sender>
+        <SenderIdentifier>
+            <SenderIDType>05</SenderIDType>
+            <IDValue>978-3-98554</IDValue>
+        </SenderIdentifier>
+        <SenderName>Language Science Press</SenderName>
+        <ContactName>Sebastian Nordhoff</ContactName>
+        <EmailAddress>support@langsci-press.org</EmailAddress>
+    </Sender>
+    <Addressee>
+        <AddresseeName>Scopus</AddresseeName>
+    </Addressee>
+    <SentDateTime>{}</SentDateTime>
+</Header>
+""".format(datetime.today().strftime('%Y%m%d'))
+
+xmlfooter = """</ONIXMessage>"""
+
 
 def to_yaml():
     for book in books:
@@ -266,62 +298,71 @@ def to_yaml():
 
 def to_onix():
     xmlbooktemplate ="""<Product>
-        <RecordReference>langsci-press.org/{bookid}</RecordReference>
-        <NotificationType>03</NotificationType>
-        <RecordSourceType>01</RecordSourceType>
-        <RecordSourceIdentifierType>05</RecordSourceIdentifierType>
-        <RecordSourceIdentifier>978-3-98554</RecordSourceIdentifier>
-        <RecordSourceName>Language Science Press</RecordSourceName>
-        <ProductIdentifier>
-            <ProductIDType>06</ProductIDType>
-            <IDValue>{doi}</IDValue>
-        </ProductIdentifier>
-        <ProductIdentifier>
-            <ProductIDType>15</ProductIDType>
-            <IDValue>{isbndigital}</IDValue>
-        </ProductIdentifier>
-        <ProductForm>DG</ProductForm>
-        <EpubType>002</EpubType>
-        <SeriesIdentifier>
-            <SeriesIDType>02</SeriesIDType>
-            <IDValue>{issn}</IDValue>
-        </SeriesIdentifier>
-        <TitleOfSeries>{seriesname}</TitleOfSeries>
-        <NumberWithinSeries>{seriesnumber}</NumberWithinSeries>
-        <Title>
+    <RecordReference>langsci-press.org/{bookid}</RecordReference>
+    <NotificationType>03</NotificationType>
+    <RecordSourceType>01</RecordSourceType>
+    <RecordSourceIdentifier>
+        <RecordSourceIDType>05</RecordSourceIDType>
+        <IDValue>978-3-98554</IDValue>
+    </RecordSourceIdentifier>
+    <RecordSourceName>Language Science Press</RecordSourceName>
+    <ProductIdentifier>
+        <ProductIDType>06</ProductIDType>
+        <IDValue>{doi}</IDValue>
+    </ProductIdentifier>
+    <ProductIdentifier>
+        <ProductIDType>15</ProductIDType>
+        <IDValue>{isbndigital}</IDValue>
+    </ProductIdentifier>
+    <DescriptiveDetail>
+<!-- P.3 -->
+    <ProductComposition>00</ProductComposition>
+        <ProductForm>ED</ProductForm>
+        <!-- <EpubType>002</EpubType> -->
+        <Measure>
+            <MeasureType>01</MeasureType>
+            <Measurement>24.00</Measurement>
+            <MeasureUnitCode>cm</MeasureUnitCode>
+        </Measure>
+        <Measure>
+            <MeasureType>02</MeasureType>
+            <Measurement>17.00</Measurement>
+            <MeasureUnitCode>cm</MeasureUnitCode>
+        </Measure>
+        <Collection>
+            <CollectionType>10</CollectionType>
+            <CollectionIdentifier>
+                <CollectionIDType>02</CollectionIDType>
+                <IDValue>{issn}</IDValue>
+            </CollectionIdentifier>
+            <CollectionSequence>
+                <CollectionSequenceType>02</CollectionSequenceType>
+                <CollectionSequenceNumber>{seriesnumber}</CollectionSequenceNumber>
+            </CollectionSequence>
+        </Collection>
+        <TitleDetail>
             <TitleType>01</TitleType>
-            <TitleText textcase="01">{title}</TitleText>{subtitlestring}
-        </Title>
+            <TitleElement>
+                <TitleElementLevel>01</TitleElementLevel>
+                <TitleText textcase="01">{title}</TitleText>{subtitlestring}
+            </TitleElement>
+            <TitleElement>
+                <TitleElementLevel>02</TitleElementLevel>
+                <TitleText textcase="02">{seriesname}</TitleText>
+            </TitleElement>
+        </TitleDetail>
         {contributorstring}
         <EditionNumber>{edition}</EditionNumber>
         <Language>
             <LanguageRole>01</LanguageRole>
             <LanguageCode>{language}</LanguageCode>
         </Language>
-        <BASICMainSubject>LAN009000</BASICMainSubject>
         <AudienceCode>{audiencecode}</AudienceCode>
-        <OtherText>
-            <TextTypeCode>01</TextTypeCode>
-            <Text>{blurb}</Text>
-        </OtherText>{reviewstring}
-        <MediaFile>
-            <MediaFileTypeCode>04</MediaFileTypeCode>
-            <MediaFileFormatCode>09</MediaFileFormatCode>
-            <MediaFileLinkTypeCode>01<MediaFileLinkTypeCode>
-            <MediaFileLink>{coverurl}</MediaFileLink>
-        </MediaFile>
-        <ProductWebsite>
-            <WebsiteRole>02<WebsiteRole>
-            <ProductWebsiteLink>{bookurl}</ProductWebsiteLink>
-        </ProductWebsite>
-        <Imprint>
-            <ImprintName>Language Science Press</ImprintName>
-        </Imprint>
+    </DescriptiveDetail>
+    <PublishingDetail>
         <Publisher>
             <PublishingRole>01</PublishingRole>
             <PublisherName>Language Science Press</PublisherName>
-            <NameCodeType>05</NameCodeType>
-            <NameCodeType>978-3-98554</NameCodeType>
             <Website>
                     <WebsiteRole>01</WebsiteRole>
                     <WebsiteLink>https://www.langsci-press.org</WebsiteLink>
@@ -330,19 +371,13 @@ def to_onix():
         <CityOfPublication>Berlin</CityOfPublication>
         <CountryOfPublication>DE</CountryOfPublication>
         <PublishingStatus>04</PublishingStatus>
-        <PublicationDate>{publicationdate}</PublicationDate>
-        <Measure>
-            <MeasureTypeCode>01</MeasureTypeCode>
-            <Measurement>24.00</Measurement>
-            <MeasureUnitCode>cm</MeasureUnitCode>
-        </Measure>
-        <Measure>
-            <MeasureTypeCode>02</MeasureTypeCode>
-            <Measurement>17.00</Measurement>
-            <MeasureUnitCode>cm</MeasureUnitCode>
-        </Measure>
-    </Product>
-    """
+        <PublishingDate>
+            <PublishingDateRole>01</PublishingDateRole>
+            <Date dateformat="00">{publicationdate}</Date>
+        </PublishingDate>
+    </PublishingDetail>
+</Product>
+"""
 
     seriesd = {
         "algad": ['African Language Grammars and Dictionaries','2512-4862'],
@@ -397,13 +432,15 @@ def to_onix():
     for book in books:
         if book in (16,17,18,19):
             continue
+        if book not in (101,):
+            continue
         with open("onix-xml/%s.xml"%book, 'w') as xmlout:
             d = books[book]
             #pprint.pprint(d)
             d['subtitlestring'] = ""
             subtitle = d.get('booksubtitle', False)
             if subtitle:
-                d['subtitlestring'] = f"\n            <subtitle>{subtitle}</subtitle>"
+                d['subtitlestring'] = f"\n            <Subtitle>{subtitle}</Subtitle>"
             d['isbndigital'] = books[book]['isbns']['digital']
             d['seriesname'] = seriesd[d['series']][0]
             d['audiencecode'] = '06' #academic
@@ -412,9 +449,9 @@ def to_onix():
             d['issn'] = seriesd[d['series']][1]
             d['contributorstring'] = ""
             offset = 1
-            d['contributorstring']  += "\n        ".join([authortemplate.format(i+offset,au[0],au[1],au[2],au[3]) for i,au in enumerate(d['creators']['authors'])])
+            d['contributorstring']  += "\n        ".join([authortemplate.format(i+offset,au[0],au[1],au[2],escape(au[3])) for i,au in enumerate(d['creators']['authors'])])
             offset += len(d['creators']['authors'])
-            d['contributorstring']  += "\n        ".join([editortemplate.format(i+offset,au[0],au[1],au[2],au[3]) for i,au in enumerate(d['creators']['editors'])])
+            d['contributorstring']  += "\n        ".join([editortemplate.format(i+offset,au[0],au[1],au[2],escape(au[3])) for i,au in enumerate(d['creators']['editors'])])
             d['edition'] = 1
             try:
                 toplanguage = detect_langs(" ".join([d['title'], d['booksubtitle']]))[0].lang
@@ -422,13 +459,25 @@ def to_onix():
                 pprint.pprint(d)
             if toplanguage not in ["en", "fr", "de", "pt", "es", "zh"]:
                 print("Unexpected language %s for %s. Reverting to 'en'" % (toplanguage, book))
-                toplanguage = 'en'
+                toplanguage = 'eng'
+            if toplanguage == 'de':
+                toplanguage = 'ger'
+            if toplanguage == 'fr':
+                toplanguage = 'fre'
+            #d['blurb'] = escape(d['blurb'])
             d['language'] = toplanguage
             d['reviewstring'] = ""
             d['reviewstring'] += "        ".join(reviewtemplate.format(review['money_quote']) for review in d['reviews'])
             d['coverurl'] = "https://langsci-press.org/$$$call$$$/submission/cover/cover?submissionId=%s"%d['bookid']
             d['bookurl'] = "https://langsci-press.org/catalog/book/%s"%d['bookid']
-            xmlout.write(xmlbooktemplate.format(**d))
+
+            myxmlstring = xmlheader+xmlbooktemplate.format(**d).replace("&nbsp;",' ')+xmlfooter
+            #xmldoc = etree.fromstring(myxmlstring)
+            #schemaXML.validate(xmldoc)
+            #schemafilename = "ONIX_BookProduct_3.0_reference.xsd"
+            #etree.XMLSchema(etree.parse(open(schemafilename).read()))
+
+            xmlout.write(myxmlstring)
         #for chapter in books[book]['chapters']:
             #chapternumber = chapter['number']
             #with open("onix-xml/%s-%s.xml"%(book,chapternumber), 'w') as chapterout:
