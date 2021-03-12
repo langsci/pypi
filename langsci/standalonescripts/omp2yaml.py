@@ -357,6 +357,12 @@ def to_onix():
             <LanguageRole>01</LanguageRole>
             <LanguageCode>{language}</LanguageCode>
         </Language>
+        <Subject>
+            <MainSubject/>
+            <SubjectSchemeIdentifier>10</SubjectSchemeIdentifier>
+            <SubjectSchemeVersion>2009</SubjectSchemeVersion>
+            <SubjectCode>LAN009000</SubjectCode>
+        </Subject>
         <AudienceCode>{audiencecode}</AudienceCode>
     </DescriptiveDetail>
     <PublishingDetail>
