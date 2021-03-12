@@ -177,7 +177,8 @@ def get_isbns(book_id):
 def get_reviews(book_id):
     reviews = [list(x) for x in conn.execute(rezensionselector % book_id).fetchall()]
     return [{"reviewer_name": t[0],
-             "money_quote": t[1],
+             "money_quote": t[1].replace('<em','<span>').replace('</em>','</span>')\
+                    .replace('<it>','<span style="font-style:italic;">').replace('</it>','</span>'),
              "date": t[2],
              "link": t[3],
              "link_name": t[4]
@@ -228,7 +229,10 @@ books = {
         "series": t[1],
         "seriesnumber": t[2],
         "booksubtitle": get_one(subtitleselector, t[0]),
-        "blurb": get_one(abstractselector, t[0]).replace('<p>','').replace('</p>',''),
+        "blurb": get_one(abstractselector, t[0])\
+                    .replace('<em','<span').replace('</em>','</span>')\
+                    .replace('<it>','<span style="font-style:italic">').replace('</it>','</span>')\
+                    .replace('<blockquote>','<blockquote><p>').replace('</blockquote>','</p></blockquote>')                ,
         "doi": get_doi(t[0]),
         "isbns": get_isbns(t[0]),
         "remote_urls": get_urls(t[0]),
@@ -335,10 +339,7 @@ def to_onix():
                 <CollectionIDType>02</CollectionIDType>
                 <IDValue>{issn}</IDValue>
             </CollectionIdentifier>
-            <CollectionSequence>
-                <CollectionSequenceType>02</CollectionSequenceType>
-                <CollectionSequenceNumber>{seriesnumber}</CollectionSequenceNumber>
-            </CollectionSequence>
+            {collectionsequence}
         </Collection>
         <TitleDetail>
             <TitleType>01</TitleType>
@@ -460,10 +461,10 @@ def to_onix():
 
 
     for book in books:
-        if book in (16,17,18,19):
+        if book in (16,17,18,19, 22, 25, 159, 192, 46,214,143,186,48,121,52,157,149,51,196,107,191,234,132,120,248,153,210,78,53):
             continue
-        if book not in (101,):
-            continue
+        #if book not in (200,):
+            #continue
         with open("onix-xml/%s.xml"%book, 'w') as xmlout:
             d = books[book]
             #pprint.pprint(d)
@@ -488,18 +489,24 @@ def to_onix():
             except:
                 pprint.pprint(d)
             if toplanguage not in ["en", "fr", "de", "pt", "es", "zh"]:
-                print("Unexpected language %s for %s. Reverting to 'en'" % (toplanguage, book))
-                toplanguage = 'eng'
-            if toplanguage == 'de':
-                toplanguage = 'ger'
-            if toplanguage == 'fr':
-                toplanguage = 'fre'
+                print("Unexpected language %s for %s." % (toplanguage, book))
+            lgcode23 = {'de':'ger', 'fr':'fra', 'es':'esp', 'ro': 'por', 'zh': 'cmn'  }
+            toplanguage = lgcode23.get(toplanguage, 'eng')
             #d['blurb'] = escape(d['blurb'])
             d['language'] = toplanguage
             d['reviewstring'] = ""
             d['reviewstring'] += "        ".join(reviewtemplate.format(review['money_quote'],review['reviewer_name']) for review in d['reviews'])
             d['coverurl'] = "https://langsci-press.org/$$$call$$$/submission/cover/cover?submissionId=%s"%d['bookid']
             d['bookurl'] = "https://langsci-press.org/catalog/book/%s"%d['bookid']
+            d['collectionsequence'] = ''
+            if d['seriesnumber'].strip() != '':
+                d['collectionsequence']=f"""<CollectionSequence>
+                <CollectionSequenceType>02</CollectionSequenceType>
+                <CollectionSequenceNumber>{d['seriesnumber']}</CollectionSequenceNumber>
+            </CollectionSequence>
+            """
+            else:
+                print(f"series number missing for {d['bookid']}")
 
             myxmlstring = xmlheader+xmlbooktemplate.format(**d).replace("&nbsp;",' ')+xmlfooter
             #xmldoc = etree.fromstring(myxmlstring)
@@ -515,6 +522,9 @@ def to_onix():
 
 if __name__ == "__main__":
     to_onix()
+    print("Completed. Run onixcheck -p onix-xml/")
+
+
 
 
 
