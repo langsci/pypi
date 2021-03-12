@@ -176,7 +176,7 @@ def get_isbns(book_id):
 
 def get_reviews(book_id):
     reviews = [list(x) for x in conn.execute(rezensionselector % book_id).fetchall()]
-    return [{"reviewer": t[0],
+    return [{"reviewer_name": t[0],
              "money_quote": t[1],
              "date": t[2],
              "link": t[3],
@@ -259,7 +259,7 @@ title: %s-%s
 permalink: /chapters/%s-%s
 ---"""
 
-#<ONIXMessage release="3.0" xmlns="http://ns.editeur.org/​onix/​3.0/​reference">
+#<ONIXMessage release="3.0" xmlns="http://ns.editeur.org/onix/3.0/reference">
 
 #xmlheader = """<?xml version="1.0" encoding="UTF-8"?>
 xmlheader = """<?xml version="1.0"?>
@@ -365,6 +365,28 @@ def to_onix():
         </Subject>
         <AudienceCode>{audiencecode}</AudienceCode>
     </DescriptiveDetail>
+    <CollateralDetail>
+        <TextContent>
+            <TextType>03</TextType>
+            <ContentAudience>00</ContentAudience>
+            <Text textformat="05">
+                {blurb}
+            </Text>
+        </TextContent>
+        {reviewstring}
+        <SupportingResource>
+            <ResourceContentType>01</ResourceContentType>	<ContentAudience>00</ContentAudience>
+            <ResourceMode>03</ResourceMode>
+            <ResourceVersion>
+                <ResourceForm>02</ResourceForm>
+                <ResourceVersionFeature>
+                <ResourceVersionFeatureType>01</ResourceVersionFeatureType>
+                <FeatureValue>D503</FeatureValue>
+                </ResourceVersionFeature>
+                <ResourceLink>{coverurl}</ResourceLink>
+            </ResourceVersion>
+        </SupportingResource>
+    </CollateralDetail>
     <PublishingDetail>
         <Publisher>
             <PublishingRole>01</PublishingRole>
@@ -428,10 +450,12 @@ def to_onix():
         </Contributor>"""
 
     reviewtemplate = """
-        <OtherText>
-            <TextTypeCode>05</TextTypeCode>
+        <TextContent>
+            <TextType>06</TextType>
+            <ContentAudience>00</ContentAudience>
             <Text>{}</Text>
-        </OtherText>"""
+            <SourceTitle>{}​</SourceTitle>
+        </TextContent>"""
 
 
 
@@ -473,7 +497,7 @@ def to_onix():
             #d['blurb'] = escape(d['blurb'])
             d['language'] = toplanguage
             d['reviewstring'] = ""
-            d['reviewstring'] += "        ".join(reviewtemplate.format(review['money_quote']) for review in d['reviews'])
+            d['reviewstring'] += "        ".join(reviewtemplate.format(review['money_quote'],review['reviewer_name']) for review in d['reviews'])
             d['coverurl'] = "https://langsci-press.org/$$$call$$$/submission/cover/cover?submissionId=%s"%d['bookid']
             d['bookurl'] = "https://langsci-press.org/catalog/book/%s"%d['bookid']
 
