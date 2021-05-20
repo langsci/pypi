@@ -113,6 +113,14 @@ class Record():
                     )
                 ]
                     )
+
+            fieldaliases = (("location", "address"), ("date", "year"), ("journaltitle", "journal"))
+            for old, new in fieldaliases:
+                if self.fields.get(old) and not self.fields.get(new):
+                    self.fields[new] = self.fields[old]
+                    del self.fields[old]
+
+
         except IndexError:
             print(s)
         #store keys
@@ -265,6 +273,7 @@ class Record():
         self.fields['booktitle'] = self.fields['title']
       except KeyError:
         self.errors.append("neither title nor booktitle")
+        self.fields['title'] = '{\\biberror{no title}}'
     pages = self.fields.get('pages')
     if pages != None:
       self.fields['pages'] = re.sub(r'([0-9])-([0-9])',r'\1--\2',pages)
@@ -360,9 +369,13 @@ class Record():
     protect capitals inside a word
     protect lone capitals
     """
-    if self.fields.get('title') == None:
-        self.fields['title'] = "{\\biberror{no title}}"
-        self.errors.append(f"missing title in {self.key}")
+    if self.fields.get('title') is None:
+        if self.fields.get('booktitle') is None:
+            self.fields['title'] = "{\\biberror{no title}}"
+            self.errors.append(f"missing title in {self.key}")
+        else:
+            self.fields['title'] = self.fields['booktitle']
+
 
     for t in ('title','booktitle'):
       if self.fields.get(t) != None:
@@ -374,7 +387,7 @@ class Record():
   def checkvolumenumber(self):
     if self.typ == "book":
         m = bibpatterns.VOLUMEPATTERN.search(self.fields["title"])
-        if m != None:
+        if m is not None:
             vol = m.group(3)
             self.fields["volume"] = vol
             self.fields["title"] = self.fields["title"].replace(m.group(),'')
@@ -653,7 +666,6 @@ class Record():
     replace with error mark if not present
     """
     if self.fields.get(m) == None:
-      #print(m)
       self.fields[m] = r"{\biberror{no %s}}" % m
       self.errors.append("missing %s"%m)
 
@@ -674,7 +686,7 @@ class Record():
                                     ]
                                 )
         )
-    s = s.replace(',,',',')
+    s = s.replace(',,', ',')
     return s
 
 
