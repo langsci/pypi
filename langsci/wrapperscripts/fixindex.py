@@ -26,9 +26,11 @@ if __name__ == "__main__":
     """
 
     indextypes = "a"
+    basename = "main"
     try:
         indextypes = sys.argv[1]
+        basename = sys.argv[2]
     except IndexError:
         pass
     for indextype in indextypes:
-        processfile("main.%sdx" % indextype)
+        processfile("%s.%sdx" % (basename, indextype) )
