@@ -80,7 +80,7 @@ class Record():
   """
 
 
-  def __init__(self,s,fromfile=False,inkeysd={},restrict=False,reporting=[]):
+  def __init__(self,s,bibtexformat=False,inkeysd={},restrict=False,reporting=[]):
     """
     :param s: the bibtexrecord as a string
     :type s: string or unicode
@@ -91,8 +91,7 @@ class Record():
     """
     self.errors = [] #accumulates all error messages
     self.reporting = []
-
-    if fromfile: #get record from a file
+    if bibtexformat: #get record from a file
         m = re.match(bibpatterns.TYPKEYFIELDS,s)
         try:
             self.typ = m.group(1).lower()
@@ -238,7 +237,7 @@ class Record():
         andcount = creator.count(' and ')
         ampcount = creator.count('&')
         authorcount = 1 + andcount + ampcount
-        print(creator,andcount,ampcount)
+        #print(creator,andcount,ampcount)
         if authorcount > 2:
             creatorpart += "EtAl"
         if authorcount == 2:
@@ -261,7 +260,6 @@ class Record():
     """
     analyze fields, report errors and correct as necessary
     """
-
     if self.fields.get('editor') != None and self.fields.get('booktitle') == None:
       try:
         self.fields['booktitle'] = self.fields['title']
@@ -363,6 +361,9 @@ class Record():
     protect capitals inside a word
     protect lone capitals
     """
+    if self.fields.get('title') == None:
+        self.fields['title'] = "{\\biberror{no title}}"
+        self.errors.append(f"missing title in {self.key}")
 
     for t in ('title','booktitle'):
       if self.fields.get(t) != None:
@@ -370,12 +371,12 @@ class Record():
         self.fields[t] = re.sub(r'([A-Z][a-z]*[A-Z]+)', r"{\1}" ,self.fields[t])
         self.fields[t] = re.sub(r' ([A-Z]) ', r" {{\1}} " ,self.fields[t])
 
+
   def checkvolumenumber(self):
     if self.typ == "book":
         m = bibpatterns.VOLUMEPATTERN.search(self.fields["title"])
         if m != None:
             vol = m.group(3)
-            print(vol)
             self.fields["volume"] = vol
             self.fields["title"] = self.fields["title"].replace(m.group(),'')
     if self.typ == "incollection":
@@ -653,6 +654,7 @@ class Record():
     replace with error mark if not present
     """
     if self.fields.get(m) == None:
+      print(m)
       self.fields[m] = r"{\biberror{no %s}}" % m
       self.errors.append("missing %s"%m)
 
@@ -688,7 +690,7 @@ def normalize(s, inkeysd={}, restrict=False):
   rest = rest[::-1]
   #create the new bibtex records
   bibtexs = [Record(record,
-		    fromfile=True,
+		    bibtexformat=True,
                     inkeysd=inkeysd,
                     restrict=restrict,
                     reporting=[]

@@ -123,6 +123,19 @@ class TestBibConversion(unittest.TestCase):
             self.assertEqual(record.bibstring, expected)
       
       #TODO add more and different entry types of varying complexity
+
+
+    def test_normalize(self):
+        """ """
+        normalizetests = (
+            ("""\n@book{Kleinewillinghöfer2014,\naddress = {Cologne},\n\tauthor = {Schmitz, Ulrich},\n\tpublisher = {Cologne University},\n\tyear = {2014}\n}""",
+             """\n@book{Kleinewillinghöfer2014,\n\taddress = {Cologne},\n\tauthor = {Schmitz, Ulrich},\n\tpublisher = {Cologne University},\n\ttitle = {\\biberror{no title}},\n\tyear = {2014}\n}"""),
+            )
+        for s, expected in normalizetests:
+            record = bibtools.normalize(s)
+            self.assertEqual(record, expected)
+
+
     
         
 if __name__ == '__main__':
