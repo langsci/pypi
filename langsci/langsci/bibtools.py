@@ -290,8 +290,7 @@ class Record():
     """
     try:
         if len(self.errors)>0:
-            restrict =  True
-            if restrict==False or self.inkeysd.get(self.key):
+            if self.restrict==False or self.inkeysd.get(self.key):
                 print(self.key,'\n  '.join(['  ']+self.errors))
     except AttributeError:
         pass
@@ -654,7 +653,7 @@ class Record():
     replace with error mark if not present
     """
     if self.fields.get(m) == None:
-      print(m)
+      #print(m)
       self.fields[m] = r"{\biberror{no %s}}" % m
       self.errors.append("missing %s"%m)
 
