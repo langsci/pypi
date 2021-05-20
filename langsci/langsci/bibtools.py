@@ -113,6 +113,14 @@ class Record():
                     )
                 ]
                     )
+
+            fieldaliases = (("location", "address"), ("date", "year"), ("journaltitle", "journal"))
+            for old, new in fieldaliases:
+                if self.fields.get(old) and not self.fields.get(new):
+                    self.fields[new] = self.fields[old]
+                    del self.fields[old]
+
+
         except IndexError:
             print(s)
         #store keys
@@ -653,7 +661,6 @@ class Record():
     replace with error mark if not present
     """
     if self.fields.get(m) == None:
-      #print(m)
       self.fields[m] = r"{\biberror{no %s}}" % m
       self.errors.append("missing %s"%m)
 
