@@ -9,7 +9,7 @@ glottolog = False
 from pyglottolog import Glottolog
 try:
     glottolog = Glottolog('.')
-except IndexError:
+except ValueError:
     print("Glottolog tree directory not found. Glottocodes will not work. Please symlink the directories glottolog/languoids and glottolog/references")
 
 """
