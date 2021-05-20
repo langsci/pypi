@@ -675,6 +675,11 @@ class Record():
     output fields will be sorted alphabetically
     remove all fields which are in excludefields
     """
+    try:
+        self.typ
+    except AttributeError:
+        print("skipping phantom record, probably a comment")
+        return ''
     if self.restrict and self.key not in self.inkeysd:
         return ''
     s = """@%s{%s,\n\t%s\n}"""%(self.typ,

@@ -134,6 +134,8 @@ class TestBibConversion(unittest.TestCase):
              """\n@article{Schmitz2012,\n\taddress = {Cologne},\n\tauthor = {Schmitz, Werner},\n\tjournal = {Studies in Stuff},\n\tpages = {100--111},\n\ttitle = {\\biberror{no title}},\n\tvolume = {23},\n\tyear = {2012}\n}"""),
             ("""\n@book{Schmitz2011,\n\taddress = {Cologne},\n\tauthor = {Schmitz, Ulrich},\n\tpublisher = {Cologne University},\n\tyear = {2011},\n\tbooktitle = {bare booktitle}\n}""",
              """\n@book{Schmitz2011,\n\taddress = {Cologne},\n\tauthor = {Schmitz, Ulrich},\n\tbooktitle = {bare booktitle},\n\tpublisher = {Cologne University},\n\ttitle = {bare booktitle},\n\tyear = {2011}\n}"""),
+            ("""\n@comment{useless comment}""",
+             "\n")
             )
         for s, expected in normalizetests:
             record = bibtools.normalize(s)
