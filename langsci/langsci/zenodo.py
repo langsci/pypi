@@ -74,7 +74,7 @@ class Book(Publication):
         self.extracommunities = extracommunities
         self.getChapters(glottolog=glottolog)
         self.metadata["publication_type"] = "book"
-        # self.metadata['related_identifiers'] = [{'isAlternateIdentifier':self.digitalisbn}]    #currently not working on Zenodo
+        self.metadata['related_identifiers'] = [{'relation':'isAlternateIdentifier', 'identifier':self.digitalisbn}]
         self.metadata["title"] = self.title
         self.metadata["description"] = self.abstract
         self.metadata["creators"] = [{"name": au} for au in self.authors]
