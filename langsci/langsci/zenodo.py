@@ -8,8 +8,7 @@ import json
 import pprint
 import re
 import sys
-from pyglottolog import Glottolog
-glottolog = Glottolog('.')
+
 
 try:
     from texpatterns import *
@@ -63,7 +62,7 @@ class Book(Publication):
   A full-length publication, either a monograph or an edited volume
   """
 
-    def __init__(self, extracommunities=[]):
+    def __init__(self, extracommunities=[], glottolog=False):
         Publication.__init__(self)
         self.title = None
         self.authors = []
@@ -73,7 +72,7 @@ class Book(Publication):
         self.getBookMetadata()
         self.chapter = []
         self.extracommunities = extracommunities
-        self.getChapters()
+        self.getChapters(glottolog=glottolog)
         self.metadata["publication_type"] = "book"
         # self.metadata['related_identifiers'] = [{'isAlternateIdentifier':self.digitalisbn}]    #currently not working on Zenodo
         self.metadata["title"] = self.title
@@ -112,7 +111,7 @@ class Book(Publication):
         self.digitalisbn = ISBNP.search(localmetadata).group(1)
         self.bookDOI = DOIP.search(localmetadata).group(1)
 
-    def getChapters(self):
+    def getChapters(self, glottolog=False):
         """
     find all chapters in edited volumes which are referenced in main.tex
     """
@@ -122,7 +121,7 @@ class Book(Publication):
         mainf.close()
         chapterpaths = INCLUDEPAPERP.findall(main)
         self.chapters = [
-            Chapter(cp, booktitle=self.title, isbn=self.digitalisbn, bookDOI=self.bookDOI, extracommunities=self.extracommunities)
+            Chapter(cp, booktitle=self.title, isbn=self.digitalisbn, bookDOI=self.bookDOI, extracommunities=self.extracommunities, glottolog=glottolog)
             for cp in chapterpaths
         ]
 
@@ -132,7 +131,7 @@ class Chapter(Publication):
   A chapter in an edited volume
   """
 
-    def __init__(self, path, booktitle="", isbn=False, bookDOI=False, extracommunities=[]):
+    def __init__(self, path, booktitle="", isbn=False, bookDOI=False, extracommunities=[], glottolog=False):
         print("reading", path)
         Publication.__init__(self, extracommunities=extracommunities)
         chapterf = open("chapters/%s.tex" % path, encoding="utf-8")
@@ -226,5 +225,6 @@ class Chapter(Publication):
         self.metadata["keywords"] = self.keywords
         self.metadata['related_identifiers'] = [{'relation':'isPartOf', 'identifier':self.bookisbn},
                                                 {'relation':'isPartOf', 'identifier':self.bookDOI}]
-        self.metadata['subjects'] = [{"term":glottolog.languoid(code).name , "identifier":f"https://glottolog.org/resource/languoid/id/{code}", "scheme":"url"} for code in glottocodes]
+        if glottolog:
+            self.metadata['subjects'] = [{"term":glottolog.languoid(code).name , "identifier":f"https://glottolog.org/resource/languoid/id/{code}", "scheme":"url"} for code in glottocodes]
         pprint.pprint(self.metadata)

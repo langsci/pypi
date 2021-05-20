@@ -5,6 +5,13 @@ try:
 except ImportError:
     from langsci import zenodo
 
+glottolog = False
+from pyglottolog import Glottolog
+try:
+    glottolog = Glottolog('.')
+except IndexError:
+    print("Glottolog tree directory not found. Glottocodes will not work. Please symlink the directories glottolog/languoids and glottolog/references")
+
 """
 usage: > python3 zenodo.py 7
 The script looks for all include'd files from the folder chapters/ in main.tex
@@ -27,7 +34,7 @@ try:
 except IndexError:
     pass
 
-book = zenodo.Book(extracommunities=extracommunities)
+book = zenodo.Book(extracommunities=extracommunities, glottolog=glottolog)
 # for c in book.chapters:
 # pprint.pprint(c.metadata)
 try:
