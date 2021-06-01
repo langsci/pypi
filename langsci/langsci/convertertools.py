@@ -567,7 +567,7 @@ class Document:
         #collapse newlines
         modtext = re.sub("\n*\\\\\\\\\n*",'\\\\\\\\\n',modtext) 
         #bib
-        authorchars = "[A-Z][-a-záéíóúaèìòùâeîôûñäëïöüA-Z]+"
+        authorchars = "[A-Z][-a-záéíóúaèìòùâeîôûñäëïöüA-Z']+"
         yearchars = "[12][0-9]{3}[a-z]?"
         modtext = re.sub("\((%s) +et al\.?  +(%s): *([0-9,-]+)\)"%(authorchars,yearchars),
                          "\\citep[\\3]{\\1EtAl\\2}",
@@ -631,7 +631,7 @@ class Document:
                          modtext)   
         #Smith (2000, 2001)
         modtext = re.sub(r"(%s)\((%s), *(%s)\)"%(authorchars, yearchars, yearchars),
-                         r"\\citet{\1\2,\3\2}",
+                         r"\\citet{\1\2,\1\3}",
                          modtext)
         #Smith 2000, 2001
         modtext = re.sub(r"\\citealt{(%s)(%s)}[,;] (%s)"%(authorchars, yearchars, yearchars),
