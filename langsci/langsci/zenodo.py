@@ -190,35 +190,21 @@ class Chapter(Publication):
         except TypeError:
             self.metadata["partof_pages"] = self.pagerange
         # retrieve affiliations from texfile
-        authoraffiliations = CHAPTERAUTHORP.findall(preamble)
-        orcidgroups = ORCIDSP.findall(preamble)
-        # store the affiliations in a dictionary
-        creatorsdic = {}
-        for authoraffiliation in authoraffiliations:
-            # ["and", "John Smith", "Harvard"]. Ignore first element
-            creatorsdic[authoraffiliation[1].strip()] = authoraffiliation[2].replace(
-                "\&", "&"
-            )
-        orcidsdic = {}
-        if len(orcidgroups) > 0:
-            if len(orcidgroups) != len(authoraffiliations):
-                print("In a given chapter, all authors must have a value for orcid, or none. In chapter %s, there are %i authors, but only %i orcid fields. Please provide an empty \\orcid{ } field for the missing author(s)" % (path,len(authoraffiliations),len(orcidgroups)))
-                raise ValueError
-        for orcidgroup in orcidgroups:
-            # ["and", "John Smith", "123456"]. Ignore first element
-            orcidauthorname = (
-                orcidgroup[1].split("\\")[0].strip()
-            )  # split on \ to get rid of \affiliation...
-            orcidsdic[orcidauthorname] = orcidgroup[2].strip()
-            # add affiliations where available in dictionary
-        self.metadata["creators"] = [
-            {
-                "name": au,
-                "affiliation": creatorsdic.get(au, " "),
-                "orcid": orcidsdic.get(au, ""),
-            }
-            for au in self.authors
-        ]
+        authorlist = CHAPTERAUTHORSP.findall(preamble)[0]
+        print(authorlist)
+        authororcidaffiliations = authorlist.split(' and ')
+        print(authororcidaffiliations)
+        creatorslist = []
+        for authororcidaffiliation in authororcidaffiliations:
+            print(authororcidaffiliation)
+            name = AUTHORNAMEP.findall(authororcidaffiliation)[0]
+            try:
+                orcid = ORCIDSP.findall(authororcidaffiliation)[0]
+            except IndexError:
+                orcid = None
+            affiliation = AFFILIATIONP.findall(authororcidaffiliation)[0]
+            creatorslist.append(dict(name=name, affiliation=affiliation, orcid=orcid))
+        self.metadata["creators"] = creatorslist
         for i,c in enumerate(self.metadata["creators"]):
             if c["orcid"] in (None,""," "):
                 del self.metadata["creators"][i]["orcid"]
