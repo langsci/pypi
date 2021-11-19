@@ -36,3 +36,4 @@ print(
 )
 sanitydir.check()
 sanitydir.printErrors()
+#sanitydir.print_uncommon_chars()

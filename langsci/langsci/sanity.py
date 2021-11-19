@@ -19,7 +19,7 @@ import fnmatch
 import os
 import textwrap
 import uuid
-
+import unicodedata
 # import enchant
 # from enchant.tokenize import get_tokenizer
 from PIL import Image
@@ -99,6 +99,8 @@ class SanityFile:
                 )
             ]
         self.lines = self.split_(self.content)
+        #get a list of all characters outside of low ASCII range, together with their Unicode name
+        self.characters = sorted([(k,unicodedata.name(k)) for k in set([x for x in self.content]) if ord(k)>255 and k not in "‘’“…−–—””"])
         # self.spellerrors = []
 
     def split_(self, c):
@@ -125,6 +127,7 @@ class SanityFile:
             if "\\chk" in line:  # the line is explicitely marked as being correct
                 continue
             for antipattern, msg in self.antipatterns:
+                #print(antipattern)
                 m = re.search("(%s)" % antipattern, line)
                 if m != None:
                     g = m.group(1)
@@ -142,6 +145,9 @@ class SanityFile:
                 ):  # the match required to make this line correct is not found
                     self.errors.append(SanityError(self.filename, i, line, g, msg))
 
+        for ch in self.characters:
+            self.errors.append(SanityError(self.filename, 0, '', ch[0],f'uncommon character: {ch[1]}'))
+
     def spellcheck(self):
         """return a list of all words which are neither known LaTeX terms nor found in the enchant dictionary
     """
@@ -157,6 +163,11 @@ class SanityFile:
             )
         )
         self.spellerrors = result
+
+
+    def uncommon_chars(self):
+            for ch in self.characters:
+                return(f"The following uncommon characters were found:\n{ch[0]}:{ch[1]}")
 
 
 class TexFile(SanityFile):
@@ -300,6 +311,9 @@ class BibFile(SanityFile):
             "In order to keep the Roman numbers in capitals, enclose them in braces {}",
         ),
         ("\.[A-Z]", "Please use a space after a period or an abbreviated name"),
+        (r"\\underline", "Please do not use underlining. Consult with support if you really need it"),
+        ("""quote}[\s]*['’’'‘’'‘'′ʼ´ʹʻˈʹ՚＇‛"“”]""", "Please do not use quotation marks for indented quotes"),
+        (r"\begin{tabular}[c]{l}", "Please do not use nested tables. Get in touch with support"),
     )
 
     posnegpatterns = []
@@ -377,7 +391,7 @@ class SanityDir:
       extension (str):  the extension to be looked for 
       
     returns: 
-      a list of paths for the retrieved files
+      a list of paths for the retrieved filescd -
     """
 
         matches = []
@@ -387,12 +401,13 @@ class SanityDir:
         for filename in fnmatch.filter(
             localfiles + chapterfiles + imgfiles, "*.%s" % extension
         ):
-            matches.append(os.path.join(self.dirname, filename))
+            matches.append(filename)
         return sorted(matches)
+
 
     def printErrors(self):
         """
-    Print all identified possible erros with metadata (filename, line number, reason
+    Print all identified possible errors with metadata (filename, line number, reason
         """
         for filename in sorted(self.texterrors):
             fileerrors = self.texterrors[filename]
@@ -414,6 +429,7 @@ class SanityDir:
             for e in fileerrors:
                 print(filename)
                 print("    ", e)
+
 
     def check(self):
         """
