@@ -92,12 +92,12 @@ class Document:
         self.counters = counters
         self.text = text
         self.modtext = self.getModtext()
-        paperpreamble =r"""\documentclass[output=paper]{langsci/langscibook} 
-\author{\affiliation{}\orcid{}}
-\title{}
-\abstract{}
+        paperpreamble =r"""\documentclass[output=paper]{langscibook}
+\author{Authorname\orcid{}\affiliation{}}
+\title{Title}
+\abstract{Abstract}
 \IfFileExists{../localcommands.tex}{
-  \addbibresource{localbibliography.bib}
+  \addbibresource{../localbibliography.bib}
   \input{../localpackages}
   \input{../localcommands} 
   \input{../localhyphenation} 
@@ -525,7 +525,7 @@ class Document:
         for m in w2lunicodep4.findall(modtext):
            modtext=modtext.replace(m,(byteprefix4+m[1:-2].encode('utf-8')).decode('unicode_escape'))
         #remove marked up white space and punctuation
-        modtext = re.sub("\\text(it|bf|sc)\{([ \.,]*)\}","\\2",modtext)  
+        modtext = re.sub("\\text(it|bf|sc)\{([ \.,]*)\}","\2",modtext)
         
         #remove explicit counters. These are not usefull when from autoconversion 
         
@@ -539,26 +539,26 @@ class Document:
         modtext = modtext.replace("\\multicolumn{1}{l}","")
         modtext = modtext.replace("}{X}{","}{c}{")
         #remove stupid Open Office styles
-        modtext = re.sub("\\\\begin\\{styleLangSciSectioni\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioni\\}","\\section{\\1}",modtext) 
-        modtext = re.sub("\\\\begin\\{styleLangSciSectionii\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectionii\\}","\\subsection{\\1}",modtext)
-        modtext = re.sub("\\\\begin\\{styleLangSciSectioniii\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioniii\\}","\\subsubsection{\\1}",modtext)
-        modtext = re.sub("\\\\begin\\{styleLangSciSectioniv\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioniv\\}","\\subsubsubsection{\\1}",modtext)
+        modtext = re.sub("\\\\begin\\{styleLangSciSectioni\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioni\\}",r"\\section{\1}",modtext)
+        modtext = re.sub("\\\\begin\\{styleLangSciSectionii\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectionii\\}",r"\\subsection{\1}",modtext)
+        modtext = re.sub("\\\\begin\\{styleLangSciSectioniii\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioniii\\}",r"\\subsubsection{\1}",modtext)
+        modtext = re.sub("\\\\begin\\{styleLangSciSectioniv\\}\n+(.*?)\n+\\\\end\\{styleLangSciSectioniv\\}",r"\\subsubsubsection{\1}",modtext)
         
-        modtext = re.sub("\\\\begin\\{stylelsSectioni\\}\n+(.*?)\n+\\\\end\\{stylelsSectioni\\}","\\section{\\1}",modtext)
-        modtext = re.sub("\\\\begin\\{stylelsSectionii\\}\n+(.*?)\n+\\\\end\\{stylelsSectionii\\}","\\subsection{\\1}",modtext)
-        modtext = re.sub("\\\\begin\\{stylelsSectioniii\\}\n+(.*?)\n+\\\\end\\{stylelsSectioniii\\}","\\subsubsection{\\1}",modtext)
-        modtext = re.sub("\\\\begin\\{stylelsSectioniv\\}\n+(.*?)\n+\\\\end\\{stylelsSectioniv\\}","\\subsubsubsection{\\1}",modtext)
+        modtext = re.sub("\\\\begin\\{stylelsSectioni\\}\n+(.*?)\n+\\\\end\\{stylelsSectioni\\}",r"\\section{\1}",modtext)
+        modtext = re.sub("\\\\begin\\{stylelsSectionii\\}\n+(.*?)\n+\\\\end\\{stylelsSectionii\\}",r"\\subsection{\1}",modtext)
+        modtext = re.sub("\\\\begin\\{stylelsSectioniii\\}\n+(.*?)\n+\\\\end\\{stylelsSectioniii\\}",r"\\subsubsection{\1}",modtext)
+        modtext = re.sub("\\\\begin\\{stylelsSectioniv\\}\n+(.*?)\n+\\\\end\\{stylelsSectioniv\\}",r"\\subsubsubsection{\1}",modtext)
         
-        modtext = re.sub(r"\\begin\{styleHeadingi}\n+(.*?)\n+\\end\{styleHeadingi\}","\\chapter{\\1}",modtext) 
-        modtext = re.sub("\\\\begin\\{styleHeadingii\\}\n+(.*?)\n+\\\\end\\{styleHeadingii\\}","\\section{\\1}",modtext)
-        modtext = re.sub("\\\\begin\{styleHeadingiii\}\n+(.*?)\n+\\\\end\{styleHeadingiii}","\\subsubsection{\\1}",modtext)
-        modtext = re.sub("\\\\begin\{styleHeadingiv\}\n+(.*?)\n+\\\\end\{styleHeadingiv}","\\subsubsection{\\1}",modtext)
+        modtext = re.sub(r"\\begin\{styleHeadingi}\n+(.*?)\n+\\end\{styleHeadingi\}",r"\\chapter{\1}",modtext)
+        modtext = re.sub("\\\\begin\\{styleHeadingii\\}\n+(.*?)\n+\\\\end\\{styleHeadingii\\}",r"\\section{\1}",modtext)
+        modtext = re.sub("\\\\begin\{styleHeadingiii\}\n+(.*?)\n+\\\\end\{styleHeadingiii}",r"\\subsubsection{\1}",modtext)
+        modtext = re.sub("\\\\begin\{styleHeadingiv\}\n+(.*?)\n+\\\\end\{styleHeadingiv}",r"\\subsubsection{\1}",modtext)
         
         #remove explicit shorttitle for sections
-        modtext = re.sub("\\\\(sub)*section(\[.*?\])\{(\\text[bfmd][bfmd])\?(.*)\}","\\\\1section{\\4}",modtext) 
+        modtext = re.sub("\\\\(sub)*section(\[.*?\])\{(\\text[bfmd][bfmd])\?(.*)\}","\\\1section{\\4}",modtext)
         #                        several subs | options       formatting           title ||   subs      title
         #move explict section number to end of line and comment out
-        modtext = re.sub("section\{([0-9\.]+ )(.*)","section{\\2 %\\1/",modtext)
+        modtext = re.sub("section\{([0-9\.]+ )(.*)","section{\2 %\1/",modtext)
         modtext = re.sub("section\[.*?\]","section",modtext)
         #                                 number    title         title number
         #table cells in one row
@@ -570,64 +570,64 @@ class Document:
         authorchars = "[A-Z][-a-záéíóúaèìòùâeîôûñäëïöüA-Z']+"
         yearchars = "[12][0-9]{3}[a-z]?"
         modtext = re.sub("\((%s) +et al\.?  +(%s): *([0-9,-]+)\)"%(authorchars,yearchars),
-                         "\\citep[\\3]{\\1EtAl\\2}",
+                         r"\\citep[\3]{\1EtAl\2}",
                          modtext)
         modtext = re.sub("\((%s) +(%s): *([0-9,-]+)\)"%(authorchars,yearchars),
-                         "\\citep[\\3]{\\1\\2}",
+                         r"\\citep[\3]{\1\2}",
                          modtext)
         modtext = re.sub("\((%s) +et al\.? +(%s)\)"%(authorchars,yearchars),
-                         "\\citep{\\1EtAl\\2}",
+                         r"\\citep{\1EtAl\2}",
                          modtext)
         modtext = re.sub("\((%s) +(%s)\)"%(authorchars,yearchars),
-                         "\\citep{\\1\\2}",
+                         r"\\citep{\1\2}",
                          modtext)
         #citet
         modtext = re.sub("(%s) +et al.? +\((%s): *([0-9,-]+)\)"%(authorchars,yearchars),
-                         "\\citet[\\3]{\\1EtAl\\2}",
+                         r"\\citet[\3]{\1EtAl\2}",
                          modtext)
         modtext = re.sub("(%s) +\((%s): *([0-9,-]+)\)"%(authorchars,yearchars),
-                         "\\citet[\\3]{\\1\\2}",
+                         r"\\citet[\3]{\1\2}",
                          modtext)
         modtext = re.sub("(%s) +et al.? +\((%s)\)"%(authorchars,yearchars),
-                         "\\citet{\\1EtAl\\2}",
+                         r"\\citet{\1EtAl\2}",
                          modtext)
         modtext = re.sub("(%s) +\((%s)\)"%(authorchars,yearchars),
-                         "\\citet{\\1\\2}",
+                         r"\\citet{\1\2}",
                          modtext)
         #citegen
         modtext = re.sub("(%s) +et al\.?]['’]s +\((%s)\)"%(authorchars,yearchars),
-                         "\\citegen{\\1EtAl\\2}",
+                         r"\\citegen{\1EtAl\2}",
                          modtext)
         modtext = re.sub("(%s)['’]s +\((%s)\)"%(authorchars,yearchars),
-                         "\\citegen{\\1\\2}",
+                         r"\\citegen{\1\2}",
                          modtext)
         #citeapo
         modtext = re.sub("(%s) +et al\.?]['’] +\((%s)\)"%(authorchars,yearchars),
-                         "\\citeapo{\\1EtAl\\2}",
+                         r"\\citeapo{\1EtAl\2}",
                          modtext)
         modtext = re.sub("(%s)['’] +\((%s)\)"%(authorchars,yearchars),
-                         "\\citeapo{\\1\\2}",
+                         r"\\citeapo{\1\2}",
                          modtext)
-        #modtext = re.sub("([A-Z][a-z]+) +(%s)","\\citet{\\1\\2}",modtext)i
+        #modtext = re.sub("([A-Z][a-z]+) +(%s)","\\citet{\1\2}",modtext)i
         #catch all citealt
         modtext = re.sub("(%s) +(%s)"%(authorchars,yearchars),
-                         "\\citealt{\\1\\2}",
+                         r"\\citealt{\1\2}",
                          modtext)    
         modtext = re.sub("(%s) et al\.? +(%s)"%(authorchars,yearchars),
-                         "\\citealt{\\1EtAl\\2}",
+                         r"\\citealt{\1EtAl\2}",
                          modtext)    
         #integrate ampersands
         modtext = re.sub(r"(%s) \\& \\citet{"%authorchars,
-                         "\\citet{\\1",
+                         r"\\citet{\1",
                          modtext)  
         modtext = re.sub(r"(%s) and \\citet{"%authorchars,
-                         "\\citet{\\1",
+                         r"\\citet{\1",
                          modtext)        
         modtext = re.sub(r"(%s) \\& \\citealt{"%authorchars,
-                         "\\citealt{\\1",
+                         r"\\citealt{\1",
                          modtext)    
         modtext = re.sub(r"(%s) and \\citealt{"%authorchars,
-                         "\\citealt{\\1",
+                         r"\\citealt{\1",
                          modtext)   
         #Smith (2000, 2001)
         modtext = re.sub(r"(%s)\((%s), *(%s)\)"%(authorchars, yearchars, yearchars),
@@ -639,24 +639,24 @@ class Document:
                          modtext)
         #condense chains of citations
         modtext = re.sub(r"(\\citealt{%s)\}[,;] \\citealt{"%authorchars,
-                         "\\1,",
+                         "\1,",
                          modtext)
         modtext = re.sub(r"(\\citet{%s)\}[,;] \\citealt{"%authorchars,
-                         "\\1,",
+                         "\1,",
                          modtext)
         #examples
         modtext = modtext.replace("\n()", "\n\\ea \n \\gll \\\\\n   \\\\\n \\glt\n\\z\n\n")
         #only up to number (1999)
-        modtext = re.sub("\n\((1?[0-9]?[0-9]?[0-9])\)", """\n\ea%\\1
-    \label{ex:key:\\1}
+        modtext = re.sub("\n\((1?[0-9]?[0-9]?[0-9])\)", r"""\n\\ea%\1
+    \\label{ex:key:\1}
     \\\\gll\\\\newline
         \\\\newline
     \\\\glt
-    \z
+    \\z
 
         """,modtext)
-        modtext = re.sub(r"\\label\{(bkm:Ref[0-9]+)\}\(\)", """ea%\\1
-    \\label{\\1}  
+        modtext = re.sub(r"\\label\{(bkm:Ref[0-9]+)\}\(\)", r"""ea%\1
+    \\label{\1}
     \\\\gll \\\\newline  
         \\\\newline
     \\\\glt
@@ -672,22 +672,22 @@ class Document:
         modtext = modtext.replace(r"\newline",r"\\")
 
 
-        modtext = re.sub("\n\\\\textit{Table ([0-9]+)[\.:] *(.*?)}\n","%%please move \\\\begin{table} just above \\\\begin{tabular . \n\\\\begin{table}\n\\caption{\\2}\n\\label{tab:key:\\1}\n\\end{table}",modtext)
-        modtext = re.sub("\nTable ([0-9]+)[\.:] *(.*?) *\n","%%please move \\\\begin{table} just above \\\\begin{tabular\n\\\\begin{table}\n\\caption{\\2}\n\\label{tab:key:\\1}\n\\end{table}",modtext)#do not add } after tabular
-        modtext = re.sub("Table ([0-9]+)","\\\\tabref{tab:key:\\1}",modtext) 
-        modtext = re.sub("\nFigure ([0-9]+)[\.:] *(.*?)\n","\\\\begin{figure}\n\\caption{\\2}\n\\label{fig:key:\\1}\n\\end{figure}",modtext)
-        modtext = re.sub("Figure ([0-9]+)","\\\\figref{fig:key:\\1}",modtext)
-        modtext = re.sub("Section ([0-9\.]+)","\\\\sectref{sec:key:\\1}",modtext) 
-        modtext = re.sub("§ *([0-9\.]+)","\\\\sectref{sec:key:\\1}",modtext) 
-        modtext = re.sub(" \(([0-9][0-9]?[0-9]?[a-h]?)\)"," \\\\REF{ex:key:\\1}",modtext)
+        modtext = re.sub("\n\\\\textit{Table ([0-9]+)[\.:] *(.*?)}\n",r"%%please move \\\\begin{table} just above \\\\begin{tabular . \n\\\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",modtext)
+        modtext = re.sub("\nTable ([0-9]+)[\.:] *(.*?) *\n",r"%%please move \\\\begin{table} just above \\\\begin{tabular\n\\\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",modtext)#do not add } after tabular
+        modtext = re.sub("Table ([0-9]+)","\\\\tabref{tab:key:\1}",modtext)
+        modtext = re.sub("\nFigure ([0-9]+)[\.:] *(.*?)\n",r"\\begin{figure}\n\\caption{\2}\n\\label{fig:key:\1}\n\\end{figure}",modtext)
+        modtext = re.sub("Figure ([0-9]+)","\\\\figref{fig:key:\1}",modtext)
+        modtext = re.sub("Section ([0-9\.]+)","\\\\sectref{sec:key:\1}",modtext)
+        modtext = re.sub("§ *([0-9\.]+)","\\\\sectref{sec:key:\1}",modtext)
+        modtext = re.sub(" \(([0-9][0-9]?[0-9]?[a-h]?)\)"," \\\\REF{ex:key:\1}",modtext)
         modtext = re.sub("\\\\(begin|end){minipage}.*?\n",'',modtext)
         modtext = re.sub("\\\\begin{figure}\[h\]",'\\\\begin{figure}',modtext)
         
         
         modtext = re.sub("(begin\{tabular\}[^\n]*)",r"""\1\n
-\lsptoprule""",modtext) 
-        modtext = re.sub(r"\\end{tabular}\n*",r"""\lspbottomrule
-\end{tabular}\n""",modtext)
+\\lsptoprule""",modtext)
+        modtext = re.sub(r"\\end{tabular}\n*",r"""\\lspbottomrule
+\\end{tabular}\n""",modtext)
 
         modtext = modtext.replace("begin{tabular}","begin{tabularx}{\\textwidth}")
         modtext = modtext.replace("end{tabular}","end{tabularx}")
@@ -706,15 +706,15 @@ class Document:
         modtext = modtext.replace("& \\end{itemize}","& %%\\end{itemize}\n")
 
 
-        modtext = re.sub(r"""\n+\\z""","\\z",modtext) 
-        modtext = re.sub("""\n\n+""","\n\n",modtext) 
+        modtext = re.sub(r"""\n+\\z""",r"\\z",modtext)
+        modtext = re.sub("""\n\n+""",r"\n\n",modtext)
         
         
         #merge useless chains of formatting
-        modtext = re.sub("(\\\\textbf\{[^}]+)\}\\\\textbf\{","\\1",modtext)
-        modtext = re.sub("(\\\\textit\{[^}]+)\}\\\\textit\{","\\1",modtext)
-        modtext = re.sub("(\\\\texttt\{[^}]+)\}\\\\texttt\{","\\1",modtext)
-        modtext = re.sub("(\\\\emph\{[^}]+)\}\\\\emph\{","\\1",modtext)
+        modtext = re.sub("(\\\\textbf\{[^}]+)\}\\\\textbf\{","\1",modtext)
+        modtext = re.sub("(\\\\textit\{[^}]+)\}\\\\textit\{","\1",modtext)
+        modtext = re.sub("(\\\\texttt\{[^}]+)\}\\\\texttt\{","\1",modtext)
+        modtext = re.sub("(\\\\emph\{[^}]+)\}\\\\emph\{","\1",modtext)
         
         #remove all textits from sourcelines
         i = 1
@@ -731,9 +731,9 @@ class Document:
                                     r'\\%s{\1} \\%s{'%(s,s),
                                     modtext)
             
-        modtext = re.sub("\\\\includegraphics\[.*?width=\\\\textwidth\]\{","%please move the includegraphics inside the {figure} environment\n%%\includegraphics[width=\\\\textwidth]{figures/",modtext)
+        modtext = re.sub("\\\\includegraphics\[.*?width=\\\\textwidth\]\{",r"%please move the includegraphics inside the {figure} environment\n%%\\includegraphics[width=\\textwidth]{figures/",modtext)
         
-        modtext = re.sub("\\\\item *\n+",'\\item ',modtext)
+        modtext = re.sub("\\\\item *\n+",r'\\item ',modtext)
         
         modtext = re.sub(r"\\begin{itemize}\n\\item *(\\section{.*?})\n\\end{itemize}",r"\1",modtext)
 
@@ -749,12 +749,12 @@ class Document:
         #right
         modtext = re.sub(" +\\}",'} ',modtext)
         #left
-        modtext = re.sub("\\\\text(it|bf|sc|tt|up|rm)\\{ +",' \\\\text\\1{',modtext)
-        modtext = re.sub("\\\\text(it|bf|sc|tt|up|rm)\\{([!?\(\)\[\]\.\,\>]*)\\}",'\\2',modtext)
+        modtext = re.sub("\\\\text(it|bf|sc|tt|up|rm)\\{ +",' \\\\text\1{',modtext)
+        modtext = re.sub("\\\\text(it|bf|sc|tt|up|rm)\\{([!?\(\)\[\]\.\,\>]*)\\}",'\2',modtext)
         modtext = re.sub(r"\\tablefirsthead\{\}\n\n\\tabletail\{\}\n\\tablelasttail\{\}","",modtext)
         
         #duplicated section names 
-        modtext = re.sub("(chapter|section|paragraph)\[.*?\](\{.*\}.*)","\\1\\2",modtext)
+        modtext = re.sub("(chapter|section|paragraph)\[.*?\](\{.*\}.*)","\1\2",modtext)
         
         
         bibliography = ''
