@@ -5,13 +5,22 @@ Find occurrences of terms listed in *txt files and add indexing markup in corres
 import glob
 import re
 import os
+import sys
 
 if __name__  ==  "__main__":
     #no indexing will take place in lines with the following keywords and {. section also matches subsection.
     excluders  =  ("section","caption","chapter","addplot")
     
     lgs = open("locallanguages.txt").read().split('\n')
+    for lg in lgs:
+            if "(" in lg:
+                print(f"{lg} contains parentheses. Parentheses are not allowed in indexed language names. Exiting.")
+                sys.exit()
     terms = open("localsubjectterms.txt").read().split('\n')[::-1]#reverse to avoid double indexing
+    for term in terms:
+            if "(" in term:
+                print(f"{term} contains parentheses. Parentheses are not allowed in indexed language names. Exiting.")
+                sys.exit()
     print("found %i language names for autoindexing" % len(lgs))
     print("found %i subject terms for autoindexing" % len(terms))
 
@@ -42,13 +51,13 @@ if __name__  ==  "__main__":
                     if lg  ==  '':
                         continue 
                     #substitute "lg" with "\ili{lg}"
-                    line  =  re.sub('(?<!ili{)%s(?![\w}])'%lg, '\ili{%s}'%lg, line)
+                    line  =  re.sub('(?<!ili{)%s(?![\w}])'%lg, r'\\ili{%s}'%lg, line)
                 for term in terms:
                     term  =  term.strip() 
                     if term  ==  '':
                         continue
                     #substitute "term" with "\isi{term}"
-                    line  =  re.sub('(?<!isi{|...[A-Za-z])%s(?![-_\w}])'%term, '\isi{%s}'%term, line) 
+                    line  =  re.sub('(?<!isi{|...[A-Za-z])%s(?![-_\w}])'%term, r'\\isi{%s}'%term, line)
             newlines.append(line)
         #reassemble body
         content  =  "\n".join(newlines)  
