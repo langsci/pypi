@@ -7,6 +7,9 @@ import re
 import os
 import sys
 
+
+IGNORECASE = False
+
 if __name__  ==  "__main__":
     #no indexing will take place in lines with the following keywords and {. section also matches subsection.
     excluders  =  ("section","caption","chapter","addplot")
@@ -57,7 +60,11 @@ if __name__  ==  "__main__":
                     if term  ==  '':
                         continue
                     #substitute "term" with "\isi{term}"
-                    line  =  re.sub('(?<!isi{|...[A-Za-z])%s(?![-_\w}])'%term, r'\\isi{%s}'%term, line)
+                    if IGNORECASE:
+                        line  =  re.sub('(?<!isi{|...[A-Za-z])(%s)(?![-_\w}])'%term, r'\\isi{\1}', line, flags=re.IGNORECASE)
+                    else:
+                        line  =  re.sub('(?<!isi{|...[A-Za-z])(%s)(?![-_\w}])'%term, r'\\isi{\1}', line)
+
             newlines.append(line)
         #reassemble body
         content  =  "\n".join(newlines)  
