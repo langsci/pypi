@@ -2,6 +2,7 @@ import re
 import shutil
 import uuid
 import codecs
+from pathlib import Path
 
 try:
     import bibtools
@@ -21,18 +22,18 @@ def convert(fn, wd=WD, tmpdir=False):
     odtfn = False
     os.chdir(wd)
     if tmpdir == False:
-      tmpdir = fn.split('/')[-2] 
+      tmpdir = Path(fn).parent.absolute()
     #tmpdir = "."
     #print tmpdir
     if fn.endswith("docx"):        
         os.chdir(tmpdir)
-        syscall = """soffice --headless   %s --convert-to odt "%s"  """ %(tmpdir,fn)
-        #print syscall
+        syscall = """soffice --convert-to odt --outdir "%s" "%s"   """ %(tmpdir,fn)
+        print(syscall)
         os.system(syscall)
         odtfn = fn.replace("docx","odt") 
     elif fn.endswith("doc"):        
         os.chdir(tmpdir)
-        syscall = """soffice --headless   %s --convert-to odt "%s"  """ %(tmpdir,fn)
+        syscall = """soffice --convert-to odt --outdir "%s" "%s"   """ %(tmpdir,fn)
         #print syscall
         os.system(syscall)
         odtfn = fn.replace("doc","odt")
@@ -567,7 +568,7 @@ class Document:
         #collapse newlines
         modtext = re.sub("\n*\\\\\\\\\n*",'\\\\\\\\\n',modtext) 
         #bib
-        authorchars = "[A-ZÅÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛŐŰĆĆÇČĐŘŚŠŞŌǪØŽ][-a-záéíóúaèìòùâeîôûäëïöüőűĺłŁøæœåćĆçÇčČĐđǧñńŘřŚśŠšŞşŽž’'’'A-Z]+"
+        authorchars = "[A-ZÅÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛŐŰĆĆÇČÐĐŘŚŠŞŌǪØŽ][-a-záéíóúaèìòùâeîôûäëïöüőűðĺłŁøæœåćĆçÇčČĐđǧñńŘřŚśŠšŞşŽž’'’'A-Z]+"
         yearchars = "[12][0-9]{3}[a-z]?"
         modtext = re.sub("\((%s) +et al\.?  +(%s): *([0-9,-]+)\)"%(authorchars,yearchars),
                          r"\\citep[\3]{\1EtAl\2}",
@@ -649,15 +650,15 @@ class Document:
         #only up to number (1999)
         modtext = re.sub("\n\((1?[0-9]?[0-9]?[0-9])\)", r"""\n\\ea%\1
     \\label{ex:key:\1}
-    \\\\gll\\\\newline
-        \\\\newline
-    \\\\glt
+    \\gll \\\\
+         \\\\
+    \\glt
     \\z
 
         """,modtext)
         modtext = re.sub(r"\\label\{(bkm:Ref[0-9]+)\}\(\)", r"""ea%\1
     \\label{\1}
-    \\\\gll \\\\newline  
+    \\\\gll \\\\newline
         \\\\newline
     \\\\glt
     \\z
@@ -674,12 +675,12 @@ class Document:
 
         modtext = re.sub("\n\\\\textit{Table ([0-9]+)[\.:] *(.*?)}\n",r"%%please move \\\\begin{table} just above \\\\begin{tabular . \n\\\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",modtext)
         modtext = re.sub("\nTable ([0-9]+)[\.:] *(.*?) *\n",r"%%please move \\\\begin{table} just above \\\\begin{tabular\n\\\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",modtext)#do not add } after tabular
-        modtext = re.sub("Table ([0-9]+)","\\\\tabref{tab:key:\1}",modtext)
-        modtext = re.sub("\nFigure ([0-9]+)[\.:] *(.*?)\n",r"\\begin{figure}\n\\caption{\2}\n\\label{fig:key:\1}\n\\end{figure}",modtext)
-        modtext = re.sub("Figure ([0-9]+)","\\\\figref{fig:key:\1}",modtext)
-        modtext = re.sub("Section ([0-9\.]+)","\\\\sectref{sec:key:\1}",modtext)
-        modtext = re.sub("§ *([0-9\.]+)","\\\\sectref{sec:key:\1}",modtext)
-        modtext = re.sub(" \(([0-9][0-9]?[0-9]?[a-h]?)\)"," \\\\REF{ex:key:\1}",modtext)
+        modtext = re.sub("Table ([0-9]+)","\\\\tabref{tab:key:\\1}",modtext)
+        modtext = re.sub("\nFigure ([0-9]+)[\.:] *(.*?)\n",r"\\begin{figure}\n\\caption{\2}\n\\label{fig:key:\\1}\n\\end{figure}",modtext)
+        modtext = re.sub("Figure ([0-9]+)","\\\\figref{fig:key:\\1}",modtext)
+        modtext = re.sub("Section ([0-9\.]+)","\\\\sectref{sec:key:\\1}",modtext)
+        modtext = re.sub("§ *([0-9\.]+)","\\\\sectref{sec:key:\\1}",modtext)
+        modtext = re.sub(" \(([0-9][0-9]?[0-9]?[a-h]?)\)"," \\\\REF{ex:key:\\1}",modtext)
         modtext = re.sub("\\\\(begin|end){minipage}.*?\n",'',modtext)
         modtext = re.sub("\\\\begin{figure}\[h\]",'\\\\begin{figure}',modtext)
         
@@ -755,8 +756,30 @@ class Document:
         
         #duplicated section names 
         modtext = re.sub("(chapter|section|paragraph)\[.*?\](\{.*\}.*)","\1\2",modtext)
-        
-        
+
+        bogus_styles = """styleStandard
+        styleDefault
+        styleBlockText
+        styleTextbody
+        styleTextbodyindent
+        styleParagrapheArticle
+        styleNormalWeb
+        styleNormali
+        styleNone
+        styleNessuno
+        styleHTMLPreformatted
+        styleFootnoteSymbol
+        styleDefault
+        styleBodyTexti
+        styleBodyTextii
+        styleBodyTextiii
+        styleBodyTextIndent
+        styleBodyTextIndentii
+        styleBodyTextIndentiii
+        """.split()
+
+        modtext = re.sub("\\\\(begin|end){(%s)}"% '|'.join(bogus_styles),'',modtext)
+
         bibliography = ''
         modtext = modtext.replace(r'\textbf{References}','References')
         modtext = modtext.replace(r'\section{References}','References')
