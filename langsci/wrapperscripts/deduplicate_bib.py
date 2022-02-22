@@ -106,7 +106,7 @@ for year in yeardic:
                     yeardic[year][creator][i] = record1
                     record2["merged"] = True
                     yeardic[year][creator][j] = record2
-                    print("merged")
+                    #print("merged")
         if record1.get("merged"):
             continue
 
