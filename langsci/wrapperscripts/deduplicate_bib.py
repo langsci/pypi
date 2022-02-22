@@ -31,7 +31,7 @@ for s in list_:
             ]
                 )
     except AttributeError:
-        print(f"could not be parsed: {s}")
+        #print(f"could not be parsed: {s}")
         continue
 
     fieldaliases = (("location", "address"), ("date", "year"), ("journaltitle", "journal"))
@@ -78,7 +78,13 @@ for s in list_:
 for year in yeardic:
     for creator in yeardic[year]:
         for i, record1 in enumerate(yeardic[year][creator]):
-            for record2 in yeardic[year][creator][i+1:]:
+            if record1.get("merged"):
+                continue
+            for j, record2 in enumerate(yeardic[year][creator]):
+                if record2.get("merged"):
+                    continue
+                if j <= i:
+                    continue
                 striptitle1 = re.sub('[^a-z]+', '', record1["title"].lower())
                 striptitle2 = re.sub('[^a-z]+', '', record2["title"].lower())
                 keeptitle = record1["title"]
@@ -97,6 +103,12 @@ for year in yeardic:
                         if len(record2[field]) > len(record1.get("field", "")):
                            record1[field] = record2[field]
                     record1["title"] = keeptitle
+                    yeardic[year][creator][i] = record1
+                    record2["merged"] = True
+                    yeardic[year][creator][j] = record2
+                    print("merged")
+        if record1.get("merged"):
+            continue
 
         print("@%s{%s, " % (record1["typ"],record1["key"]))
         print("\t", end="")
