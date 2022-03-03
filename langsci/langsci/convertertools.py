@@ -678,7 +678,7 @@ class Document:
         modtext = re.sub("Table ([0-9]+)","\\\\tabref{tab:key:\\1}",modtext)
         modtext = re.sub("\nFigure ([0-9]+)[\.:] *(.*?)\n",r"\\begin{figure}\n\\caption{\2}\n\\label{fig:key:\\1}\n\\end{figure}",modtext)
         modtext = re.sub("Figure ([0-9]+)","\\\\figref{fig:key:\\1}",modtext)
-        modtext = re.sub("Section ([0-9\.]+)","\\\\sectref{sec:key:\\1}",modtext)
+        modtext = re.sub("Section ([0-9\.]*[0-9])","\\\\sectref{sec:key:\\1}",modtext)
         modtext = re.sub("§ *([0-9\.]+)","\\\\sectref{sec:key:\\1}",modtext)
         modtext = re.sub(" \(([0-9][0-9]?[0-9]?[a-h]?)\)"," \\\\REF{ex:key:\\1}",modtext)
         modtext = re.sub("\\\\(begin|end){minipage}.*?\n",'',modtext)
