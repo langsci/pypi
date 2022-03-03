@@ -712,10 +712,10 @@ class Document:
         
         
         #merge useless chains of formatting
-        modtext = re.sub("(\\\\textbf\{[^}]+)\}\\\\textbf\{","\1",modtext)
-        modtext = re.sub("(\\\\textit\{[^}]+)\}\\\\textit\{","\1",modtext)
-        modtext = re.sub("(\\\\texttt\{[^}]+)\}\\\\texttt\{","\1",modtext)
-        modtext = re.sub("(\\\\emph\{[^}]+)\}\\\\emph\{","\1",modtext)
+        modtext = re.sub("(\\\\textbf\{[^}]+)\}\\\\textbf\{","\\1",modtext)
+        modtext = re.sub("(\\\\textit\{[^}]+)\}\\\\textit\{","\\1",modtext)
+        modtext = re.sub("(\\\\texttt\{[^}]+)\}\\\\texttt\{","\\1",modtext)
+        modtext = re.sub("(\\\\emph\{[^}]+)\}\\\\emph\{","\\1",modtext)
         
         #remove all textits from sourcelines
         i = 1
@@ -750,8 +750,8 @@ class Document:
         #right
         modtext = re.sub(" +\\}",'} ',modtext)
         #left
-        modtext = re.sub("\\\\text(it|bf|sc|tt|up|rm)\\{ +",' \\\\text\1{',modtext)
-        modtext = re.sub("\\\\text(it|bf|sc|tt|up|rm)\\{([!?\(\)\[\]\.\,\>]*)\\}",'\2',modtext)
+        modtext = re.sub("\\\\text(it|bf|sc|tt|up|rm)\\{ +",' \\\\text\\1{',modtext)
+        modtext = re.sub("\\\\text(it|bf|sc|tt|up|rm)\\{([!?\(\)\[\]\.\,\>]*)\\}",'\\2',modtext)
         modtext = re.sub(r"\\tablefirsthead\{\}\n\n\\tabletail\{\}\n\\tablelasttail\{\}","",modtext)
         
         #duplicated section names 
