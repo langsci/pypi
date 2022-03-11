@@ -7,12 +7,17 @@ import json
 import operator
 import os
 from collections import defaultdict
+
+glottonames = json.loads(open('glottonames.json').read())
+
+
 #from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
 #from . import lod
 
 #GLL = re.compile(
     #r"\\gll[ \t]*(.*?) *?\\\\\\\\\n[ \t]*(.*?) *?\\\\\\\\\n+[ \t]*\\\\glt[ \t\n]*(.*?)\n"
 #)
+PRESOURCELINE = r"(\\langinfo{(.*?)?}.*\\\\ *\n)?"
 SOURCELINE = r"\\gll[ \t]*(.*?) *?\\\\\n"
 IMTLINE = r"[ \t]*(.*?) *?\\\\\n+" #some authors add multiple newlines before the translation
 TRSLINE = r"\\glt[ \t\n]*(.*?)\n"
@@ -20,12 +25,18 @@ TRSLINE = r"\\glt[ \t\n]*(.*?)\n"
 #GLL = re.compile(
     #r"\\gll[ \t]*(.*?) *?\\\\\n[ \t]*(.*?) *?\\\\\n+[ \t]*\\glt[ \t\n]*(.*?)\n"
 #)
-GLL = re.compile(SOURCELINE+IMTLINE+TRSLINE)
+GLL = re.compile(PRESOURCELINE+SOURCELINE+IMTLINE+TRSLINE)
 TEXTEXT = re.compile(r"\\text(.*?)\{(.*?)\}")
+
+TEXSTYLEENVIRONMENT =  re.compile(r"\\\\textstyle[A-Z][A-Za-z].*?{(.*?)}")
+INDEXENVIRONMENT =  re.compile(r"\\\\i[sl]{(.*?)}")
+
 STARTINGQUOTE = "`‘"
 ENDINGQUOTE = "'’"
 TEXREPLACEMENTS = [
     (r"\_", "_"),
+    (r"\texttimes", "×"),
+    (r"\textquotesingle", "'"),
     (r"\textquotedbl", '"'),
     (r"\textprimstress", "ˈ"),
     (r"\textbackslash", r"\\"),
@@ -47,19 +58,21 @@ TEXREPLACEMENTS = [
     (r"{\cb}", "]"),
     (r"{\db}", " "),
     (r"\nobreakdash", ""),
+    (r"\textendash", "-")
 ]
 
 
 class gll:
-    def __init__(self, src, imt, trs, filename=None, language=None):
+    def __init__(self, presource, lg, src, imt, trs, filename=None, language=None):
         self.src = src
         self.imt = imt
-        self.language = language
+        self.language = glottonames.get(lg, ["und",None])[0]
         self.trs = trs.strip()
         if self.trs[0] in STARTINGQUOTE:
             self.trs = self.trs[1:]
         if self.trs[-1] in ENDINGQUOTE:
             self.trs = self.trs[:-1]
+        self.trs = self.striptex(self.trs)
         self.srcwordstex = self.src.split()
         self.imtwordstex = self.imt.split()
         #try:
@@ -84,7 +97,7 @@ class gll:
             filename.replace(".tex", "").split("/")[-1],
             str(hash(self.src))[:6],
         )
-        self.bookID = filename.split('/')[3]
+        self.bookID = filename.split('/')[-2]
         self.analyze()
 
     def tex2html(self, s):
@@ -101,6 +114,9 @@ class gll:
                 except sre_constants.error:
                     pass
         result = re.sub(TEXTEXT, "\\2", s)
+
+        result = re.sub(INDEXENVIRONMENT, "", result)
+        result = re.sub(TEXSTYLEENVIRONMENT,r"\1", result)
 
         for r in TEXREPLACEMENTS:
             result = result.replace(*r)
@@ -158,6 +174,7 @@ def langsciextract(directory):
         glossesd = defaultdict(int)
         excludechars = ".\\}{=~:/"
         files = glob.glob(f"{directory}/{book_ID}/chapters/*tex")
+        files = glob.glob(f"{directory}/{book_ID}/*tex")
         print(" found %i tex files for %s" % (len(files), book_ID))
         for filename in files:
             try:
