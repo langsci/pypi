@@ -29,7 +29,8 @@ GLL = re.compile(PRESOURCELINE+SOURCELINE+IMTLINE+TRSLINE)
 TEXTEXT = re.compile(r"\\text(.*?)\{(.*?)\}")
 
 TEXSTYLEENVIRONMENT =  re.compile(r"\\\\textstyle[A-Z][A-Za-z].*?{(.*?)}")
-INDEXENVIRONMENT =  re.compile(r"\\\\i[sl]{(.*?)}")
+INDEXCOMMANDS =  re.compile(r"\\\\i[sl]{(.*?)}")
+LABELCOMMANDS =  re.compile(r"\\\\label{(.*?)}")
 
 STARTINGQUOTE = "`‘"
 ENDINGQUOTE = "'’"
@@ -63,11 +64,14 @@ TEXREPLACEMENTS = [
 
 
 class gll:
-    def __init__(self, presource, lg, src, imt, trs, filename=None, language=None):
+    def __init__(self, presource, lg, src, imt, trs, filename=None, booklanguage=None):
         self.src = src
         self.imt = imt
-        self.language = glottonames.get(lg, ["und",None])[0]
-        self.trs = trs.strip()
+        if booklanguage and booklanguage != "und" :
+            self.language = booklanguage
+        else:
+            self.language = glottonames.get(lg, ["und",None])[0]
+        self.trs = trs.replace("\\\\"," ").strip()
         if self.trs[0] in STARTINGQUOTE:
             self.trs = self.trs[1:]
         if self.trs[-1] in ENDINGQUOTE:
@@ -108,14 +112,15 @@ class gll:
 
     def striptex(self, s, sc2upper=False):
         if sc2upper:
-            for c in self.categories:
+            for c in self.categories:#FIXME split on .
                 try:
                     s = re.sub("\\\\textsc{%s}" % c, c.upper(), s)
                 except sre_constants.error:
                     pass
         result = re.sub(TEXTEXT, "\\2", s)
 
-        result = re.sub(INDEXENVIRONMENT, "", result)
+        result = re.sub(INDEXCOMMANDS, "", result)
+        result = re.sub(LABELCOMMANDS, "", result)
         result = re.sub(TEXSTYLEENVIRONMENT,r"\1", result)
 
         for r in TEXREPLACEMENTS:
@@ -187,7 +192,7 @@ def langsciextract(directory):
             #print(f"  {len(glls)}")
             for g in glls:
                 try:
-                    thisgll = gll(*g, filename=filename, language=language)
+                    thisgll = gll(*g, filename=filename, booklanguage=language)
                 except AssertionError:
                     continue
                 examples.append(thisgll)
