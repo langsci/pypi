@@ -118,11 +118,8 @@ class gll:
 
     def striptex(self, s, sc2upper=False):
         if sc2upper:
-            for c in self.categories:#FIXME split on .
-                try:
-                    s = re.sub("\\\\textsc{%s}" % c, c.upper(), s)
-                except sre_constants.error:
-                    pass
+            for m in re.findall("\\\\textsc{(.*?)}",  s):
+                s = s.replace("\\textsc{%s}" % m , m.upper())
         result = re.sub(TEXTEXT, "\\2", s)
 
         result = re.sub(INDEXCOMMANDS, "", result)
