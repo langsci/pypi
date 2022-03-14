@@ -31,6 +31,7 @@ TEXTEXT = re.compile(r"\\text(.*?)\{(.*?)\}")
 TEXSTYLEENVIRONMENT =  re.compile(r"\\\\textstyle[A-Z][A-Za-z].*?{(.*?)}")
 INDEXCOMMANDS =  re.compile(r"\\\\i[sl]{(.*?)}")
 LABELCOMMANDS =  re.compile(r"\\\\label{(.*?)}")
+CITATION = re.compile(r"\\cite[altpv]*(\[.*?\])?\{(.*?)\}")
 
 STARTINGQUOTE = "`‘"
 ENDINGQUOTE = "'’"
@@ -65,6 +66,7 @@ TEXREPLACEMENTS = [
 
 class gll:
     def __init__(self, presource, lg, src, imt, trs, filename=None, booklanguage=None):
+        self.presource = presource
         self.src = src
         self.imt = imt
         if booklanguage:
@@ -85,6 +87,10 @@ class gll:
         self.trs = self.striptex(self.trs)
         self.srcwordstex = self.src.split()
         self.imtwordstex = self.imt.split()
+        self.citation = None
+        match = CITATION.search(presource) or CITATION.search(trs)
+        if match:
+            self.citation = match.group(2)
         #try:
         assert len(self.srcwordstex) == len(self.imtwordstex)
         #except AssertionError:
