@@ -109,8 +109,9 @@ class gll:
         self.imtwordsbare = [self.striptex(w, sc2upper=True) for w in self.imtwordstex]
         self.clength = len(self.src)
         self.wlength = len(self.srcwordsbare)
+        basename = filename.split('/')[-1]
         self.ID = "%s-%s" % (
-            filename.replace(".tex", "").split("/")[-1],
+            basename.replace(".tex", "").split("/")[-1],
             str(hash(self.src))[:6],
         )
         self.bookID = filename.split('/')[-2]
