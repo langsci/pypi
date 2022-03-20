@@ -273,7 +273,8 @@ nonsense =  [
 'Q15306431', # 'tillage_machine',
 'Q15401930', # 'product'
 'Q15407649', # 'Edged_and_bladed_weapons',
-'Q15416', # 'Television_show', 'Q1022867', # 'Minor_planet',
+'Q15416', # 'Television_show',
+'Q1022867', # 'Minor_planet',
 "Q1544281", # "Management_cybernetics",
 'Q154503', # 'aerodyne',
 'Q154954', # 'Natural_person'
@@ -646,7 +647,7 @@ nonsense =  [
 'Q2382443', # 'biota',
 'Q2384798', # 'input-output_device',
 'Q2385804', # 'Educational_institution',
-'Q2385874', # 'Censorship_in_China',,
+'Q2385874', # 'Censorship_in_China',
 'Q23893363', # 'heritage',
 'Q2393187', # 'Molecular_entity',
 'Q23958946', # 'individual_entity'
