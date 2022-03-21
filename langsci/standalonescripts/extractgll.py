@@ -31,7 +31,7 @@ TEXTEXT = re.compile(r"\\text(.*?)\{(.*?)\}")
 TEXSTYLEENVIRONMENT =  re.compile(r"\\\\textstyle[A-Z][A-Za-z].*?{(.*?)}")
 INDEXCOMMANDS =  re.compile(r"\\\\i[sl]{(.*?)}")
 LABELCOMMANDS =  re.compile(r"\\\\label{(.*?)}")
-CITATION = re.compile(r"\\cite[altpv]*(\[.*?\])?\{(.*?)\}")
+CITATION = re.compile(r"\\cite[altpv]*\[(.*?)\]?\{(.*?)\}")
 
 STARTINGQUOTE = "`‘"
 ENDINGQUOTE = "'’"
@@ -60,15 +60,56 @@ TEXREPLACEMENTS = [
     (r"{\cb}", "]"),
     (r"{\db}", " "),
     (r"\nobreakdash", ""),
-    (r"\textendash", "-")
+    (r"\textendash", "-"),
+    (r"\footnotesize", "-"),
+    (r"\footnotemark", "-"),
+    (r"\langle", "<"),
+    (r"\rangle", ">"),
+    (r"\ldots", "..."),
+    (r"\dots", "..."),
+    (r"\MakeLowercase", ""),
+    (r"\nopagebreak", ""),
+    (r"\pagebreak", ""),
+    (r"\sout", r"\textstrikeout"),
+    (r"\uline", r"\textunderline"),
+    (r"\underline", r"\textunderline"),
+    (r"\emph", r"\textemph"),
+    (r"\textup", ""),
+    (r"\url", ""),
+    (r"\chapref", "Chapter "),
+    (r"\sectref", "Section "),
+    (r"\figure", "Figure "),
+    (r"\tabref", "Table "),
+    (r"\forall", "∀"),
+    (r"\exists", "∃"),
+    (r"\xspace", ""),
+    (r"\bluebold", r"\textbf"),
+    (r"\blueboldSmallCaps", r"\textsc"),
+    (r"\ili", ""),
+    (r"\isi", ""),
+    (r"\lq", '"'),
+    (r"\{", '{'),
+    (r"\}", '}'),
+    (r"\label", ''),
+    (r"\hfill", ' '),
+    (r"\vfill", ' '),
+    (r"\sqt", ' '),
+    (r"\fbox", ' '),
 ]
+
+#remove these together with their argument
+TEXTARGYANKS = ["ConnectHead", "ConnectTail", "hphantom", "japhdoi", "phantom", "vspace", "begin", "end", "is", "il"]
 
 
 class gll:
     def __init__(self, presource, lg, src, imt, trs, filename=None, booklanguage=None):
-        self.presource = presource
-        self.src = src
-        self.imt = imt
+        #self.presource = presource
+        basename = filename.split('/')[-1]
+        self.ID = "%s-%s" % (
+            basename.replace(".tex", "").split("/")[-1],
+            str(hash(src))[:6],
+        )
+        self.bookID = filename.split('/')[-2]
         if booklanguage:
             self.language_iso6393 = booklanguage[0]
             self.language_glottocode = booklanguage[1]
@@ -85,61 +126,61 @@ class gll:
         if self.trs[-1] in ENDINGQUOTE:
             self.trs = self.trs[:-1]
         self.trs = self.striptex(self.trs)
-        self.srcwordstex = self.src.split()
-        self.imtwordstex = self.imt.split()
+        m = CITATION.search(self.trs)
+        if m is not None:
+            if m.group(2) != '':
+                self.trs = re.sub(CITATION, r'(\2: \1)', self.trs)
+            else:
+                self.trs = re.sub(CITATION, r'(\2)', self.trs)
+        srcwordstex = src.split()
+        imtwordstex = imt.split()
         self.citation = None
         match = CITATION.search(presource) or CITATION.search(trs)
         if match:
             self.citation = match.group(2)
         #try:
-        assert len(self.srcwordstex) == len(self.imtwordstex)
-        #except AssertionError:
-        #pass
-        #print(len(self.srcwordstex), len(self.imtwordstex))
-        #print(self.srcwordstex, self.imtwordstex)
+        assert len(srcwordstex) == len(imtwordstex)
         self.categories = self.tex2categories(imt)
-        #self.srcwordshtml = [self.tex2html(w) for w in self.srcwordstex]
-        #self.imtwordshtml = [self.tex2html(w) for w in self.imtwordstex]
         imt_html = '\n'.join(['\t<div class="imtblock">\n\t\t<div class="srcblock">' + self.tex2html(t[0]) + '</div>\n\t\t<div class="glossblock">' + self.tex2html(t[1]) + '</div>\n\t</div>'
                     for t
-                    in zip(self.srcwordstex, self.imtwordstex)
+                    in zip(srcwordstex, imtwordstex)
                     ])
         self.html = f'<div class="imtblocks">\n{imt_html}\n</div>\n'
-        self.srcwordsbare = [self.striptex(w) for w in self.srcwordstex]
-        self.imtwordsbare = [self.striptex(w, sc2upper=True) for w in self.imtwordstex]
-        self.clength = len(self.src)
+        self.srcwordsbare = [self.striptex(w) for w in srcwordstex]
+        self.imtwordsbare = [self.striptex(w, sc2upper=True) for w in imtwordstex]
+        self.clength = len(src)
         self.wlength = len(self.srcwordsbare)
-        basename = filename.split('/')[-1]
-        self.ID = "%s-%s" % (
-            basename.replace(".tex", "").split("/")[-1],
-            str(hash(self.src))[:6],
-        )
-        self.bookID = filename.split('/')[-2]
         self.analyze()
 
     def tex2html(self, s):
-        result = re.sub(TEXTEXT, '<span class="\\1">\\2</span>', s)
-        for r in TEXREPLACEMENTS:
-            result = result.replace(*r)
+        result = self.striptex(s, html=True)
+        result = TEXTEXT.sub('<span class="\\1">\\2</span>', result)
+        result = TEXTEXT.sub('<span class="\\1">\\2</span>', result)
+        result = TEXTEXT.sub('<span class="\\1">\\2</span>', result)#for nested  \textsomething{\textsomethingelse{}}
         return result
 
-    def striptex(self, s, sc2upper=False):
+    def striptex(self, s, sc2upper=False, html=False):
+        result = s
         if sc2upper:
-            for m in re.findall("\\\\textsc{(.*?)}",  s):
-                s = s.replace("\\textsc{%s}" % m , m.upper())
-        result = re.sub(TEXTEXT, "\\2", s)
-
+            for m in re.findall("\\\\textsc{(.*?)}",  result):
+                result = result.replace("\\textsc{%s}" % m , m.upper())
         result = re.sub(INDEXCOMMANDS, "", result)
         result = re.sub(LABELCOMMANDS, "", result)
         result = re.sub(TEXSTYLEENVIRONMENT,r"\1", result)
-
         for r in TEXREPLACEMENTS:
             result = result.replace(*r)
-        return result
+        for r in TEXTARGYANKS:
+            result = re.sub(r"\\%s{.*?}"%r, '', result)
+        if html: #keep \textbf, \texit for the time being, to be included in <span>s
+            return result
+        else:
+            result =  re.sub(TEXTEXT, "\\2", result)
+            result =  re.sub(TEXTEXT, "\\2", result)
+            return  re.sub(TEXTEXT, "\\2", result)#for nested  \textsomething{\textsomethingelse{}}
 
     def tex2categories(self, s):
         d = {}
-        scs = re.findall("\\\\textsc\{(.*?)\}", s)
+        scs = re.findall("\\\\textsc\{([a-zA-Z]*?)\}", s)
         for sc in scs:
             cats = re.split("[-=.:]", sc)
             for cat in cats:
@@ -168,16 +209,19 @@ class gll:
         if " not " in self.trs.lower():
             self.polarity = "negative"
 
-langsci_d = {17: ('sje', "pite1240","Pite Saami"), # pite1240
-             66: ('ybh', "yakk1236", "Yakkha"),#yakk1236
-             67: ('mhl', "mauw1238","Mauwake"),# mauw1238
-             78: ('pmy', "papu1250","Papuan Malay"),# papu1250
-             82: ('phl', "phal1254","Palula"),# phal1254
-             85: ('fpe', "fern1234","Pichi"),  #fern1234 (Pichi)
-             118: ('mlw',"molo1266", "Moloko"),# Molo1266
-             124: ('rap',"rapa1244", "Rapa Nui"), #  rapa1244
-             212: ('tci',"wara1294", "Komnzo"), # wara1294 (Komnzo)
-             250: ('dar', "sanz1248", "Sanzhi Dargwa"), #sanz1248          (Iso is not precise here)
+langsci_d = {17: ('sje', "pite1240","Pite Saami"),
+             66: ('ybh', "yakk1236", "Yakkha"),
+             67: ('mhl', "mauw1238","Mauwake"),
+             78: ('pmy', "papu1250","Papuan Malay"),
+             82: ('phl', "phal1254","Palula"),
+             85: ('fpe', "fern1234","Pichi"),
+             118: ('mlw',"molo1266", "Moloko"),
+             124: ('rap',"rapa1244", "Rapa Nui"),
+             212: ('tci',"wara1294", "Komnzo"),
+             250: ('dar', "sanz1248", "Sanzhi Dargwa"), #      (Iso is not precise here)
+             298: ('gyi', "gyel1242", "Gyeli"),
+             295: ('jya', "japh1234", "Japhug"),            # (Iso is not precise here)
+             308: ('roh', "surs1245", "Tuatschin"),          # (Iso is not precise here)
              }
 
 def langsciextract(directory):
@@ -190,7 +234,7 @@ def langsciextract(directory):
         excludechars = ".\\}{=~:/"
         files = glob.glob(f"{directory}/{book_ID}/chapters/*tex")
         files = glob.glob(f"{directory}/{book_ID}/*tex")
-        print(" found %i tex files for %s" % (len(files), book_ID))
+        #print(" found %i tex files for %s" % (len(files), book_ID))
         for filename in files:
             try:
                 s = open(filename).read()
