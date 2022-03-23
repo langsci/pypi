@@ -6,7 +6,12 @@ import pprint
 import json
 import operator
 import os
+import LaTexAccents as TeX
 from collections import defaultdict
+from titlemapping import titlemapping
+
+converter = TeX.AccentConverter()
+
 
 glottonames = json.loads(open('glottonames.json').read())
 
@@ -95,6 +100,11 @@ TEXREPLACEMENTS = [
     (r"\vfill", ' '),
     (r"\sqt", ' '),
     (r"\fbox", ' '),
+    (r"\spacebr", ''),
+    (r"\ule", ''),
+    (r"\ulp", ''),
+    (r"\oldstylenums", ''),
+    (r"~", ' '),
 ]
 
 #remove these together with their argument
@@ -109,7 +119,8 @@ class gll:
             basename.replace(".tex", "").split("/")[-1],
             str(hash(src))[:6],
         )
-        self.bookID = filename.split('/')[-2]
+        self.bookID = int(filename.split('/')[-2])
+        self.book_title = titlemapping.get(self.bookID)
         if booklanguage:
             self.language_iso6393 = booklanguage[0]
             self.language_glottocode = booklanguage[1]
@@ -126,6 +137,7 @@ class gll:
         if self.trs[-1] in ENDINGQUOTE:
             self.trs = self.trs[:-1]
         self.trs = self.striptex(self.trs)
+        self.trs = self.trs.replace("()", "").replace("{}", "")
         m = CITATION.search(self.trs)
         if m is not None:
             if m.group(2) != '':
@@ -160,7 +172,7 @@ class gll:
         return result
 
     def striptex(self, s, sc2upper=False, html=False):
-        result = s
+        result = converter.decode_Tex_Accents(s, utf8_or_ascii=1)
         if sc2upper:
             for m in re.findall("\\\\textsc{(.*?)}",  result):
                 result = result.replace("\\textsc{%s}" % m , m.upper())

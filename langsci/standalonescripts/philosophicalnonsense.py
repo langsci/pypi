@@ -1518,10 +1518,4 @@ nonsense =  [
 'Q11992872',# 'Useful_plants',
 'Q4313426',# 'no title',
 
-
-
-
-
-
-
 ]

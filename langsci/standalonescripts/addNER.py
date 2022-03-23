@@ -2,14 +2,22 @@ import json
 import glob
 import requests
 import re
+import sys
 
 from misextractions import  misextractions
 
 NUMPATTERN = re.compile("[A-Za-z][-0-9]+") #stuff like M2-34 is not any good
 
+offset = 0
+try:
+    offset = int(sys.argv[1])
+except IndexError:
+    pass
 
+nercache = json.loads(open("nercache.json").read())
 
 def get_entities(text):
+    global nercache
     """sent text to online resolver and retrieve wikidataId's"""
     ner_url = "https://cloud.science-miner.com/nerd/service/disambiguate"
     if len(text.split()) < 5:  # cannot do NER on less than 5 words
@@ -27,7 +35,7 @@ def get_entities(text):
             and not NUMPATTERN.match(x["rawName"])
             }
 
-for f in glob.glob("langscijson/*json"):
+for f in glob.glob("langscijson/*json")[offset:]:
     print(f)
     with open(f) as jsoncontent:
         writedict = {}
@@ -35,14 +43,17 @@ for f in glob.glob("langscijson/*json"):
         for ex in file_examples:
             ID = ex["ID"]
             trs = ex["trs"]
-            entities = get_entities(trs)
-            #if entities != {}:
-                #print(trs)
-                #print(f" {entities}")
+            try:
+                entities = nercache[trs]
+            except KeyError:
+                entities = get_entities(trs)
+                nercache[trs] = entities
             writedict[ID] = {"entities": entities, "trs": trs}
     entitiesfile = f.replace("langscijson", "entitiesjson")
     with open(entitiesfile, "w") as entitiesjson:
         entitiesjson.write(json.dumps(writedict, indent=4, sort_keys=True))
+    with open("nercache.json", "w") as nercachejson:
+        nercachejson.write(json.dumps(nercache, indent=4, sort_keys=True))
 
 
 
