@@ -9,6 +9,8 @@ import os
 import LaTexAccents as TeX
 from collections import defaultdict
 from titlemapping import titlemapping
+from lgrlist import LGRLIST
+
 
 converter = TeX.AccentConverter()
 
@@ -24,13 +26,16 @@ glottonames = json.loads(open('glottonames.json').read())
 #)
 PRESOURCELINE = r"(\\langinfo{(.*?)?}.*\\\\ *\n)?"
 SOURCELINE = r"\\gll[ \t]*(.*?) *?\\\\\n"
+SOURCELINE2 = r"\\glll[ \t]*(.*?) *?\\\\\n"
 IMTLINE = r"[ \t]*(.*?) *?\\\\\n+" #some authors add multiple newlines before the translation
-TRSLINE = r"\\glt[ \t\n]*(.*?)\n"
-
-#GLL = re.compile(
+TRSLINE = r"[ \t]*\\(glt|trans)[ \t\n]*(.*?)\n"
+LGRPATTERN_UPPER = re.compile(r"\\(%s)({})?" % "|".join(LGRLIST))
+LGRPATTERN_LOWER = re.compile(r"(%s)({})?" % "|".join([s.lower() for s in LGRLIST]))
+LGRPATTERN_UPPER_LOWER = re.compile(r"(%s)({})?" % "|".join([s[0]+s[1:].lower() for s in LGRLIST]))
     #r"\\gll[ \t]*(.*?) *?\\\\\n[ \t]*(.*?) *?\\\\\n+[ \t]*\\glt[ \t\n]*(.*?)\n"
 #)
 GLL = re.compile(PRESOURCELINE+SOURCELINE+IMTLINE+TRSLINE)
+GLLL = re.compile(PRESOURCELINE+SOURCELINE2+IMTLINE+IMTLINE+TRSLINE)
 TEXTEXT = re.compile(r"\\text(.*?)\{(.*?)\}")
 
 TEXSTYLEENVIRONMENT =  re.compile(r"\\\\textstyle[A-Z][A-Za-z].*?{(.*?)}")
@@ -90,6 +95,7 @@ TEXREPLACEMENTS = [
     (r"\xspace", ""),
     (r"\bluebold", r"\textbf"),
     (r"\blueboldSmallCaps", r"\textsc"),
+    (r"\tsc", r"\textsc"),
     (r"\ili", ""),
     (r"\isi", ""),
     (r"\lq", '"'),
@@ -104,22 +110,67 @@ TEXREPLACEMENTS = [
     (r"\ule", ''),
     (r"\ulp", ''),
     (r"\oldstylenums", ''),
-    (r"~", ' '),
+    (r"\normalfont", ''),
+    (r"\NORMALFONT", ''),
+    (r"\longrightarrow", '→'),
+    (r"\leftrightarrow", '⇔'),
+    (r"\varnothing", 'ø'),
+    (r"\USEmptySet", 'ø'),
+    (r"\Tilde", '~'),
+    (r"\NORMALFONT", ''),
+    (r"\relax", ''),
+    (r"\raisebox", ''),
+    (r"\quotetrans", ''),
+    (r"\qquad", ''),
+    (r"\quad", ''),
+    (r"\nobreakdash", ''),
+    (r"\NOBREAKDASH", ''),
+    (r"\newpage", ''),
+    (r"\mytrans", '\glt'),
+    (r"\minsp", ''),
+    (r"\makebox", ''),
+    (r"\longrule", '__'),
+    (r"\MakeUpperCase", ''),
+    (r"\MakeUppercase", ''),
+    (r"\linebreak", ''),
+    (r"\linewidth", ''),
+    (r"\interfootnotelinepenalty", ''),
+    (r"\hskip", ''),
+    (r"\deff", '\def'),
+    (r"\smash", ''),
+    (r"\enquote", ''),
+    (r"\Emph", ''),
+    (r"\sim", '~'),
+    (r"\USgreater", '>'),
+    (r"\USsmaller", '<'),
+    (r"\slash", '/'),
+    (r"\OLDSTYLENUMS", '/'),
+    (r"\thirdperson", '3'),
+    (r"\textglotstop", 'ʔ'),
+    (r"\beltl", 'ł'),
+    (r"\textltailn", 'ɲ'),
+    (r"\textopeno", 'ɔ'),
+    (r"\textstrikeout", ''),
+    (r"\textunderscore", ''),
+    (r"\textstyleEmphasizedVernacularWords", '\emph'),
+    (r"\protect", ''),
+    #greekletters
 ]
 
 #remove these together with their argument
-TEXTARGYANKS = ["ConnectHead", "ConnectTail", "hphantom", "japhdoi", "phantom", "vspace", "begin", "end", "is", "il"]
+TEXTARGYANKS = ["ConnectHead", "ConnectTail", "hphantom", "japhdoi", "phantom", "vspace", "begin", "end", "is", "il", "hspaceThis"]
 
 
 class gll:
-    def __init__(self, presource, lg, src, imt, trs, filename=None, booklanguage=None):
+    def __init__(self, presource, lg, src, imt, ignoreme, trs, filename=None, booklanguage=None):
         #self.presource = presource
         basename = filename.split('/')[-1]
         self.ID = "%s-%s" % (
             basename.replace(".tex", "").split("/")[-1],
             str(hash(src))[:6],
         )
-        self.bookID = int(filename.split('/')[-2])
+        self.book_ID = int(filename.split('/')[-2])
+        self.book_URL =  f"https://langsci-press.org/catalog/book/{bookID}"
         self.book_title = titlemapping.get(self.bookID)
         if booklanguage:
             self.language_iso6393 = booklanguage[0]
@@ -132,20 +183,24 @@ class gll:
             if self.language_glottocode != "und":
                 self.language_name = lg
         self.trs = trs.replace("\\\\"," ").strip()
-        if self.trs[0] in STARTINGQUOTE:
-            self.trs = self.trs[1:]
-        if self.trs[-1] in ENDINGQUOTE:
-            self.trs = self.trs[:-1]
-        self.trs = self.striptex(self.trs)
-        self.trs = self.trs.replace("()", "").replace("{}", "")
+        try:
+            if self.trs[0] in STARTINGQUOTE:
+                self.trs = self.trs[1:]
+            if self.trs[-1] in ENDINGQUOTE:
+                self.trs = self.trs[:-1]
+            self.trs = self.strip_tex_comment(self.trs)
+            self.trs = self.striptex(self.trs)
+            self.trs = self.trs.replace("()", "").replace("{}", "")
+        except IndexError: #s is  ''
+            pass
         m = CITATION.search(self.trs)
         if m is not None:
             if m.group(2) != '':
                 self.trs = re.sub(CITATION, r'(\2: \1)', self.trs)
             else:
                 self.trs = re.sub(CITATION, r'(\2)', self.trs)
-        srcwordstex = src.split()
-        imtwordstex = imt.split()
+        srcwordstex = self.strip_tex_comment(src).split()
+        imtwordstex = [self.resolve_lgr(i) for i in self.strip_tex_comment(imt).split()]
         self.citation = None
         match = CITATION.search(presource) or CITATION.search(trs)
         if match:
@@ -163,6 +218,22 @@ class gll:
         self.clength = len(src)
         self.wlength = len(self.srcwordsbare)
         self.analyze()
+
+    def strip_tex_comment(self, s):
+        return re.split(r"(?<!\\)%", s)[0]
+
+    def resolve_lgr(self, s):
+        s = re.sub(LGRPATTERN_UPPER, r"\1", s)
+        for m in LGRPATTERN_LOWER.findall(s):
+            g = m[0]
+            s = re.sub(r"\\%s(?![a-zA-Z])"%g, g.upper(), s)
+        for m in LGRPATTERN_UPPER_LOWER.findall(s):
+            g = m[0]
+            s = re.sub(r"\\%s(?![a-zA-Z])"%g, g.upper(), s)
+        return s
+
+
+
 
     def tex2html(self, s):
         result = self.striptex(s, html=True)
@@ -252,63 +323,27 @@ def langsciextract(directory):
                 s = open(filename).read()
             except UnicodeDecodeError:
                 print("Unicode problem in %s"% filename)
+            s = s.replace(r"{\bfseries ", r"\textbf{")
+            s = s.replace(r"{\itshape ", r"\textit{")
+            s = s.replace(r"{\scshape ", r"\textsc{")
             examples = []
             glls = GLL.findall(s)
-            #print(filename, end=": ")
-            #print(f"  {len(glls)}")
+            gllls = GLLL.findall(s)
             for g in glls:
                 try:
                     thisgll = gll(*g, filename=filename, booklanguage=booklanguage)
                 except AssertionError:
                     continue
                 examples.append(thisgll)
-                #example_block_ID = f"{book_lod_ID}_{thisgll.ID}"
-                #sentence_word_tier_lod_ID = f"{example_block_ID}_wt"
-                #sentence_morph_tier_lod_ID = f"{example_block_ID}_mt"
-                wordstring =  " ".join(thisgll.srcwordsbare)
-                glossstring =  " ".join(thisgll.imtwordsbare)
-                example_block_nif_label = wordstring
-                words_nif_label =  wordstring
-                gloss_language_id = "eng"
-                vernacular_language_id = booklanguage
-                words = thisgll.srcwordsbare
-                wordglosses = thisgll.imtwordsbare
-
-                for i in range(len(words)):
-                    word = words[i]
-                    #word_id = f"{sentence_word_tier_lod_ID}_{i}"
-                    wordgloss = wordglosses[i]
-                    try:
-                        wordgloss = wordgloss.strip()
-                    except TypeError:
-                        wordgloss = ""
-                    #add items to tier
-                    morphs = re.split("[-=]", word)
-                    morphglosses = re.split("[-=]", wordgloss)
-                    try:
-                        assert len(morphs) == len(morphglosses)
-                    except AssertionError:
-                        #print(len(morphs), len(morphglosses), morphs, morphglosses)
-                        continue
-
-                    for j in range(len(morphs)):
-                        morph = morphs[j]
-                        #morph_id = f"{sentence_morph_tier_lod_ID}_{i}_{j}"
-                        morphgloss = morphglosses[j]
-                        for subgloss in re.split("[-=.:]", morphgloss):
-                            subgloss = (
-                                subgloss.replace("1", "")
-                                .replace("2", "")
-                                .replace("3", "")
-                            )
-
-                #count root occurrences (could probably go to separte module
-                for imtgloss in thisgll.imtwordsbare:
-                    for imtmorph in re.split("[-=]", imtgloss):
-                        if  imtmorph.isupper():
-                            continue
-                        glossesd[imtmorph] += 1
-
+            for g in gllls:
+                f = list(g)
+                del f[2] #we remove the first sourceline and only keep the second one
+                g = f
+                try:
+                    thisgll = gll(*g, filename=filename, booklanguage=booklanguage)
+                except AssertionError:
+                    continue
+                examples.append(thisgll)
             if examples != []:
                 jsons = json.dumps([ex.__dict__ for ex in examples], sort_keys=True, indent=4, ensure_ascii=False)
                 jsonname = 'langscijson/%sexamples.json'%filename[:-4].replace('/','-').replace('eldpy-langscitex--','').replace('-chapters', '')
