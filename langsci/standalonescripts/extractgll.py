@@ -32,6 +32,7 @@ TRSLINE = r"[ \t]*\\(glt|trans)[ \t\n]*(.*?)\n"
 LGRPATTERN_UPPER = re.compile(r"\\(%s)({})?" % "|".join(LGRLIST))
 LGRPATTERN_LOWER = re.compile(r"(%s)({})?" % "|".join([s.lower() for s in LGRLIST]))
 LGRPATTERN_UPPER_LOWER = re.compile(r"(%s)({})?" % "|".join([s[0]+s[1:].lower() for s in LGRLIST]))
+BRACESPATTERN = re.compile(r"(?<=.^| ){([^}{ ]+)}")
     #r"\\gll[ \t]*(.*?) *?\\\\\n[ \t]*(.*?) *?\\\\\n+[ \t]*\\glt[ \t\n]*(.*?)\n"
 #)
 GLL = re.compile(PRESOURCELINE+SOURCELINE+IMTLINE+TRSLINE)
@@ -162,7 +163,7 @@ TEXTARGYANKS = ["ConnectHead", "ConnectTail", "hphantom", "japhdoi", "phantom", 
 
 
 class gll:
-    def __init__(self, presource, lg, src, imt, ignoreme, trs, filename=None, booklanguage=None):
+    def __init__(self, presource, lg, src, imt, ignoreme, trs, filename=None, booklanguage=None, book_metalanguage="eng", abbrkey = None):
         #self.presource = presource
         basename = filename.split('/')[-1]
         self.ID = "%s-%s" % (
@@ -170,8 +171,8 @@ class gll:
             str(hash(src))[:6],
         )
         self.book_ID = int(filename.split('/')[-2])
-        self.book_URL =  f"https://langsci-press.org/catalog/book/{bookID}"
-        self.book_title = titlemapping.get(self.bookID)
+        self.book_URL =  f"https://langsci-press.org/catalog/book/{self.book_ID}"
+        self.book_title = titlemapping.get(self.book_ID)
         if booklanguage:
             self.language_iso6393 = booklanguage[0]
             self.language_glottocode = booklanguage[1]
@@ -182,6 +183,8 @@ class gll:
             self.language_glottocode = glottonames.get(lg, ["und", None])[0]
             if self.language_glottocode != "und":
                 self.language_name = lg
+        self.book_metalanguage = book_metalanguage
+        self.abbrkey = abbrkey
         self.trs = trs.replace("\\\\"," ").strip()
         try:
             if self.trs[0] in STARTINGQUOTE:
@@ -190,7 +193,7 @@ class gll:
                 self.trs = self.trs[:-1]
             self.trs = self.strip_tex_comment(self.trs)
             self.trs = self.striptex(self.trs)
-            self.trs = self.trs.replace("()", "").replace("{}", "")
+            self.trs = self.trs.replace("()", "")
         except IndexError: #s is  ''
             pass
         m = CITATION.search(self.trs)
@@ -254,11 +257,13 @@ class gll:
             result = result.replace(*r)
         for r in TEXTARGYANKS:
             result = re.sub(r"\\%s{.*?}"%r, '', result)
+        result = re.sub(BRACESPATTERN, r"\1", " "+result)[1:]  #add " " in front of string so that lookbehind matches if at beginning of line
         if html: #keep \textbf, \texit for the time being, to be included in <span>s
             return result
         else:
             result =  re.sub(TEXTEXT, "\\2", result)
             result =  re.sub(TEXTEXT, "\\2", result)
+            result = re.sub(BRACESPATTERN, r"\1", " "+result)[1:]
             return  re.sub(TEXTEXT, "\\2", result)#for nested  \textsomething{\textsomethingelse{}}
 
     def tex2categories(self, s):
@@ -305,13 +310,40 @@ langsci_d = {17: ('sje', "pite1240","Pite Saami"),
              298: ('gyi', "gyel1242", "Gyeli"),
              295: ('jya', "japh1234", "Japhug"),            # (Iso is not precise here)
              308: ('roh', "surs1245", "Tuatschin"),          # (Iso is not precise here)
+             245: ('dga', "sout2789", "Dagaare"),
+             98: ('ikx', "ikkk1242", "Ik"),
+             326: ('ruc', "ruul1235", "Ruruuli"),
+             287: ('nyy', "nyak1261", "Nyakyusa"),
+             109: ('nru', "yong1288", "Yongning Na"),
+             225: ('dar', "mege1234", "Mehweb"),
+             228: ('aaz', "amar1273", "Amarasi"),
+             150: ('rus', "russ1263", "Russian"),
+             329: ('swe', "swed1254", "Swedish")
              }
 
 def langsciextract(directory):
-
+    superseded = [22,25,46,141,144,149,195]
+    french = [27,143]
+    german = [101,234,155,134,116]
+    portuguese= [160,200]
+    chinese = [177]
+    spanish = [236]
     books = glob.glob(f"{directory}/*")
     for book in books:
         book_ID = int(book.split("/")[-1])
+        if book_ID in superseded:
+            continue
+        book_metalanguage = "eng"
+        if book_ID in portuguese:
+            book_metalanguage = "por"
+        if book_ID in german:
+            book_metalanguage = "deu"
+        if book_ID in french:
+            book_metalanguage = "fra"
+        if book_ID in spanish:
+            book_metalanguage = "spa"
+        if book_ID in chinese:
+            book_metalanguage = "cmn"
         booklanguage = langsci_d.get(int(book_ID), False)
         glossesd = defaultdict(int)
         excludechars = ".\\}{=~:/"
@@ -326,12 +358,28 @@ def langsciextract(directory):
             s = s.replace(r"{\bfseries ", r"\textbf{")
             s = s.replace(r"{\itshape ", r"\textit{")
             s = s.replace(r"{\scshape ", r"\textsc{")
+            tablerows = {}
+            try:
+                abbr1 = s.split("section*{Abbreviations}")[1]
+                abbr2 = abbr1.split(r"\section")[0]
+                for line in abbr2.split("\n"):
+                    if line.strip().startswith("%"):
+                        continue
+                    cells = line.split("&")
+                    if len(cells) == 2:
+                        abbreviation = gll.striptex(None,cells[0]).strip()
+                        if abbreviation ==  "...":
+                            continue
+                        expansion = gll.striptex(None,cells[1]).replace(r"\\", "").strip()
+                        tablerows[abbreviation] = expansion
+            except IndexError:
+                pass
             examples = []
             glls = GLL.findall(s)
             gllls = GLLL.findall(s)
             for g in glls:
                 try:
-                    thisgll = gll(*g, filename=filename, booklanguage=booklanguage)
+                    thisgll = gll(*g, filename=filename, booklanguage=booklanguage, abbrkey=tablerows)
                 except AssertionError:
                     continue
                 examples.append(thisgll)
