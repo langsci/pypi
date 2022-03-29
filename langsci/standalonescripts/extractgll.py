@@ -163,13 +163,9 @@ TEXTARGYANKS = ["ConnectHead", "ConnectTail", "hphantom", "japhdoi", "phantom", 
 
 
 class gll:
-    def __init__(self, presource, lg, src, imt, ignoreme, trs, filename=None, booklanguage=None, book_metalanguage="eng", abbrkey = None):
+    def __init__(self, presource, lg, src, imt, ignoreme, trs, filename=None, booklanguage=None, book_metalanguage="eng", abbrkey=None):
         #self.presource = presource
         basename = filename.split('/')[-1]
-        self.ID = "%s-%s" % (
-            basename.replace(".tex", "").split("/")[-1],
-            str(hash(src))[:6],
-        )
         self.book_ID = int(filename.split('/')[-2])
         self.book_URL =  f"https://langsci-press.org/catalog/book/{self.book_ID}"
         self.book_title = titlemapping.get(self.book_ID)
@@ -217,6 +213,10 @@ class gll:
                     ])
         self.html = f'<div class="imtblocks">\n{imt_html}\n</div>\n'
         self.srcwordsbare = [self.striptex(w) for w in srcwordstex]
+        self.ID = "%s-%s" % (
+            basename.replace(".tex", "").split("/")[-1],
+            str(hash(" ".join(self.srcwordsbare)))[:6],
+        )
         self.imtwordsbare = [self.striptex(w, sc2upper=True) for w in imtwordstex]
         self.clength = len(src)
         self.wlength = len(self.srcwordsbare)
@@ -321,6 +321,22 @@ langsci_d = {17: ('sje', "pite1240","Pite Saami"),
              329: ('swe', "swed1254", "Swedish")
              }
 
+def get_abbreviations(lines):
+    result = {}
+    for line in lines:
+        if line.strip().startswith("%"):
+            continue
+        cells = line.split("&")
+        if len(cells) == 2:
+            abbreviation = gll.striptex(None,cells[0]).strip()
+            if abbreviation ==  "...":
+                continue
+            expansion = gll.striptex(None,cells[1]).replace(r"\\", "").strip()
+            result[abbreviation] = expansion
+    return result
+
+
+
 def langsciextract(directory):
     superseded = [22,25,46,141,144,149,195]
     french = [27,143]
@@ -347,6 +363,12 @@ def langsciextract(directory):
         booklanguage = langsci_d.get(int(book_ID), False)
         glossesd = defaultdict(int)
         excludechars = ".\\}{=~:/"
+        abbrkey = {}
+        try:
+            with open(f"{directory}/{book_ID}/abbreviations.tex") as abbrin:
+                abbrkey = get_abbreviations(abbrin.readlines())
+        except FileNotFoundError:
+            pass
         files = glob.glob(f"{directory}/{book_ID}/chapters/*tex")
         files = glob.glob(f"{directory}/{book_ID}/*tex")
         #print(" found %i tex files for %s" % (len(files), book_ID))
@@ -358,28 +380,19 @@ def langsciextract(directory):
             s = s.replace(r"{\bfseries ", r"\textbf{")
             s = s.replace(r"{\itshape ", r"\textit{")
             s = s.replace(r"{\scshape ", r"\textsc{")
-            tablerows = {}
-            try:
-                abbr1 = s.split("section*{Abbreviations}")[1]
-                abbr2 = abbr1.split(r"\section")[0]
-                for line in abbr2.split("\n"):
-                    if line.strip().startswith("%"):
-                        continue
-                    cells = line.split("&")
-                    if len(cells) == 2:
-                        abbreviation = gll.striptex(None,cells[0]).strip()
-                        if abbreviation ==  "...":
-                            continue
-                        expansion = gll.striptex(None,cells[1]).replace(r"\\", "").strip()
-                        tablerows[abbreviation] = expansion
-            except IndexError:
-                pass
+            if abbrkey == {}:
+                try:
+                    abbr1 = s.split("section*{Abbreviations}")[1]
+                    abbr2 = abbr1.split(r"\section")[0]
+                    abbrkey = get_abbreviations(abbr2.split("\n"))
+                except IndexError:
+                    pass
             examples = []
             glls = GLL.findall(s)
             gllls = GLLL.findall(s)
             for g in glls:
                 try:
-                    thisgll = gll(*g, filename=filename, booklanguage=booklanguage, abbrkey=tablerows)
+                    thisgll = gll(*g, filename=filename, booklanguage=booklanguage, book_metalanguage=book_metalanguage, abbrkey=abbrkey)
                 except AssertionError:
                     continue
                 examples.append(thisgll)
