@@ -190,19 +190,13 @@ class Chapter(Publication):
         except TypeError:
             self.metadata["partof_pages"] = self.pagerange
         # retrieve affiliations from texfile
-        authorlist = CHAPTERAUTHORSP.findall(preamble)[0]
+        authorlist = CHAPTERAUTHORP.findall(preamble)
         print(authorlist)
-        authororcidaffiliations = authorlist.split(' and ')
-        print(authororcidaffiliations)
         creatorslist = []
-        for authororcidaffiliation in authororcidaffiliations:
-            print(authororcidaffiliation)
-            name = AUTHORNAMEP.findall(authororcidaffiliation)[0]
-            try:
-                orcid = ORCIDSP.findall(authororcidaffiliation)[0]
-            except IndexError:
-                orcid = None
-            affiliation = AFFILIATIONP.findall(authororcidaffiliation)[0]
+        for au in authorlist:
+            name = au[1]
+            orcid = au[3]
+            affiliation = au[4]
             creatorslist.append(dict(name=name, affiliation=affiliation, orcid=orcid))
         self.metadata["creators"] = creatorslist
         for i,c in enumerate(self.metadata["creators"]):

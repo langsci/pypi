@@ -24,7 +24,7 @@ INCLUDEPAPERP = re.compile(
 )  # only papers on new lines, ignoring % comments
 BOOKAUTHORP = re.compile(r"\\author{(.*?)}")
 LASTAND = re.compile(r"(\\lastand|\\and)")
-CHAPTERAUTHORP = re.compile(r"\\(author{|and|lastand)(.*?) *\\affiliation{(.*?)}")
+CHAPTERAUTHORP = re.compile(r"(\\author{|and|lastand)(.*?) *(\\orcid{(.*?)})?\\affiliation{(.*?)}")
 ORCIDSP = re.compile(r"\\(author{|and|lastand)(.*?) *\\orcid{(.*?)}")
 TITLEP = re.compile(r"\\title{(.*?)}")
 ISBNP = re.compile(r"\\lsISBNdigital}{(.*)}")
