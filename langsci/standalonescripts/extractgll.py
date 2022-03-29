@@ -42,7 +42,7 @@ TEXTEXT = re.compile(r"\\text(.*?)\{(.*?)\}")
 TEXSTYLEENVIRONMENT =  re.compile(r"\\\\textstyle[A-Z][A-Za-z].*?{(.*?)}")
 INDEXCOMMANDS =  re.compile(r"\\\\i[sl]{(.*?)}")
 LABELCOMMANDS =  re.compile(r"\\\\label{(.*?)}")
-CITATION = re.compile(r"\\cite[altpv]*\[(.*?)\]?\{(.*?)\}")
+CITATION = re.compile(r"\\cite[altpv]*(\[.*?\])?\{(.*?)\}")
 
 STARTINGQUOTE = "`‘"
 ENDINGQUOTE = "'’"
@@ -91,6 +91,9 @@ TEXREPLACEMENTS = [
     (r"\sectref", "Section "),
     (r"\figure", "Figure "),
     (r"\tabref", "Table "),
+    (r"\appref", "Appendix "),
+    (r"\fnref", "Footnote "),
+    (r"\ref", ""),
     (r"\forall", "∀"),
     (r"\exists", "∃"),
     (r"\xspace", ""),
@@ -99,6 +102,9 @@ TEXREPLACEMENTS = [
     (r"\tsc", r"\textsc"),
     (r"\ili", ""),
     (r"\isi", ""),
+    (r"\sc", r"\scshape"),
+    (r"\it ", r"\itshape "),
+    (r"\bf ", r"\bfseries "),
     (r"\lq", '"'),
     (r"\{", '{'),
     (r"\}", '}'),
@@ -115,6 +121,7 @@ TEXREPLACEMENTS = [
     (r"\NORMALFONT", ''),
     (r"\longrightarrow", '→'),
     (r"\leftrightarrow", '⇔'),
+    (r"\emptyset", 'ø'),
     (r"\varnothing", 'ø'),
     (r"\USEmptySet", 'ø'),
     (r"\Tilde", '~'),
@@ -155,11 +162,98 @@ TEXREPLACEMENTS = [
     (r"\textunderscore", ''),
     (r"\textstyleEmphasizedVernacularWords", '\emph'),
     (r"\protect", ''),
-    #greekletters
+    (r"\\", ' '),
+    (r"\citealt", ''),
+    (r"\Highlight", r'\textbf'),
+    (r"\sg", r'SG'),
+    (r"\rouge", r'\textred'),
+    (r"\bleu", r'\textblue'),
+    (r"\mbox", r''),
+    (r"\ddagger", r'‡'),
+    (r"\dagger", r'†'),
+    (r"\downstep", r'ꜜ'),
+    (r"\emph", r'\textemph'),
+    (r"\kern2pt", r''),
+    (r"\,", r' '),
+    (r"\Rightarrow", r'→'),
+    (r"\rm", r""),
+    (r"\#", r"#"),
+    (r"\Third", r"3"),
+    (r"\super", r"\textsuperscript"),
+    (r"\expo", r"\textsuperscript"),
+    (r"\small", r"\textsmall"),
+    (r"\footnotesize", r"\textsmall"),
+    (r"\scriptsize", r"\textsmall"),
+    (r"\tiny", r"\textsmall"),
+    (r"\USGreater", r">"),
+    (r"\USSmaller", r"<"),
+    (r"\exi", r" "),
+    (r"\textitshape", r"\textit"),
+    (r"\upshape", r""),
+    (r"\@", r"@"),
+    (r'\"=', r"-"),
+    (r'{\scshape', r"\textsc{"),
+    (r'\gsc', r"\textsc"),
+    (r'\glemph', r"\textemph"),
+    (r"\O", 'ø'),
+    (r"{\R}", 'REALIS'),
+    (r"\circ", '°'),
+    (r"\stem", ''),
+    (r"\z", ''),
+    (r"\ex ", ' '),
+    (r"\ix{", r'\textsubscript{'),
+    (r"\textsmallskip", r''),
+    (r"\smallskip", r''),
+    (r"\medskip", r''),
+    (r"\bigskip", r''),
+    (r"\extrans", r'\glt '),
+    (r"\trad", r'\glt '),
+    (r"\op", r'('),
+    (r"\cp", r')'),
+    (r"\ob", r'['),
+    (r"\cb", r']'),
+    (r"\db", r' '),
+    (r"\llap", r''),
+    (r"\textemdash", r'—'),
+    (r"\Corpus", r''),
+    (r"\flobv{}", r"→3'"),
+    (r"\mc{", r"\textsc{"),
+    (r"\tkal", r"XaYaZ"),
+    (r"\tpie", r"XiY̯eZ"),
+    (r"\tpua", r"XuY̯aZ"),
+    (r"\mpua", r"meXuY̯aZ"),
+    (r"\thif", r"heXYiZ"),
+    (r"\thuf", r"huXYaZ"),
+    (r"\mhuf", r"muXYaZ"),
+    (r"\thit", r"hitXaY̯eZ"),
+    (r"\tnif", r"niXYaZ"),
+    (r"\gloss{", r"\textsc{"),
+    (r"{\LINK}", r"LINK"),
+    (r"\mas{}", r"M"),
+    (r"\ipa{}", r""),
+    (r"\tss", r"\textsubscript"),
+    (r"\tsp", r"\textsuperscript"),
+    (r"\Tsg{}", r"3.SG"),
+    (r"\Tpl{}", r"3.PL"),
+    (r"\oneS", r"1.SG"),
+    (r"\twoS", r"2.SG"),
+    (r"\prs{}", r"PRS"),
+    (r"\tld", r"~"),
+    (r"\itshape", r"\textit{"),
+    (r"\scshape", r"\textsc{"),
+    (r"\bf", r"\bfseries"),
+    (r"\bfseries", r"\textbf{"),
+    (r"\nom", r"NOM"),
+    (r"\acc", r"ACC"),
+    (r"{\pl}", r"PL"),
+    (r"{\pst}", r"PST"),
+    (r"{\prs}", r"PRS"),
+    (r"\lptcp", r"l-PTCP"),
+#greekletters
 ]
 
 #remove these together with their argument
-TEXTARGYANKS = ["ConnectHead", "ConnectTail", "hphantom", "japhdoi", "phantom", "vspace", "begin", "end", "is", "il", "hspaceThis"]
+TEXTARGYANKS = ["ConnectHead", "ConnectTail", "hphantom", "japhdoi", "phantom", "vspace", "vspace\*", "begin", "end", "is", "il", "hspaceThis", "hspace", "hspace\*", "ilt", "ist"]
 
 
 class gll:
@@ -195,7 +289,7 @@ class gll:
         m = CITATION.search(self.trs)
         if m is not None:
             if m.group(2) != '':
-                self.trs = re.sub(CITATION, r'(\2: \1)', self.trs)
+                self.trs = re.sub(CITATION, r'(\2: \1)', self.trs).replace('[', '').replace(']', '')
             else:
                 self.trs = re.sub(CITATION, r'(\2)', self.trs)
         srcwordstex = self.strip_tex_comment(src).split()
@@ -223,7 +317,7 @@ class gll:
         self.analyze()
 
     def strip_tex_comment(self, s):
-        return re.split(r"(?<!\\)%", s)[0]
+        return re.split(r"(?<!\\)%", s)[0].replace(r"\%","%")
 
     def resolve_lgr(self, s):
         s = re.sub(LGRPATTERN_UPPER, r"\1", s)
@@ -248,7 +342,7 @@ class gll:
     def striptex(self, s, sc2upper=False, html=False):
         result = converter.decode_Tex_Accents(s, utf8_or_ascii=1)
         if sc2upper:
-            for m in re.findall("\\\\textsc{(.*?)}",  result):
+            for m in re.findall("\\\\textsc{([-\.:=<> a-zA-Z0-9]*?)}",  result):
                 result = result.replace("\\textsc{%s}" % m , m.upper())
         result = re.sub(INDEXCOMMANDS, "", result)
         result = re.sub(LABELCOMMANDS, "", result)
@@ -258,6 +352,7 @@ class gll:
         for r in TEXTARGYANKS:
             result = re.sub(r"\\%s{.*?}"%r, '', result)
         result = re.sub(BRACESPATTERN, r"\1", " "+result)[1:]  #add " " in front of string so that lookbehind matches if at beginning of line
+        result = re.sub(r"(?<!\\)\\ ", " ", result) #strip "\ " (latex protected space)
         if html: #keep \textbf, \texit for the time being, to be included in <span>s
             return result
         else:
@@ -328,10 +423,10 @@ def get_abbreviations(lines):
             continue
         cells = line.split("&")
         if len(cells) == 2:
-            abbreviation = gll.striptex(None,cells[0]).strip()
+            abbreviation = gll.resolve_lgr(None, gll.striptex(None,cells[0]).strip())
             if abbreviation ==  "...":
                 continue
-            expansion = gll.striptex(None,cells[1]).replace(r"\\", "").strip()
+            expansion = gll.striptex(None,cells[1]).replace(r"\\", "").strip().replace(r"\citep", "")
             result[abbreviation] = expansion
     return result
 
