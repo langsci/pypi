@@ -7,6 +7,9 @@ import json
 import operator
 import os
 import LaTexAccents as TeX
+import requests
+
+from bs4 import BeautifulSoup
 from collections import defaultdict
 from titlemapping import titlemapping
 from lgrlist import LGRLIST
@@ -16,6 +19,10 @@ converter = TeX.AccentConverter()
 
 
 glottonames = json.loads(open('glottonames.json').read())
+glottotmp = {}
+glotto_iso6393 = {}
+
+NON_CCBY_LIST = [148, 149, 234]
 
 
 #from rdflib import Namespace, Graph, Literal, RDF, RDFS  # , URIRef, BNode
@@ -24,19 +31,20 @@ glottonames = json.loads(open('glottonames.json').read())
 #GLL = re.compile(
     #r"\\gll[ \t]*(.*?) *?\\\\\\\\\n[ \t]*(.*?) *?\\\\\\\\\n+[ \t]*\\\\glt[ \t\n]*(.*?)\n"
 #)
-PRESOURCELINE = r"(\\langinfo{(.*?)?}.*\\\\ *\n)?"
-SOURCELINE = r"\\gll[ \t]*(.*?) *?\\\\\n"
-SOURCELINE2 = r"\\glll[ \t]*(.*?) *?\\\\\n"
-IMTLINE = r"[ \t]*(.*?) *?\\\\\n+" #some authors add multiple newlines before the translation
-TRSLINE = r"[ \t]*\\(glt|trans)[ \t\n]*(.*?)\n"
+PRESOURCELINE = r"(?P<presourceline>\\(ili|langinfo){(?P<language_name>.*?)?}.*\\\\ *\n)?"
+SOURCELINE = r"\\gll[ \t]*(?P<sourceline>.*?) *?\\\\\n"
+IMTLINE1 = r"[ \t]*(?P<imtline1>.*?) *?\\\\\n+" #some authors add multiple newlines before the translation
+IMTLINE2 = r"([ \t]*(?P<imtline2>.*?) *?\\\\\n+)?" #some authors add multiple newlines before the translation
+TRSLINE = r"[ \t]*\\(glt|trans)[ \t\n]*(?P<translationline>.*?)\n"
 LGRPATTERN_UPPER = re.compile(r"\\(%s)({})?" % "|".join(LGRLIST))
 LGRPATTERN_LOWER = re.compile(r"(%s)({})?" % "|".join([s.lower() for s in LGRLIST]))
 LGRPATTERN_UPPER_LOWER = re.compile(r"(%s)({})?" % "|".join([s[0]+s[1:].lower() for s in LGRLIST]))
 BRACESPATTERN = re.compile(r"(?<=.^| ){([^}{ ]+)}")
     #r"\\gll[ \t]*(.*?) *?\\\\\n[ \t]*(.*?) *?\\\\\n+[ \t]*\\glt[ \t\n]*(.*?)\n"
 #)
-GLL = re.compile(PRESOURCELINE+SOURCELINE+IMTLINE+TRSLINE)
-GLLL = re.compile(PRESOURCELINE+SOURCELINE2+IMTLINE+IMTLINE+TRSLINE)
+#GLL = re.compile(PRESOURCELINE+SOURCELINE+IMTLINE+TRSLINE)
+GLL = re.compile(PRESOURCELINE+SOURCELINE+IMTLINE1+IMTLINE2+TRSLINE)
+#GLL = re.compile(PRESOURCELINE+SOURCELINE+IMTLINE1+TRSLINE)
 TEXTEXT = re.compile(r"\\text(.*?)\{(.*?)\}")
 
 TEXSTYLEENVIRONMENT =  re.compile(r"\\\\textstyle[A-Z][A-Za-z].*?{(.*?)}")
@@ -255,11 +263,32 @@ TEXREPLACEMENTS = [
 #remove these together with their argument
 TEXTARGYANKS = ["ConnectHead", "ConnectTail", "hphantom", "japhdoi", "phantom", "vspace", "vspace\*", "begin", "end", "is", "il", "hspaceThis", "hspace", "hspace\*", "ilt", "ist"]
 
+def get_iso(glottocode):
+    global glotto_iso6393
+    if glottocode == None:
+        return "und"
+    try:
+        return glotto_iso6393[glottocode]
+    except KeyError:
+        request_url = f"https://glottolog.org/resource/languoid/id/{glottocode}"
+        html = requests.get(request_url).text
+        soup = BeautifulSoup(html, 'html.parser')
+        try:
+            iso = soup.find('span', class_="iso639-3").a['title']
+        except AttributeError:
+            return "und"
+        glotto_iso6393[glottocode] = iso
+        print(glottocode, iso)
+        return iso
+
+
 
 class gll:
-    def __init__(self, presource, lg, src, imt, ignoreme, trs, filename=None, booklanguage=None, book_metalanguage="eng", abbrkey=None):
+    def __init__(self, presource, lg, src, imt, trs, filename=None, booklanguage=None, book_metalanguage="eng", abbrkey=None):
         #self.presource = presource
+        #print(presource, lg, src, imt, trs)
         basename = filename.split('/')[-1]
+        self.license = "CC-BY 4.0"
         self.book_ID = int(filename.split('/')[-2])
         self.book_URL =  f"https://langsci-press.org/catalog/book/{self.book_ID}"
         self.book_title = titlemapping.get(self.book_ID)
@@ -270,9 +299,43 @@ class gll:
         else:
             self.language_iso6393 = None
             self.language_name = None
-            self.language_glottocode = glottonames.get(lg, ["und", None])[0]
-            if self.language_glottocode != "und":
+            if lg not in ('', None):
                 self.language_name = lg
+                try:
+                    self.language_glottocode = glottonames[lg][0]
+                    glottonames[lg] = [self.language_glottocode,None]
+                    self.language_iso6393 = get_iso(self.language_glottocode)
+                except KeyError:
+                    if glottotmp.get(lg):
+                        self.language_glottocode = None
+                    else:
+                        request_url = f"https://glottolog.org/glottolog?name={lg}&namequerytype=part"
+                        print(lg, request_url)
+                        html = requests.get(request_url).text
+                        soup = BeautifulSoup(html, 'html.parser')
+                        languoids = soup.find_all('a', class_="Language")
+                        if len(languoids) == 3: #exactly one languoid
+                            self.language_glottocode = languoids[0]["title"] #FIXME add ISO
+                            self.language_family = languoids[2]["title"]
+                            self.language_name = lg
+                            print(" "+self.language_glottocode)
+                            glottonames[lg] = [self.language_glottocode, None]
+                        elif len(languoids) == 0: #no languoids. We store this in persistent storage
+                            print(len(languoids))
+                            glottonames[lg] = [None , None]
+                        else: #more than one languoid. We store this only temporarily and hope for future improvements in the code.
+                            print(len(languoids))
+                            languoids2 = soup.find_all('td', class_="level-language")
+                            print(len(languoids2))
+                            if len(languoids2) == 1:
+                                self.language_glottocode = languoids2[0].find("a", class_="Language")["href"].split('/')[-1]
+                                self.language_name = lg
+                                glottonames[lg] = [self.language_glottocode, None]
+                                print(" "+self.language_glottocode)
+                                #self.language_family = FIXME
+                            else:
+                                self.language_glottocode = None
+                                glottotmp[lg] = True
         self.book_metalanguage = book_metalanguage
         self.abbrkey = abbrkey
         self.trs = trs.replace("\\\\"," ").strip()
@@ -413,7 +476,8 @@ langsci_d = {17: ('sje', "pite1240","Pite Saami"),
              225: ('dar', "mege1234", "Mehweb"),
              228: ('aaz', "amar1273", "Amarasi"),
              150: ('rus', "russ1263", "Russian"),
-             329: ('swe', "swed1254", "Swedish")
+             329: ('swe', "swed1254", "Swedish"),
+             16: ('ita', "ital1282", "Italian"),
              }
 
 def get_abbreviations(lines):
@@ -483,20 +547,22 @@ def langsciextract(directory):
                 except IndexError:
                     pass
             examples = []
-            glls = GLL.findall(s)
-            gllls = GLLL.findall(s)
-            for g in glls:
+            #glls = GLL.findall(s)
+            #gllls = GLLL.findall(s)
+            for g in [m.groupdict() for m in GLL.finditer(s)]:
+                presource = g['presourceline'] or ''
+                lg = g['language_name']
+                if g['imtline2'] in (None,''): #standard \gll example¨
+                    src = g['sourceline']
+                    imt = g['imtline1']
+                else:
+                    src = g['imtline1'] #we ignore the first line of \glll examples as the second line typically contains the morpheme breaks
+                    imt = g['imtline2']
+                trs = g['translationline']
                 try:
-                    thisgll = gll(*g, filename=filename, booklanguage=booklanguage, book_metalanguage=book_metalanguage, abbrkey=abbrkey)
-                except AssertionError:
-                    continue
-                examples.append(thisgll)
-            for g in gllls:
-                f = list(g)
-                del f[2] #we remove the first sourceline and only keep the second one
-                g = f
-                try:
-                    thisgll = gll(*g, filename=filename, booklanguage=booklanguage)
+                    thisgll = gll(presource, lg, src, imt, trs, filename=filename, booklanguage=booklanguage, book_metalanguage=book_metalanguage, abbrkey=abbrkey)
+                    if thisgll.book_ID in NON_CCBY_LIST:
+                        continue
                 except AssertionError:
                     continue
                 examples.append(thisgll)
@@ -507,6 +573,10 @@ def langsciextract(directory):
                 print("   ", jsonname)
                 with open(jsonname, 'w', encoding='utf8') as jsonout:
                     jsonout.write(jsons)
+    with open('glottonames.json', "w") as namesout:
+        namesout.write(json.dumps(glottonames, sort_keys=True, indent=4, ensure_ascii=False))
+    with open('glottoiso.json', "w") as glottoisoout:
+        glottoisoout.write(json.dumps(glotto_iso6393, sort_keys=True, indent=4, ensure_ascii=False))
 
 if __name__ == "__main__" :
     langsciextract(sys.argv[1])

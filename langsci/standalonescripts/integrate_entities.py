@@ -84,7 +84,6 @@ for filename in basefiles:
         except KeyError:
             print(f"Example {ID} not found in {closurefilename}")
             continue
-        ex['@id'] = ID + "_u"
         ex['book_URL'] = f"https://langsci-press.org/catalog/book/{ex['book_ID']}"
         ex['language'] = None
         if ex.get('language_glottocode', 'und') != 'und':
@@ -93,6 +92,7 @@ for filename in basefiles:
         imtstring = " ".join(ex["imtwordsbare"])
         ex['label'] = srcstring
         if ld:
+            ex['@id'] = ID + "_u"
             ex['topic'] = [f"https://www.wikidata.org/wiki/{e['wdid']}" for e in ex['entities']+ex['parententities']]
             ex['@type'] = "https://purl.org/liodi/ligt#utterance"
             ex['@context'] = context

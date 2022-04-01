@@ -1,0 +1,1306 @@
+========================================
+store/101/verben.tex
+\gll wird lachen\\
+    {[\textsc{Temp}: \textit{präs}, \textsc{Per}:\textit{3}, \textsc{Num}:\textit{sg}]} {[]}\\
+    
+========================================
+store/106/stein.tex
+\gll Ich reiste schon nach vierzehn Tagen wieder ab\\
+  I checked yet after fourteen days again out\\
+\glt ``I left after only fourteen days''
+
+========================================
+store/108/wolfer2.tex
+\gll Mehr als zwölf Jahre nach der Herstellung der deutschen Einheit habe sich die Ermächtigung zur Reduzierung oder Aufhebung der Gebührenermäßigung durch Rechtsverordnung zu einer Rechtspflicht zur Aufhebung des Gebührenabschlags verdichtet. \\
+More than twelve years after the realisation the.\textsc{gen} German.\textsc{gen} unity.\textsc{gen} have.\textsc{sbjv} itself the authorization to reduction or abolishment the.\textsc{gen} reduction.of.fees through legal.decree to a legal.duty for.the abolishment the.\textsc{gen} partial.payment.of.fees condensed.\\
+\glt `More than twelve years after the realisation of German reunification, the authorization for reduction or abolishment of a rebate of fees by decree is said to have been condensed to a legal duty of abolishment of rebates.'
+
+========================================
+store/109/04.tex
+\gll ə˧v̩˧˥	tʰv̩˥	v̩˧\\
+	uncle	\textsc{dem.dist}	\textsc{clf}.individual\\
+	\glt ‘that uncle’ (Tiger2.109)
+
+========================================
+store/109/06.tex
+\gll mv̩˩˥		tʰi˧-			do˩\textsubscript{b}\\
+	daughter		\textsc{dur}		to\_see\\
+	\glt ‘to see \mbox{(a/the)}
+	daughter’
+
+========================================
+store/109/08.tex
+\gll ɖɯ˧	sɑ˥		F	mɤ˧-	dʑo˧\textsubscript{b}\\
+	one		\textsc{clf}.things		\textsc{focalization}	\textsc{neg}		to\_possess\\
+	\glt ‘[I/they] don't have anything at all~/ [I/they] have nothing at all.’
+
+========================================
+store/109/08.tex
+\gll ə˧ʝi˧-ʂɯ˥ʝi˩	ɖɯ˩ɖʐɯ˧-ɬɑ˩tsʰo˩	ɳɯ˧				ɖɯ˧-ʑi˩		-ki˧	F	ki˧\textsubscript{a}	-zo˧\textsubscript{a}\\
+	long\_ago	{\textit{proper name}}		\textsc{a}		one-\textsc{clf}.households				\textsc{dat}	\textsc{focalization}	to\_give	\textsc{oblig}\\
+	\glt ‘Long ago, Ddeezzhi Lhaco had to marry into someone's family!’ {\newline}(BuriedAlive3.143)
+
+========================================
+store/115/grecoetal.tex
+\gll (Sitä) leikkii   lapsia    kadulla.\\
+		SITÄ  play    children   in.street\\
+	   \glt ‘There are children playing  in the street.’}
+    
+========================================
+store/120/halpert.tex
+\gll n- eng'we Boke a- a- sumachere na- we\\
+%oc- 1who 1Boke 1\textsc{s}- \textsc{pst}- converse with- 1\\
+%\glt `Who was Boke talking to/with?' \hfill [\ili{Kuria}]}
+%
+========================================
+store/121/Moodie.tex
+\gll eí-ngà-bàlú íyóhoí lòmé-tí. \\
+1\textsc{pl-prf}-harvest 1\textsc{pl.nom} millet-\textsc{sg.abs} \\
+\glt ‘We have harvested so much millet!’
+
+========================================
+store/121/NgunaEtAl.tex
+\gll \textbf{vapfumba}     va-svek-el-iw-a                       tihlampfi         (hi    hahani).\\
+     2.guest          2.\textsc{sm-}cook-\textsc{appl-pass}-\textsc{fv}       10.fish              by    1.aunt\\
+\glt ‘The guests are being cooked some fish (by my aunt).’
+
+========================================
+store/121/Sarvasy.tex
+\gll Karoono,   \textbf{a-zez-a}      kʊ-nw-a  ɪ-kahava. \\
+now/today  1-go.\textsc{pres.progr-fv}  15-drink-\textsc{fv}  9-coffee \\
+\glt ‘Now, \textbf{s/he is going} to drink coffee.’
+
+========================================
+store/132/schaeffer-carl.tex
+\gll  The water in the bottle is \textit{bad}\ldots\\ 
+        	Das Wasser in der Flasche ist \textit{schlecht}\ldots\\
+			  
+        
+	
+========================================
+store/141/01.tex
+\gll a-lek-ile ʊ-kʊ-mog-a\\
+	1-cease-\textsc{pfv} \textsc{aug}-15(\textsc{inf})-dance-\textsc{fv}\\
+	\glt \lq S/he has stopped dancing.'
+
+========================================
+store/144/19.tex
+\gll  Ong  noguring  no  koniab  ino,  atanaman  no   do  paray  benoy  \textit{dara}.\\
+if  plowed.\textsc{potent.pst}  already  yesterday  that  planted.\textsc{potent.npst}  already \textsc{acc}  rice  today  \textsc{frus}\\
+\glt ‘If that (field) had been plowed yesterday, it could have been planted with rice today.’
+
+========================================
+store/151/spencer.tex
+\gll	užin uže poda-n\\
+	supper.\glossfeat{m.sg}	already 	serve-\glossfeat{passptcp.m.sg}\\
+\glt	‘Supper has already been served’
+
+========================================
+store/152/creissels.tex
+\gll   Ké  yúgó  xàrá. \\
+      \textsc{dem}  man  study\\
+      \glt {‘This man studied.’}\\
+
+   
+========================================
+store/152/jacques.tex
+\gll
+\ipa{tɤ-sno}  	\ipa{kɤ́-jɯ\tld{}jaʁ}  	\ipa{nɯ}  	\ipa{lu-ta-nɯ}  \\
+\textsc{indef.poss}-saddle \textsc{comit}-hand \textsc{dem} \textsc{ipfv}-put-\textsc{pl} \\
+\glt `(Then), they put the saddle with its handles.'
+
+========================================
+store/156/01-Intro.tex
+\gll die (interessante) [wie man am schnellsten reich wird] (*interessante) Frage\\
+	the interesting	  how one  the fastest	   rich  gets	interesting    question\\
+\glt	`The (interesting) question (of) how one gets rich fastest'
+
+========================================
+store/156/06-Japanese-Nishiyama.tex
+\gll kono zikken-ga     yooyaku  syuuryoo-go\\
+    this experiment-\textsc{nom}  finally  finish-after\\
+\glt ‘After this experiment finally finishes’
+  
+========================================
+store/156/07-Pharasiot-Greek-Bagriaciketal.tex
+\glll 	píčin ɣámus\\
+			pičin ɣam-us\\
+			made.\textsc{3sg} wedding-\textsc{nom.sg}\\
+	\glt `s/he made (a) wedding'
+
+========================================
+store/156/08-Comparison-Pafel.tex
+\gll   Kinder-über-Mittag-Betreu-ung\\
+             children-on-noontime-caretake-ing  \\
+      \glt  `children caretaking at noontime'
+      
+========================================
+store/157/wl07.tex
+\gll   Bel  \textbf{ipl}\textbf{\textepsilon} tar=eh. \\
+   dog  \textsc{low.away} lie.down=\textsc{prog}   \\
+\glt   `There are dogs lying down down there (in a direction\is{direction} away from the speaker).' 
+
+========================================
+store/157/wl08.tex
+\gll  ye  daai  alaku   \\  
+    one  divide  two    \\
+\glt  `half' 
+
+========================================
+store/159/haddican.tex
+\gll	\textit{Milloin} \textit{Jussi} \textit{olisi}	\textit{romaanin}	\textit{kirjoittanut?} 		 \\
+		when Jussi would-have \textsc{indef}-novel written \\
+	    \glt `When would Jussi have written a novel?'  \hfill{[Aux-O-V]}}
+	
+========================================
+store/160/santoslopes.tex
+\gll Le lion poune le cheval.\\
+o leão pseudo-verbo o cavalo\\
+
+========================================
+store/165/Boye.tex
+\gll six écureuils\\ siz\lplus{ % was:\textipa{siz\lplus{}
+} ekyʁœj % was:\textipa{ekyKœj}
+\\ \\ \trad{six squirrels}
+	
+========================================
+store/165/Giraudo.tex
+\gll noyau, préau, tuyau, bestiau\\
+     `core', `courtyard', `pipe', `cattle'\\
+
+========================================
+store/167/hup.tex
+\gll yɨ́t tɨh nɨ́h-ɨ́t=yɨʔ tɨh k’ët-hi-wag-yɨ́ʔ-ɨ́h.\\
+     thus \textsc{3sg} be.like\textsc{-obl=adv} \textsc{3sg} stand\textsc{-fact-}day\textsc{-tel-decl}\\
+\glt ‘Doing thus, he accompanied her until dawn.'
+\glt ‘Assim, ele a acompanhou até amanhecer.'
+
+========================================
+store/167/kalapalo.tex
+\gll etsu-tühügü\\
+     debut-\textsc{pfv}\\
+\glt ‘He sang for the first time.’
+\glt ‘Ele cantou pela primeira vez.’
+
+========================================
+store/167/marubo.tex
+\gll wa                shavo ka-i             wetsa   \\
+     \textsc{dem.dist} woman go-\textsc{prog} another \\
+\glt `with that and that woman,' \\
+`com aquela mulher,' \\
+
+========================================
+store/17/verbsSDL.tex
+\glll	man ednag biejve galga danne årrot?\\
+	man ednag biejve galga danne årro-t\\
+	how many day\BS\Sc{nom.pl} will\BS\Sc{2sg.prs} there be-\Sc{inf}\\\nopagebreak
+\Transl{How many days are you going to be there?}{}	\Corpus{080924}{658}
+
+========================================
+store/173/02-do.tex
+\gll ((A-dzá-lémba 		máawá) 		káláta 		yópítá 			ku 	sukúulu).\\
+	 \textsc{cl1sbj}-\textsc{fut}-write		tomorrow	\textsc{cl9}.letter		\textsc{cl9}.of.\textsc{inf}.go	\textsc{loc}	\textsc{cl5}.school\\
+\glt ‘S/he will write a letter to the school tomorrow.’
+
+
+========================================
+store/173/03-kl.tex
+\gll In qap ii’ kalax gom mian.\\
+thing cut red basket inside put.at\\
+\glt ‘A red cloth is put inside a basket.’
+
+========================================
+store/173/06-en.tex
+\gll a-u-taa-s 				n-t-šeere 		šêm\\
+	\textsc{pst-}\textsc{3pl-}give-3\textsc{f.sg} to-\textsc{def.f-}girl little\\
+				
+
+========================================
+store/173/12-wr.tex
+\gll Ŋarka Wel’i teta xasawa \textbf{n’u-m} malca-xa-danta nixibta-da, man-ma:\\
+ big Welji farmer man child\textsc{-acc} malice-\textsc{dat-3sg.dat} pull-\textsc{3sg.oc} pull-\textsc{narr}\\
+\glt  ‘He caught hold of the malice of the son of the old Weli-farmer and said:’ 
+
+========================================
+store/173/12-wr.tex
+\gll  Yebtow°ʔ, \textbf{ŋəmke-m} \textbf{mǝneʔŋa-ney°ʔ}?\\
+ darling(\textsc{foc)} what-\textsc{acc} see-\textsc{2sg.sc.foc}\\
+\glt ‘Darling, what can you see?’
+
+
+========================================
+store/173/13-te.tex
+\gll  Tishi=no [\textbf{küma=no} a-xone lho-chu-phe=püzü=no]  tingu=no a-la-u=ye \textbf{Sümi=qo=ye} a-xone lho-chu-u-ve].\\
+like.that\textit{=no} [3\textsc{du}\textit{=no} \textsc{nrl}-ferm.soya.beans cook-eat-start=\textsc{conj=conn}] because.of.that\textit{=no} \textsc{nrl}-path-\textsc{def}\textit{=ye} [\ili{Sumi}=\textsc{pl}\textit{=ye} \textsc{nrl}-ferm.soya.beans cook-eat-go-\textsc{vm}]\\
+\glt `Henceforth, the two (sisters) started to cook and eat axone (a fermented soya bean dish) and consequently from then on, the Sumis have cooked and eaten axone.’
+
+========================================
+store/173/17-le.tex
+\gll {\ldots} markerID marker markerFreq\\
+{\ldots} 916 rurutis 0\\
+
+
+========================================
+store/174/04.tex
+\gll \textbf{{nəti}} ta?\\
+    \textsc{int}  this.\textsc{inan}\\
+    \glt ‘\textit{What} is this?’ \citep[48]{Watters2006}
+    
+========================================
+store/174/05chuk.tex
+\gll \textbf{{rˀa}}-etə    ŋəta-gˀət?\\
+    what-\textsc{dat}  come-2\textsc{sg}.S\\
+    \glt ‘Why did you come?’
+
+    
+========================================
+store/174/05ural.tex
+\gll \textbf{{xurka}}{/}\textbf{{ŋəmke}} l'ekarə-ŋe° tara-\textbf{{sa}}?\\
+    which    doctor-\textsc{ess}  needed-\textsc{pst.q}\\
+    \glt ‘What kind of doctor did he work as?’ \citep[261]{Nikolaeva2014}
+    
+========================================
+store/177/recursion.tex
+\gll Otto claims [\sub{that-S} that Karl suspects [\sub{that-S} that Richard sleeps]].\\
+	Otto 声称 {} \textsc{comp} Karl 怀疑 {} \textsc{comp} Richard 睡觉\\
+\mytrans{Otto声称Karl怀疑Richard睡觉。}
+%Otto claims [\sub{that-S} that Karl suspects [\sub{that-S} that Richard sleeps]].
+
+========================================
+store/18/nompredSDL.tex
+\gll \textbf{\textipa{\=*an\'{\=*e}t}} \textipa{c\'I} \textipa{k-\=*e\'{\=*e}n\'{\=*I}} \textipa{d\=*em\'{\=*e}z-z\'{\=*o}h-t}\\
+1\sg{}.\acc{} \am{} 1-be teach-\agnm{}-\sg{}\\
+\glt `I'm the teacher.'
+
+========================================
+store/18/othclSDL.tex
+\gll \textbf{got\textsuperscript{u}} wajjo-r\textsuperscript{a} hilikk'\textsuperscript{i} ke'yoomm\textsuperscript{i}\\
+hyena.\nom{} scream.\pfv{}.3\sg{}.\mas{}-\tmp{} be\_shocked.\cvb{}.1\sg{} stand\_up.\pfv{}.1\sg{}\\
+\begin{sloppypar}\glt  `When/After/Because a hyena (had) shrieked, I was shocked and stood up.' %\end{sloppypar}
+\\
+%\begin{sloppypar} 
+original translation: `Als/Nachdem/Weil eine Hy\"{a}ne schrie/ ge\-schrie\-hen hatte, erschrak ich und stand auf.' \end{sloppypar} %[308]
+
+========================================
+store/182/paggio.tex
+\gll l-universita’ qiegħed inti? \\
+   {\sc def}=university.{\sc sg.f} stay{\sc 3.sg}	you\\
+\glt `The university do you attend (it)?'
+
+========================================
+store/182/puech.tex
+\gll ~ k  i  t  i  b  ·  n  a          \\
+     cf. k  i  t  i  b  ·  k  o  m  \\
+
+========================================
+store/183/kel.tex
+\gll Quanti  romanzi   ha  scritto   la   tua    amica! \\
+     how~many   novels has written   the  your friend\\
+\glt ‘How many novels your friend wrote!’
+
+========================================
+store/183/pes.tex
+\gll Esto  no  lo  digo \textbf{{yo}},  lo  dice     Transparency.\\
+       this  not  it  say-\textsc{1sg}.\textsc{pres}   I it   say-\textsc{3sg}.\textsc{pres} Transparency\\
+\glt ‘It is not me who says this, it’s Transparency.’
+
+========================================
+store/184/05.kuiper.tex
+\gll Ik dacht  dat  ik het gewoon \textbf{uit}   \textbf{mijn} \textbf{duim}   \textbf{zuigen} kon.\\
+  I  thought that I   it    just       out     my   thumb suck    could\\
+\glt  ‘I though I could just make it up.’
+
+========================================
+store/184/08.mititelu.tex
+\gll побеждавам по точки -- побеждаване по точки\\
+pobezhdavam po tochki  -- pobezhdavane po tochki\\ \jambox{(BG)}
+\glt{‘to outpoint, to outscore’ -- ‘outpointing’}
+
+========================================
+store/184/main-introduction.tex
+\gll fix und fertig / *fertig und fix\\ 
+fast and ready {} ready and fast\\ \jambox{(German)}
+\glt ‘exhausted’
+
+========================================
+store/189/06.tex
+\gll Ja prošu vas govorit' gromko i po očeredi.\\
+        	  I ask\textsc{.ipv} you speak loud and by order\\
+              \glt ‘I ask you to speak loudly and one by one.’
+        }
+	
+========================================
+store/189/11.tex
+\gll ne ostavitъ \textbf{li} devęti desętъ i devęti vъ pustyni\\
+     		 \textsc{neg} leaves \textsc{q} nine ten and nine in wilderness\\
+		\glt `Does he not leave the ninety-nine in the wilderness?'\\{}\hfill (OCS, \textit{Luke} 15.4)
+	}\label{11:ex22a}
+	
+========================================
+store/19/chap-evolution-nea.tex
+\gll 	juhhki olmmoš\\
+	drinking person\\
+\glt	 ‘drinking person’
+%%%
+
+========================================
+store/19/chap-interface.tex
+\gll	băiat=ul\\
+	boy(\textsc{m})=\textsc{def.m.sg}\\
+\glt	‘the boy’
+
+========================================
+store/19/chap-np-adj.tex
+\gll	čofta odt 					\jambox{{\rm (viz.~}pērrht{\rm )}}\\
+	very new(\textsc{nom:sg})\\
+\glt 	‘a very new one’
+%%%
+
+========================================
+store/19/chap-typology-of.tex
+\gll	\textbf{stuorra} guolli / guoli-t / guolá-š / guolá-ža-t\\
+	big:\textsc{attr} fish {} fish-\textsc{pl} {} fish-\textsc{dim} {} fish-\textsc{dim}-\textsc{pl}\\
+\glt	‘big fish’ / ‘big fishes’ / ‘big little-fish’ / ‘big little-fishes’\label{dim np}
+	}
+
+========================================
+store/190/03.tex
+\gll     \textbf{{Gloss    Singular  Plural}}\\
+\begin{tabularx}{\textwidth}{XXX}
+\lsptoprule
+‘guinea-fowl’ &  \textit{u-yogwu} &  \textit{ʃa-igwu}\\
+‘child’ &  \textit{yɛ-u} &  \textit{myà-wɔ}\\
+\lspbottomrule
+\end{tabularx}
+Other examples of vowel mutation are more difficult to explain. \ili{Basa} can also manifest intrusive nasals in the plural stem as in (7), a phenomenon more common in Plateau languages. 
+
+\ea\label{ex:key:}
+========================================
+store/201/kratochvil.tex
+\gll Dia LAND    kat   ker\ldots, apa  ni\ldots,  pokok ni.\\
+\textsc{3sg} \textsc{cs}.land at    \textsc{part}   what \textsc{prox}  tree  \textsc{prox}\\
+\glt `It landed on what\ldots, what's this\ldots, on this tree.'
+
+========================================
+store/201/latrouite.tex
+\gll \textbf{I}‐s{\USSmaller}in{\USGreater}ulat    ng babae    \textbf{ang} \textbf{pangalan}    \textbf{ni} \textbf{Lisa} sa papel.\\
+ \textsc{tv-<uv.rls>}write \textsc{gen} woman \textsc{nom} name   \textsc{gen} Lisa  \textsc{dat} paper\\
+\glt `The woman wrote \textbf{Lisa’s name} on (the) paper.'
+
+========================================
+store/201/nagaya.tex
+\gll B{\USSmaller}um{\USGreater}ili  =ba  si=    Mama  nang=  mami{\USQMark}\\
+		\textsc{av}:buy  =\textsc{q} \textsc{p}.\textsc{nom}=  Mama  \textsc{gen}=  noodles\\
+		\glt ‘Did Mama buy noodles?’
+		
+		\newpage 
+		
+========================================
+store/202/dyviketal.tex
+\gll Han fikk \textbf{ansvar} \textbf{for} å overta søket. \\
+     he got responsibility for to take over {the search}\\
+\glt `He got the responsibility for taking over the search.'
+
+========================================
+store/202/semmar.tex
+\gll cogito                           ergo      sum\\  
+%      think.\textsc{1sg}.\textsc{pres} therefore \textsc{cop}.\textsc{1sg}.\textsc{pres}\\ 
+% \glt `I think therefore I am.'
+% 
+========================================
+store/204/Taslimipoor.tex
+\gll dit          is           een             voorbeeld.\\
+%     \textsc{dem} \textsc{cop} \textsc{indef}  example\\
+%\glt `This is an example.'
+%
+========================================
+store/212/04.tex
+\gll nabi tuti=n fä fof zu\stem{mirwa}nzrm füsfüs=f\\
+	bamboo branch={\Loc} {\Dist} {\Emph} \Stsg:\Sbj>\Tsg.\F:\Obj:\Pst:\Dur/swing wind={\Erg}\\
+	\trans `The wind was swinging (the lamp) on the bamboo branch.'\Corpus{tci20111119-03}{ABB \#117}
+	\label{ex464}
+
+========================================
+store/213/04_Grammatical_properties.tex
+\gll n-soro mar ka n-da(k)-frak nton aka ut \\
+3\textsc{sg}.\textsc{f}-take.off cloth that 3\textsc{sg}.\textsc{f}-take-throw child then died \\
+\glft `She took off that cloth and threw the child away and it died.'\\ 
+
+========================================
+store/213/06_Construction_types.tex
+\gll a-subwe-m n-aw n-aw n-aw n-aw n-aw n-aw n-aw n-aw n-aw n-aw \\
+\textsc{3}\textsc{sg}.\textsc{m}-after-\textsc{3}\textsc{sg}.\textsc{f} \textsc{3}\textsc{sg}.\textsc{f}-run \textsc{3}\textsc{sg}.\textsc{f}-run \textsc{3}\textsc{sg}.\textsc{f}-run \textsc{3}\textsc{sg}.\textsc{f}-run \textsc{3}\textsc{sg}.\textsc{f}-run \textsc{3}\textsc{sg}.\textsc{f}-run \textsc{3}\textsc{sg}.\textsc{f}-run \textsc{3}\textsc{sg}.\textsc{f}-run \textsc{3}\textsc{sg}.\textsc{f}-run \textsc{3}\textsc{sg}.\textsc{f}-run\\
+\glft `he followed her, she ran ran ran away.'\\ 
+
+========================================
+store/215/dummy.tex
+\gll\\
+        \\
+    \glt
+    
+========================================
+store/216/02Emlen.tex
+\gll  pi-ne gara i-ag-apanu-t-i-ro incho\\
+\textsc{2-}see \textsc{neg.irr} \textsc{3m-}get\textsc{{}-dir:dep-ep-real-3f} my.sister\\
+\glt \sqt{{}``Otherwise he wouldn’t have taken my sister away.''}\\
+
+========================================
+store/216/04Forker-Anker.tex
+\gll	\underline{e͂du}		\underline{m-a\smash{q}'e-n}			\underline{lo}				\underline{ʕaždah}\\
+			inside	\textsc{iv}-come-\textsc{cvb}	be.\textsc{prs.iv}	dragon(\textsc{iv})\\
+		\glt	\sqt{The dragon went inside.}
+
+		
+========================================
+store/219/02.tex
+\glll {?`}tu b\'{i}'ni n\v{i}? \\
+tu\textsuperscript{LH} b-i'ni ni\textsuperscript{LH} \\
+who \textsc{compl}-do 3.\textsc{inan} \\
+\glt `Who did it?'  
+
+========================================
+store/219/02.tex
+\glll na Juán biiya Miguél ca xcu\'{i}d\'{i} qu\v{e} \\
+na Juan\textsuperscript{H} bi=uuya Miguel\textsuperscript{H} ca xcui\textsuperscript{H}di que\textsuperscript{LH} \\
+say Juan Miguel \textsc{compl}=see \textsc{pl} child \textsc{dist} \\
+\glt `Juan said Miguel saw the children.' 
+
+========================================
+store/219/03.tex
+\glll biaba layu \\
+bi-aba=$\varnothing$ lay\'{u} \\
+\textsc{compl}-fall=3\textsc{sg} ground \\
+\glt `S/he fell on the ground.'
+
+========================================
+store/219/05.tex
+\glll ne l\v{a}ab\'{e} t\'{a}mbi\v{e}n \\
+ne\textsuperscript{LH} laa=be\textsuperscript{LH} tambien\textsuperscript{LH} \\
+and \textsc{base}=3\textsc{sg} also \\
+\glt `And he (fell) also.' 
+
+
+\item[03]
+
+========================================
+store/22/wl01.tex
+\gll Simon   di   noo-dik. \\
+ Simon   3   \textsc{1sg.goal}{}-prick  \\
+\glt `Simon is poking me.'
+
+========================================
+store/22/wl04.tex
+\gll  Wo-honenge-ua-ahi. \\
+ \textsc{3sg.act}-die-\textsc{neg-ipfv}  \\
+\glt `He is not yet dead.'
+
+
+========================================
+store/220/dryer.tex
+\gll     tā  \textbf{zài}  {guō-li}  chǎo  fàn.\\
+         3\textsc{sg}  \textbf{be.at}  pot-in  fry  rice\\
+\glt     ‘He is frying rice \textbf{in} the pot.’
+
+========================================
+store/223/04.tex
+\gll yz   	v.iira\\
+\textsc{3sg}	V.killed\\
+\glt `He was/got killed.'\\
+
+========================================
+store/223/05.tex
+\gll \textbf{wa}{}-toto  \textbf{wa}{}-le  \textbf{wa}{}-wili  \textbf{wa}{}-me-anguka\\
+     \textbf{\textsc{w(a)}}{}-child(\textbf{2})  \textbf{2}{}-\textsc{d.dem}  \textbf{2}{}-two  \textbf{2}{}-\textsc{perf}{}-fall\\
+\glt `those two children have fallen'
+
+========================================
+store/223/09.tex
+\gll gorupasi \textbf{isi} rutu karuvera \textbf{isi} aio-a-voi\\
+     strong \textsc{\textbf{cl.}}\textbf{round} very Singapore \textsc{\textbf{cl}}\textbf{.round} eat-\textsc{1sg-prs}\\
+\glt `I am eating a really strong Singapore fruit.'
+
+========================================
+store/224/morphologie.tex
+\gll The forward fouled the defender.\\
+    der Stürmer foulte der Verteidiger\\
+    \glt Der Stürmer foulte den Verteidiger.
+    
+========================================
+store/224/verben.tex
+\gll lacht \\
+    {[\textsc{Temp}: \textit{präs}, \textsc{Per}:\textit{3}, \textsc{Num}:\textit{sg}]}\\
+    
+========================================
+store/225/02-Mehweb-phonology-Moroz.tex
+\gll {χ-ib}\\
+bring:\textsc{pfv}-\textsc{aor}\\
+\glt `s/he brought'
+
+
+========================================
+store/225/02-Mehweb-phonology-Moroz.tex
+\gll {\textbf{ħa}}-{d-irʔ-an}\\
+\textsc{neg}-\textsc{npl}-gather:\textsc{ipfv}-\textsc{hab}\\
+\glt `does not gather them'
+
+
+========================================
+store/225/09-General-converbs-Kustova.tex
+\gll {maˤʜmud-ini diʔ as-i-le pat'imat-ini χʷe dub aˤʡ-aq-ib.}\\
+Mahmud-\textsc{erg} meat take:\textsc{pfv}-\textsc{aor}-\textsc{cvb} Patimat-\textsc{erg} dog eat \textsc{lv}:\textsc{pfv}-\textsc{caus}-\textsc{aor}\\
+\glt `Mahmud bought some meat, Patimat fed the dog.'
+
+
+========================================
+store/226/kanijo.tex
+\glll apeel\textbf{il}’       ííshiímbá\\
+   a-ø-peel-\textbf{íle} i-shiímbá\\
+   3\textsc{sg}-run-\textbf{íle}   cl.5-lion\\
+  \glt ‘She fled from a lion’ (Lit: ‘She is running away from the lion’)}
+
+========================================
+store/226/kaspercushman.tex
+\gll kila mw-ana \\ 
+every 1-child \\
+\glt `every child'\label{ex:kaspercushman:everychild} }
+
+
+========================================
+store/227/Hall.tex
+\gll 
+yi-gen gou \\
+one-{\sc{cl}} dog \\
+\glt
+Intended: `one dog' \\}
+
+========================================
+store/227/Irani.tex
+\gll {ʔɔɔl} {kh{\'i}t} {w{\^a}a} {klɔn} {b{\`o}t} {n{\'a}n} {pr{\'ɔ}ʔ} {m{\^a}ak} {m{\^ɛ}{ɛ}-w{\^a}a} {kh{\'a}w} {c{\`a}} {m{\^a}j} {ch{\^ɔ}{ɔ}p} {n{\'a}kt{\'{\={ɛ}}}{ɛ}ŋklɔɔn} \#\op{\textbf{khon}} {\textbf{n{\'a}n}}\cp\\
+Paul thinks \textsc{comp} poem \textsc{clf} that melodious very although 3 \textsc{irr} \textsc{neg} like poet \phantom{\#\op}\textsc{clf} that\\
+\trans `Paul thinks that poem is beautiful, though he doesn’t really like the poet.'
+
+========================================
+store/230/7-diskussion.tex
+\gll {gisih} {thaz} {thu} {iz} {niomanne} {ni} {quedes} {,} {ouh} {fár} {inti} {giougi} {thih} {themo} {biscofe} {inti} {bring} {\textit{thie}} {\textit{geba}} {thie} {thar} {gibót} {Moyses} {ín} {zi} {giuúiznesse} \\
+{siehe} {dass} {du} {es} {niemandem} {nicht} {sagst} {} {sondern} {fahre} {und} {zeige} {dich} {dem} {Bischof} {und} {bringe} {die} {Gabe} {die} {da} {gebot} {Moses} {ihn} {zu} {Zeugnis} {}\\
+\glt 
+========================================
+store/231/15.tex
+\gll Prepi  na  grapso  mia  ergasia  [pu  *(na)\footnotemark {} ine  pano  apo  15  selidhes.]\\
+must.\textsc{3sg} \textsc{sbjv}  write.\textsc{1sg} an  essay  \textsc{rel}  \textsc{sbjv}  is  more  than  15  pages\\
+\glt ‘I have to write an essay longer than 15 pages.’\\
+
+========================================
+store/235/tainecheikh.tex
+\gll n{\R}ədd ʕlī-kum~~ ə{\R}-{\R}wāye lli {\R}add-∅ ʕlī-ya muḥammad\\
+ tell.\textsc{impf.}1\textsc{sg}~~ on-2\textsc{pl} \textsc{def-}story~~ \textsc{rel}~~ tell.\textsc{prf.3sg.m-}∅~~ on-\textsc{obl.1sg} Mohammed\\
+\glt ‘I am going to tell you the story that Mohammed told me.’ 
+
+========================================
+store/235/vicente.tex
+\gll rás ban ḥafṣún fi ḥúkm-u \\
+head Ban Ḥafṣún in power-\textsc{3sg.m}\\
+\glt ‘Ban Ḥafṣún’s head is at his disposal.’
+
+========================================
+store/236/lemus.tex
+\gll unká méla‘jé ná ata‘-lá-cha ri=nakiyá \textbf{porque}\\
+     \textsc{neg} \textsc{indf.manner} \textsc{indf.pro}  robar-\textsc{neg-pst} 3\textsc{sg.nf=}de \textsc{esp}\\
+\glt `Nadie podía robarle a él porque'
+
+========================================
+store/241/ch1-3.tex
+\gll {Pierre}  {\hspace{1em}} {dort}\\
+         GN   ·   $\frac{\text{P}}{\text{GN}}$\ \  =\ \    P\\
+    
+========================================
+store/241/ch3-2.tex
+\gll \uline{\textit{Cet étudiant}}  \uline{\textit{veut acheter}}  \uline{\textit{un livre}}  \uline{\textit{de syntaxe}}\\
+     \textit{Il}  \textit{achète}  \textit{celui}  \textit{neuf}\\}
+
+========================================
+store/25/7-cg.tex
+\gll Morgen [isst [er [ihn \_]]]\\
+	 tomorrow \spacebr{}eats \spacebr{}he \spacebr{}him\\
+\glt `He will eat it/him tomorrow.'
+
+========================================
+store/25/coregram.tex
+\gll {}[Kennt und liebt] Maria die Platte?\\
+	 {}\spacebr{}knows and loves Maria the record\\
+\glt `Does Maria know and love the record?'
+
+========================================
+store/250/morph_adjectives.tex
+\gll	heχ	xːunul	bulan	r-uqna-ce	daˁʡle	či-r-ig-ul ca-r \\
+		\tsc{dem.down}	woman	even	\tsc{f}-old-\tsc{dd.sg}	as	\tsc{spr-f}-see.\tsc{ipfv-icvb} \tsc{cop-f} \\
+	\glt	\sqt{There is even a woman who looks old.}
+
+	
+========================================
+store/250/morph_placenames.tex
+\gll  	ca	ce	či-b-il	bek'-le-rka,	ca	uc'ari-rka,	ca	χudec'a-rka,		ca	šaˁrʡaˁ-rka\\
+		one	what	on-\textsc{n-adjvz}	head-\textsc{loc-abl}	one	Itsari-\textsc{abl}	one	Khuduc-\textsc{abl}	one	Shari-\textsc{abl}\\
+	\glt  	\sqt{‎‎one through the peak on which there is something, one from Itsari, one from Khuduc, and one from Shari.}
+
+========================================
+store/250/syntax_simpleclauses.tex
+\gll	kːurtːa-l	b-ičː-ib	hel-i-j	cin-na	ʁez\\
+		fox\tsc{-erg}	\tsc{n-}give\tsc{.pfv-pret}	that\tsc{-obl-dat}	\tsc{refl.sg-gen}	hair\\
+	\glt	\sqt{The fox gave him his hair.}
+
+========================================
+store/254/08-dalessandro.tex
+\gll  Eh,   rid-u     Gianni.\\ 
+	{ } laughs-\textsc{sg.m} Gianni.\textsc{sg.m}\\ \jambox{(Topic)}
+	\glt `Eh, Gianni laughs.'
+	\endxlist
+
+========================================
+store/254/08-dalessandro.tex
+\gll Quand-e   cuost-e? \\
+	how.much-\textsc{sg.f}  cost-\textsc{3sg.f}\\ 
+	\glt `How much does it\textsc{\textsubscript{sg.f}} cost?'
+	
+========================================
+store/254/10-boerjesson-mueller.tex
+\gll Eni-r [\sub{$\alpha$\textsubscript{IV}} t$'$ek-kin y-igu y\={a}\l -ru-\l i~] r-iy-xo\\
+		mother-{\scshape dat} {} bookII.{\scshape abs}-{\scshape foc} II-good be-{\scshape  pstprt-nmlz} IV-know-{\scshape pres}\\
+		\glt `The mother knows that the {\scshape book}  is good.'}\jambox{\citep[611]{PolinskyPotsdam:01}}
+	
+========================================
+store/254/13-sundaresan.tex
+\gll Ahmed a-na-m/*ji-penda
+Halima\\
+Ahmed {\scshape 3sbj-prs-3obj}-love Halima.\\
+\glt `Ahmed loves Halima.'  
+========================================
+store/256/05.tex
+\gll {\textit{Ich}} {\textit{geh}} {\textit{schnell}} {\textit{Zigaretten}} {\textit{kaufen}}  \\
+{I} {go} {quickly} {cigarettes} {buy}\\
+\trans `I'm going to buy cigarettes shortly after I said this.'\hfill{Celerative I}\\
+`I'm going to buy cigarettes in a quick way.'\hfill{Celerative II}
+\label{langsamgehen}
+
+========================================
+store/256/05.tex
+\gll {\textit{Ich}} {\textit{geh}} {\textit{schnell}} {\textit{Zigaretten}} {\textit{kaufen}}  \\
+{I} {go} {quickly} {cigarettes} {buy}\\
+\trans `I'm going to buy cigarettes shortly after I said this.'\hfill{Celerative I}\\
+`I'm going to buy cigarettes in a quick way.'\hfill{Celerative II}
+\label{langsamgehen}
+
+========================================
+store/258/jonsson.tex
+\gll  Gætirðu  meilað  mér  þessu/þetta  sem  fyrst?\\
+   could.you  e-mail  me.\textsc{dat}  this.\textsc{dat/acc}  as  first\\
+\glt `Could you e-mail this to me as soon as possible?'
+
+
+========================================
+store/258/ledgeway.tex
+\gll Nci  dissi  ô  figghiòlu  ’i  ccatta  u  latti.\\
+    \textsc{dat}.3=  I.said  to.the  boy  that  he.buys  the  milk\\
+
+
+========================================
+store/258/royo.tex
+\gll L’ Albert\textsubscript{i} vol PRO\textsubscript{i} arribar aviat.\\
+ the Albert.\textsc{sbj} wants PRO arrive.\textsc{inf} early\\
+\glt ‘Albert wants to arrive early.’
+
+ 
+========================================
+store/259/cxg.tex
+\gll Jonas glaubt, ihn  tritt ein Pferd.\footnotemark\\
+     Jonas believes him kicks a horse\\
+\footnotetext{%
+  \url{http://www.machandel-verlag.de/readerview/der-katzenschatz.html}, 2021-01-29.
+}
+\glt `Jonas is utterly surprised.'
+}
+
+========================================
+store/260/15.tex
+\gll A loro importa solo di {se stessi}.\\
+     to them matters only of themselves\\
+\glt `They matter only to themselves.'}
+
+========================================
+store/261/01_bergqvist.tex
+\gll wa3ko3n-a1-\textbf{ti2.tu3}-wa2\\
+	work-1-\textsc{shrd}-\textsc{impf}\\
+	\trans ‘(You and I see that) I am working’ 	
+	
+========================================
+store/261/05_liljegren.tex
+\gll áa deés táa \textbf{ɡúum} ta, máathe qisá \textbf{th-íil-u}\\
+	one day there.\textsc{rem} go.\textsc{pfv}.\textsc{msg} \textsc{sub} 1\textsc{sg}.\textsc{dat} story do-\textsc{pfv}-\textsc{msg} \\
+	\trans ‘One day I went there, and [he] told me a story.’ (PHL-Hunter:009)
+
+========================================
+store/261/06_gonzales-castano.tex
+\glll kishmor\\
+    kish-mɨ-or\\
+         cry-\textsc{neg-ego.sg}\\
+    \glt ‘I don't cry.’
+  
+========================================
+store/261/06_gonzales-castano.tex
+\glll ñipe	mai	kusrenanmɨtan shente nampe	makatɨ maramkɨ\\
+    ñi=pe maik kusre-nan-mɨ-t-an shente na-m=pe makatɨ	mar-am-kɨ-an\\
+         2=\textsc{pd} well learn-\textsc{caus-neg-exp-non.ego} then 1-\textsc{pl=pd}	how	do-\textsc{irr-cop-non.ego}\\
+    \glt ‘If you don’t teach well, then what should we do?'
+
+========================================
+store/261/09_widmer.tex
+\gll Ji	mhiga then-\textbf{a}.\\
+		1\textsc{sg} yesterday arrive-\textsc{pst}.\textbf{\textsc{allo}}\\
+		\trans ‘I arrived yesterday.’ (\citealt[13]{Hargreaves2005})
+		
+========================================
+store/262/CrysmannSailer.tex
+\gll leyenen leyent er dos bukh yetst.\\
+read\textsc{.inf} reads he the book now\\
+\glt \mytrans{As for reading, he's reading the book now.}
+\citep[48]{Kaellgran:Prince:89}\label{yiddish-front}
+
+========================================
+store/262/PozHemAb.tex
+\gll le médecin [que connaît \_\_ l'avocat]\\    
+the physician that knows \_\_ {the lawyer} \\
+\glt `the physician [that knows \_\_ the lawyer]'
+
+========================================
+store/263/blythe.tex
+\glll  tha                                           -rna                                 -dharrpu -nu\\
+  			       2\textsc{sg}.\textsc{s}.poke(19).\textsc{fut} -3\textsc{sg}.\textsc{m}.\textsc{io} -ask     -\textsc{fut}\\
+			       {}[CS]                                        -[Obj]                               -[LS]    -[TAM]\\
+			\glt\footnotesize `you will ask him’
+}\\
+\lspbottomrule
+\end{tabularx}
+\caption{Imperative forms compared with their future indicative counterparts; future indicative forms are doubly marked for future tense.}
+\label{tab:blythe:3}
+\end{table}
+========================================
+store/265/05.tex
+\gll    {brat-a}     {siostr-a}   {woła}\\
+            brother-\textsc{acc}  sister-\textsc{nom}  calls\\
+    \glt    `(The) sister calls (her) brother.'
+    
+========================================
+store/268/sciutti.tex
+\gll Ci ho abitato due anni.\\
+        There have.\textsc{1sg} lived two years\\
+    \glt ‘I lived there two years.’
+
+========================================
+store/268/stadt.tex
+\gll  {Les} {enfants} {........} tous {........} un téléphone\\
+  	the children {}             all {}           a telephone\\\jambox{\parbox[t]{\widthof{utilisent}}{utilisent\\use}}
+  \glt ‘The children all use a telephone.’
+  
+========================================
+store/27/ch0.tex
+\gll Au sunat trei  persoane,  {\ob}\textbf{printre}  \textbf{care}  şi  Ion{\cb}.   \label{ch0:ex2a}\\ 
+ont  appelé  trois  personnes  parmi  lesquelles  aussi  Ion\\
+\glt ‘Trois personnes ont appelé, parmi lesquelles Ion.’
+
+========================================
+store/27/ch2.tex
+\gll Ja vodu, i Anna vodku pila.\\
+je eau et Anna vodka boit.\textsc{fem}\\
+\glt ‘Je bois de l’eau, et Anna de la vodka.’
+
+
+========================================
+store/27/ch2.tex
+\gll \ulg{Iți}{20.4}  trebuie  50~000  de  lei  \ulg{ca}{31}  să-ți  iei  o garsonieră,  iar  o  Dacie  1300,  cam  tot  atât.\\
+\textsc{dat.2sg} faut  50~000  de  lei \textsc{comp} \textsc{sbjv-dat.2sg} prendre.\textsc{sbjv.2sg}  un studio  et  une  Dacia  1300  presque  même  tant\\
+\glt ‘Il te faut 50~000 lei pour t’acheter un studio, et (pour) une Dacia 1300 presque pareil.’
+
+========================================
+store/271/07.tex
+\gll \glemph{mu}-atel la na ladru (dra balri).\\
+ 		  \gsc{MU}-fall \gsc{PERF} \gsc{NOM.DEF} mango \gsc{OBL.IND} wind\\
+ 		\glt `The mango fell. / Wind made the mango fall.' \hfill \hbox{\citep[5]{chenfukuda17}}} 
+	
+ 	
+========================================
+store/272/04-preliminaries.tex
+\glll    umaga  naikwanu  dɨkɨppoo,   {\textbar}kamera{\textbar}  numgja  ikiiki.\\
+      \textit{u-ma=ga}  \textit{naikwa=nu}  \textit{dɨkɨr-boo}    \textit{kamera}  \textit{num-∅+gja}  \textit{\Highlight{ik-i+ik-i}}\\
+      \textsc{mes}-place=\textsc{foc}  department.of.internal.medicine=\textsc{nom}  be.set.up-\textsc{cnd}  camera  swallow-\textsc{inf}+\textsc{purp}  go-INF+go-INF      \\
+      \glt       ‘After the department of internal medicine was set up there, (I) often went (there) in order to swallow the (stomach) camera.’ [Co: 120415\_01.txt]
+
+
+========================================
+store/272/appendix.tex
+\glll \textit{-an} (NEG)  \textit{-ar(ɨr)} (PASS)  \textit{-ar(ɨr)} (CAP)  \textit{-as} (CAUS)  \textit{-azɨi} (NEG.PLQ)  \textit{-ɨ} (IMP)  \textit{-ɨba} (SUGS)  \textit{-oo}(INT)\\
+ming-jan  ming-jat-ta  ming-jar-an  ming-jas-oo  ming-jazɨi  ming-jɨ  ming-jɨba / ming-iba  ming-joo\\
+grab-NEG  grab-PASS-PST  grab-CAP-NEG  grab-CAUS-INT  grab-NEG.PLQ  grab-IMP  grab-SUGS  grab-INT\\
+
+
+
+========================================
+store/275/06.tex
+\gll    nomiz-o   oti/pos  kerdhis-e  to  vravio\\
+			    think-\Fsg{} that/that won-\Tsg{} the prize\\
+		\glt    \enquote*{I think that she won the prize.}
+	
+========================================
+store/275/16.tex
+\gll  Ivan e postroil pjas\^{a}\v{c}na kula. \\
+    Ivan be-\Tsg.\Prs{} build-\Prf.\M.\Sg{} sand castle \\
+    \trans `Ivan has been building a sandcastle.' \hfill{\citep[296]{Pancheva2003a}}
+
+========================================
+store/275/23.tex
+\gll * wǔ jīn kē cài\\
+		{} five catty \Clf{} vegetable\\
+    
+========================================
+store/276/29.tex
+\gll    Ke o Sakis ke i Sula sikosan ena trapezi.\\
+            And the Sakis and the Sula lifted a table\\
+    \glt    \enquote*{Both Sakis and Sula lifted a table.} \hfill \textsc{distributive}
+
+========================================
+store/276/34.tex
+\gll Me encantan [\textsubscript{CP} PRO escuchar [\textsubscript{v*P} t\textsubscript{PRO} t\textsubscript{v*} [\textsubscript{VP} V  truenos ] ] ]\\
+        to.me love-3.pl {} {} listen {} {} {} {} {} thunder\\
+    \glt ‘I love to listen to thunder.’
+
+========================================
+store/277/17.tex
+\gll    vosotros los jugadores\\
+            you          the players\\
+    \glt    \enquote*{you players}
+    
+========================================
+store/279/03.tex
+\gll \textit{Bizarra} \textit{moztuko} \textit{dut} \textit{orain} \textit{\textbf{porque}} \textit{bihar}... \textit{bihar} \textit{ez} \textit{dut} \textit{gogorik} \textit{izango}\\
+beard.\textsc{det} cut.\textsc{fut} \textsc{aux.tr.1sg} now because tomorrow... tomorrow \textsc{NEG} \textsc{aux.tr.1sg} want.\textsc{part} be.\textsc{fut}\\
+\trans `I’ll shave my beard now, \textbf{because} tomorrow I won’t feel like it.'
+\
+
+========================================
+store/279/03.tex
+\gll \textit{Chay-ta} \textit\textbf{{las dos de la noche}-ta} \textit{chaya-mu-yku}\\
+ That-\textsc{acc} \textsc{ART TWO PREP ART} night-\textsc{acc} arrive-\textsc{trans}-\textsc{1pl}\\
+\trans “There at two o'clock at night we arrived"
+\
+
+========================================
+store/280/docekal.tex
+\gll Dvojice sportovců vyhrála dvě medaile.\\
+ twosome.\textsc{nom.sg.f} athletes.\textsc{gen} won.\textsc{sg.f} two medals.\textsc{acc}\\
+\glt `A twosome of athletes won two medals.'
+\ea[\ding{51}]{`Athlete\textsubscript{1} and athlete\textsubscript{2} cooperated and together won two medals (one after another, in two different contests).'\hfill\textsc{collective}}
+
+========================================
+store/280/gepner.tex
+\gll Krasivyj ėtot Vanin dom.\\
+    beautiful.\textsc{m.sg} this.\textsc{m.sg} Vanja.\textsc{poss.m.sg} house.\textsc{m.sg}\\
+    \glt Intended: `This house of Vanja's is beautiful.'}      %NH: translations added
+    
+========================================
+store/280/jordanoska.tex
+\gll Rubin e toa što e vo ǵerdan-ot? \\
+ruby be.\textsc{prs.3sg} that what be.\textsc{prs.3sg} in necklace-\textsc{def.3sg.m} \\ \hfill CleftQ
+\glt `Is it ruby that is in the necklace?'  \label{cleftrubin}
+
+========================================
+store/280/muellerreichau.tex
+\gll Ja perezapisyvaju disk i pojdu domoj.\\
+I {again.record.}\textsc{prs.pfv} disc and go.\textsc{prs.pfv} home\\
+\glt Intended: `I will record the disc again and go home.'}
+
+========================================
+store/280/rudin.tex
+\gll taja novata kăšta\\
+this new.\textsc{def} house\\
+\glt `this new house’ 	(only possible order) \hfill(\ili{Bulgarian})
+
+% ex 35
+%\ea \label{houses}
+%\ea \label{houses1}
+%
+========================================
+store/280/zimmermann.tex
+\gll videt' to, čto / li / kto / kak {\dots} \\
+    see this.\textsc{acc} that {} if {} who {} how {} \\ \hfill (\ili{Russian})
+    \glt `see it that/whether/who/how {\dots}'
+    
+========================================
+store/283/heusinger.tex
+\gll	Migan    vakil-e	 maroofe	       vali	man čiz-i		       azaš      nemidunam. \\
+		Say.{\sc{3pl}} lawyer-e known.be.{\sc{3sg}} but	I	   thing-{\sc{indef}} from.him not.know.{\sc{1sg}} \\
+	\glt	`{Sara had a consultation appointment with a lawyer today. They say that this lawyer is well known, but I do not know anything about him.}'
+	\end{xlista}
+
+========================================
+store/283/introduction.tex
+\gll Er {mu\ss} {ins/*in das} Krankenhaus.\\			
+	he must {in=the/*in the} hospital\\
+	\glt `He must go to hospital again.'\\\ 
+	\hfill\citep[from][ex.52, our glosses]{lobner:85}
+	
+	
+========================================
+store/284/16_Sarvasy_Nungon.tex
+\gll    Ino ongo-go-k.\\
+            \textsc{3sg.pro.emph} go-\textsc{rp-3sg}\\
+    \glt    ‘She herself went.’ [maximally contrastive; this actor, not one or more others, possibly with special reason or purpose, went]
+
+========================================
+store/284/22_Laughren_Warlpiri.tex
+\gll {Jakamarra =}\textbf{nyanu} {yarnka-ja} \textbf{{jurru-ku}}. \\
+    J=\textsc{anaph}  grab-\textsc{pst}  head-\textsc{dat}\\
+\glt `Jakamarra\textsubscript{i} grabbed hold of his\textsubscript{i/*j} head.'
+
+
+========================================
+store/284/22_Laughren_Warlpiri.tex
+\gll  Maja-rnu=nyanu  (nyanungu-rlu)  waku.\\
+    straighten\textsc{{}-pst=anaph} 3-\textsc{erg}  arm\\
+\glt `She\textsubscript{i} straightened her\textsubscript{i/*j} arm.'
+
+
+========================================
+store/289/4-NP.tex
+\gll \textit{Whisky} \textit{pur}, \textit{Forelle} \textit{blau}, \textit{Schauma} \textit{mild}\\
+	whisky(\textsc{m})[\textsc{sg}] straight, trout(\textsc{f})[\textsc{sg}] blue, shampoo.brand(\textsc{n})[\textsc{sg}] mild\\
+\glt `Straight whisky, blue trout, mild Schauma'
+
+
+========================================
+store/293/newman.tex
+\gll Roxaya jox na Kadeer j\"en [*(b-u) \emph{mu}-y togg] \\
+	R give \textsc{3sg.pfv} K fish \textsc{cl-rel} \textsc{3sg-ipfv} cook \\
+	\trans `Roxaya gave Kadeer a fish to cook.'
+
+========================================
+store/295/3-04.tex
+\gll ɯ-ʁar ɯ-ndo nɯra hanɯni ɲɯ-ɲaʁ. \\ 
+\textsc{3sg}.\textsc{poss}-wing \textsc{3sg}.\textsc{poss}-border \textsc{dem}:\textsc{pl} a.little \textsc{sens}-be.black \\
+\glt  `The extremities of its wings are a bit black.' (23-scuz)
+\japhdoi{0003612\#S122}
+
+========================================
+store/295/3-04.tex
+\gll   tɕe tɯ-sŋi tɕe ɲɤ-k-ɤtɯɣ-ci tɕe, \\
+\textsc{lnk} one-day \textsc{lnk} \textsc{ifr}-\textsc{peg}-meet-\textsc{peg} \textsc{lnk} \\
+\glt  `One day, [the bear finally] met [the rabbit].' (2011-13-qala)
+
+========================================
+store/296/nadvornikova.tex
+\gll ``Bliju, soudruhu četaři,'' odpověděl jsem \textbf{opíraje} \textbf{se} rukou o zeď.\\
+    puke.\textsc{1.sg.prs} comrade.\textsc{voc} sergeant.\textsc{voc} reply.\textsc{m.sg.pst.ptcp} be.\textsc{1sg.aux} \textbf{lean.\textsc{converb.ps.impf.m.sg}} \textsc{refl} hand.\textsc{instr} against wall.\textsc{acc}\\
+    \trans `{``}I am puking, Comrade Sergeant,'' I answered, leaning with one hand against the wall.' (Milan Kundera, \textit{Žert}\slash \textit{The Joke}, 1991/1969)
+
+    
+========================================
+store/298/AppII.tex
+\glll  ngã̂    \\
+          ngã̂   \\
+          $\emptyset$1.healer       \\
+    \trans `A healer.'
+
+========================================
+store/298/CH1.tex
+\glll  bá {\bfseries nà} bwánɔ̀ báwɔ̀ \\
+         bá nà b-wánɔ̀ b-áwɔ̀\\
+           2.{\SBJ} {\COM} ba2-child 2-{\POSS}.3\textsc{pl}  \\
+    \trans `they and/with their children'
+
+========================================
+store/298/CH3b.tex
+\gll kfúbɔ̀ wà dyá \\
+   $\emptyset$1.chicken 1:{\ATT} $\emptyset$1.length \\
+\trans `the remote chicken'
+
+========================================
+store/298/CH3b.tex
+\glll Màmbì á gyíkɛ́sɛ́ Àdà ngɛ̀lɛ́nɛ̀  \\
+	Màmbì a-H gyík-ɛsɛ-H Àdà ngɛ̀lɛ́nɛ̀ \\
+         $\emptyset$1.{\PN} 1-\textsc{prs} learn-{\CAUS}-{\R} $\emptyset$1.{\PN} $\emptyset$1.English  \\
+    \trans `Mambi teaches Ada English (lit. makes Ada learn English).'
+
+========================================
+store/298/CH3b.tex
+\glll mùdì kí tàtɔ̀ wú{\bfseries ó} \\
+       m-ùdì kí tàtɔ wû-o-H \\
+        \textsc{n}1-person {\NEG} scream there-{\VOC}-{\DIST} \\
+    \trans `Nobody scream over there!'
+
+========================================
+store/298/CH6.tex
+\glll  bwáá láá bɔ̂  \\
+         bwáa-H láà-H b-ɔ̂ \\
+            2\textsc{pl}-\textsc{prs} tell-{\R} 2-{\OBJ}     \\
+    \trans `You tell them!'
+
+========================================
+store/298/CH7.tex
+\glll  mɛ̀ pálɛ́ {\bfseries lìí} bâ \\
+          mɛ pálɛ́ lìí bâ \\
+           1\textsc{sg}.{\PST}1 {\NEG}.{\PST} yet marry\\
+    \trans `I am not yet married.'
+
+========================================
+store/299/03.tex
+\gll  Bibi-ka     Joa-eykey senmwul-ul cip-ulo      ponay-ess-ta \\
+Bibi-\textsc{nom} Joa-\textsc{dat}  present-\textsc{acc} house-\textsc{loc} send-\textsc{past-decl} \\
+\newpage
+
+========================================
+store/299/05.tex
+\gll Bibinique a  le livre.   \\
+     Bibinique has the book  \\  \hfill  French 
+    
+========================================
+store/299/05.tex
+\gll Bibi-ka    chayk-ul   kaci-ess-ta  \\ 
+    Bibi-\textsc{nom} book-\textsc{acc} have-\textsc{past-decl} \\ \hfill  Korean
+    
+========================================
+store/299/bitsofcode.tex
+\gll  \\
+         \\
+        \glt 	 	\\
+        \hspace*{\fill} \textit{Lang1}-Lang2 (\citealt[]{Reference})
+        
+========================================
+store/305/05_Bracke.tex
+\gll achso so da/ \textbf{okay} \textbf{okay} \textbf{cool}     \\
+     \textsc{exclam} so (?) \textbf{okay} \textbf{okay} \textbf{cool}\\
+	\glt `Oh okay okay cool.' {[}NAM171W2{]}
+
+========================================
+store/308/04.tex
+\gll [...] a nuṣ vevan scùla \textbf{tòca} \textbf{gl} \textbf{avrél}.\\
+{} and \textsc{1pl} have.\textsc{impf.1pl} school.\textsc{f.sg} until \textsc{def.m.sg} April\\
+\glt `[...] and we had school until April.' (Ruèras, f4, \sectref{sec:8.16})
+
+========================================
+store/308/06.tex
+\gll Api, ah, quaj ah fascinava pròpi mè, ju vèṣ ah gè ju vèṣ è ugèn \textbf{ampríu} \textbf{d’} \textbf{ancanùschar} quaj mél [...]. \\
+and eh \textsc{dem.unm} eh fascinate.\textsc{impf.3sg} really \textsc{1sg}  \textsc{1sg} have.\textsc{cond.1sg} ah yes \textsc{1sg} have.\textsc{cond.1sg} also with\_pleasure learn.\textsc{ptcp.unm} \textsc{comp} know.\textsc{inf} \textsc{dem.m.sg} mule\\
+\glt `And, eh, this really fascinated me, I would have eh yes I would have very much liked to get to know this mule [...].' (Ruèras, m 10, \sectref{sec:8.7})
+
+========================================
+store/310/03.tex
+\gll    *On$_{i}$ a     oublié      son$_{i}$ parapluie. \\  
+                    \textsc{on}  has forgotten  his  umbrella \\
+            \glt    Intended: `Someone forgot their umbrella.'
+    
+========================================
+store/310/05.tex
+\gll Comment Max ne lit pas le courrier de Paul\,?  \\ 
+how Max Neg read Neg the mail of Paul  \\
+\glt How could it be that he doesn't read Paul's mail?
+
+========================================
+store/315/04.tex
+\gll	mina hoi ngara \\
+			\textsc{3sg.f} open door \\
+	\glt	‘She opened the door’.
+
+========================================
+store/316/03.tex
+\gll cogito ergo sum\\  
+     think.\textsc{1sg}.\textsc{pres} therefore \textsc{cop}.\textsc{1sg}.\textsc{pres}\\ 
+\glt `I think therefore I am.'
+
+========================================
+store/316/05.tex
+\gll Audrey Hepburn paliła fajki.\\  
+      Audrey Hepburn smoke.\textsc{ipfv}.\textsc{pst}.\textsc{3sg}.\textsc{f} pipe.\textsc{pl}.\textsc{acc}\\
+\glt ‘Audrey Hepburn smoked tobacco pipes.’
+
+========================================
+store/316/07.tex
+\gll Lampa stojala na stole.\\
+lamp stood on desk\\
+\glt `The lamp was on a/the desk.'\hfill (Russian; \citealt[266]{Chvany1973})
+
+========================================
+store/316/19.tex
+\gll Dhen mu ipe pu dhiavazis poly. \\
+        not me told.\textsc{1sg} that study.\textsc{2sg} much \\
+        \trans `He didn't tell me that you study much.'
+    
+========================================
+store/326/04.tex
+\glll Omukali tata na baana.\\
+	  o-mukali ti-a-ta na baana\\
+		\textsc{aug}-1.woman \textsc{neg}-\textsc{1sbj}-\textsc{cop} \textsc{com} 2.child\\
+\glt ‘The woman does not have children.’
+
+	
+========================================
+store/329/01.tex
+\gll Och  när    thet  snöga,    så  lågh \textit{thet} stora  snödrifwan    i    kamaren\\
+        and  when  it      snow.\textsc{pst}  so  lie.\textsc{pst}  \textsc{expl}  big    snowdrift.\textsc{def} in  chamber.\textsc{def}\\
+   \glt ‘And when it was snowing, there was a big snowdrift inside the room.’
+   
+========================================
+store/329/01.tex
+\gll S:     Vem   lärde       det   då?\\
+     {}  who    teach.\textsc{pst}  that  then\\
+    \glt `Who taught you that, then?’
+
+
+========================================
+store/329/03.tex
+\gll Han \textbf{\textit{gav}} \textit{mig}   \textit{en} \textit{misstänksam} \textit{blick}.\\
+        He     gave   me     a   suspicious     look\\
+\glt ‘He gave me a suspicious look.’ (1976–1999)
+
+========================================
+store/329/08.tex
+\gll även    detta  ett  rum    med    mycket    konservativ    möblering \\
+also      this      a    room  with  much/very  conservative    furnishing\\
+\glt `Also this being a room with \{much of/ very\} conservative furnishing’ (5E)\\
+
+========================================
+store/339/07.tex
+\gll Čȉtavo  pȍlje  \textbf{se}  mȍre  tòpit  \\
+entire field \textsc{refl}  can.3\textsc{prs}  flood.\textsc{inf}  \\
+\glt ‘The entire field can be flooded’
+\hfill  (Istočnohercegovački; \citealt[341]{Peco07b})
+
+
+========================================
+store/48/Chapter2.tex
+\glll a. {*} jeg har faktisk [\textsubscript{NegP} {} [\textsubscript{\textit{v}P} set \uline{ingenting} ]] {\ldots} {\ldots og det har du heller ikke}.\\
+          b. {} jeg har faktisk [\textsubscript{NegP}  \uline{ingenting}$_i$  [\textsubscript{\textit{v}P}  set t$_i$ ]] {\ldots} {\ldots and that have you neither not}\\
+          {} {} ~I have actually {} nothing {} seen {}  {}\\\hfill Danish\vspace*{-\baselineskip}
+
+    \glt `I haven't actually seen anything and neither have you.'  (\citealt[1, (1)]{Christensen2004})
+    
+========================================
+store/66/13_Converbs-AdverbialClauses.tex
+\gll	pyak=ŋa m-phat-uks-u=niŋa, Tikule=ŋa   i=ya=ca cokla cok-ma    por-a n-jog-ama-n\\
+		many={\sc erg} {\sc 3pl.A-}help{\sc -prf-3.P=ctmp} Tikule={\sc erg} what{\sc =nsg=add} work  do{\sc -inf} must{\sc -nativ} {\sc neg-}do{\sc -prf[3sg]-neg}\\
+		‘As so many helped him, Tikule did not have to do anything.’ \source{01\_leg\_07.019}
+
+
+
+\section{Counterfactual clauses in \emph{=niŋ(go)bi} or  \emph{=hoŋ(go)bi} }\label{adv-cl-count}
+
+Counterfactual clauses are marked mostly by \emph{=niŋ} for cotemporal clauses and occasionally by \emph{=hoŋ} for sequential clauses. The adverbial clause can be infinitival or inflected for the subjunctive, and is often marked by the topic particle \emph{=ko} (voiced [go]  in intervocalic and postnasal position, see \sectref{voicing}). Furthermore, both the adverbial clause and the main clause host the irrealis marker \emph{=pi} ([bi] due to the voicing rule). Clauses as in \Next can only have a counterfactual reading (i.e. it is established knowledge at the time of speaking that the condition does not obtain); they cannot be understood hypothetically. The irrealis marker, however, also occurs in hypothetical statements.
+
+========================================
+store/67/1.tex
+\gll Akia  ik-\textstyleEmphasizedVernacularWords{omak-e-mik}. \\
+ banana  roast-\textsc{distr}/\textsc{pl}-\textsc{pa}-1/3p     \\
+\glt`We roasted many bananas.'
+
+========================================
+store/67/5.tex
+\gll Epa  wiim-eya  mua  karer-omak-e-mik. \\
+     place  dawn-2/3s.\textsc{ds}  man  gather-\textsc{distr}/\textsc{pl}-\textsc{pa}-1/3p \\
+\glt `When it got light a lot of people gathered.'
+
+========================================
+store/67/6.tex
+\gll Marasin  wu-om-a-mik=na  \textstyleEmphasizedVernacularWords{weetak}. \\
+medicine  put-\textsc{ben}-\textsc{bnfy}2.\textsc{pa}-1/3p=\textsc{tp}  no\\
+\glt `They put medicine in him but no (=with no result).'
+
+========================================
+store/67/6.tex
+\gll Maa  pela  \textstyleEmphasizedVernacularWords{marew-eya}  /  \textstyleEmphasizedVernacularWords{weetak-eya}  fofa  er-a-m. \\
+thing  leaf  no(ne)-2/3s.\textsc{ds}  /  no-2/3s.\textsc{ds}  market  go-\textsc{pa}-1s\\
+\glt `I had no greens and went to the market.'
+
+========================================
+store/67/7.tex
+\gll A:  Nain  eliwa=ki?  B:  Nain  eliwa-ki  \textstyleEmphasizedVernacularWords{ma-e-n=i}? \\
+A:  that1  good=\textsc{cf}.\textsc{qm}  B:  that1  good=\textsc{cf}.\textsc{qm}  say-\textsc{pa}-2s=\textsc{qm}      \\
+\glt `A: Is that good?  B: Did you ask if that is good?'
+
+========================================
+store/67/7.tex
+\gll Nain  kema  suuw-i-man=\textstyleEmphasizedVernacularWords{i}  \textstyleEmphasizedVernacularWords{e}  kema  irin-ar-e-man? \\
+that1  liver  push-Np-\textsc{pr}.2p=\textsc{qm}  or  liver  stuck-\textsc{inch}-\textsc{pa}-2p      \\
+\glt `Do you remember (lit: push the liver) that, or have you forgotten (lit: liver is stuck) it?'
+
+========================================
+store/73/Wordkonvertierung1.tex
+\gll i  \textbf{e}\textbf{  dar}\textbf{  stur}\textbf{  roð}\textbf{  ausað.}\\
+
+
+in  \textbf{that} \textbf{there} \textbf{big} \textbf{red} \textbf{house.DEF}\\ %\end{stylegloss}
+
+
+‘The little white cat ran into the big red house.’ (questionnaire)
+
+========================================
+store/74/lsp-cli-phonology.tex
+\gll  à  pùl  ní rō/rē.\\
+    {\sc art} {river} {\sc postp}  {\sc foc}\\
+\glt `on/at the river'
+
+
+========================================
+store/78/10.tex
+\gll {\bluebold{untuk}} {\bluebold{taung}} {\bluebold{ini}} {kam} {kas} {los} {sa} {dulu}\\ %
+ for  year  \textsc{d.prox}  \textsc{2pl}  give  loosen  \textsc{1sg}  first\\
+\glt 
+‘\bluebold{for (the rest of) this year} you release me (from my duties) for now’ \textstyleExampleSource{[080922-002-Cv.0084]}
+
+========================================
+store/80/01.tex
+\gll Jan \textbf{iit} mango.\\
+    		John eat mango\\
+    \glt `John eats mangoes.' (Habitual-\isi{Atelic})
+
+    
+========================================
+store/81/hirano.tex
+\gll {there's a} {\textit{Monbusho}} {scholarship isn't there}\\
+{~} {(Ministry of Education)} {~}\\
+
+========================================
+store/82/02TypologicalOverview.tex
+\glll íṇc̣-a čhéeli khéel-i \\
+bear[\textsc{msg}]-\textsc{obl} she.goat[\textsc{fsg}] eat.\textsc{pfv-}\textsc{f}\\
+\textbf{A} \textbf{O} \textbf{V}\\
+\glt `The bear ate the goat.' (A:PAS056)
+
+========================================
+store/85/03.tex
+\glll Mék    a    tɛ́l  yú    di  sáy.    →   \textbf{Mâ}    tɛ́l  yú  di  sáy.\\
+\textsc{h}    \textsc{l}    \textsc{h}  \textsc{h}    \textsc{l}  \textsc{h}  {}  \textbf{\textsc{hl}}    \textsc{h}  \textsc{h}  \textsc{l}  \textsc{h}\\
+\textsc{sbjv}    \textsc{1sg.sbj}  tell  \textsc{2sg.indp}  \textsc{def}  side\\
+\glt ‘Let me tell you the place.’\\
+
+========================================
+store/85/07.tex
+\gll \textbf{Na}  \textbf{wán}    \textbf{smɔ́l}  \textbf{híl}  e    klém.\\
+\textsc{foc}  one    small  hill  \textsc{3sg.sbj}  climb\\
+
+\glt ‘It’s a small hill that he climbed.’ [au07se 041]
+
+========================================
+store/91/01.tex
+\gll bihoa mil no moa hilipino no nating\\
+before mill no more Filipino no nothing\\ 
+\glt  `Before the mill \textsc{was built, there were} no Filipinos here at all' 
+
+========================================
+store/94/Helmbrecht.tex
+\gll ko-hų:-s \\
+\textsc{3sg.poss}-mother-\textsc{def} \\
+\glt `his mother'
+
+========================================
+store/96/dingemanse.tex
+\gll a-bu  sɔ  ìra  pɔkɔsɔ-à  i-de  ngbe:\\
+ {{you-think}}  {{that}}  {{thing}}  \textsc{idph}.easy/slow-\textsc{adj}  {{it-be}}  {{this:}}{\textsc{q}}\\
+\glt ‘You think this here is an easy thing?’
+
