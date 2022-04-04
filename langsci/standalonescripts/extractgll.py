@@ -8,6 +8,7 @@ import operator
 import os
 import LaTexAccents as TeX
 import requests
+import hashlib
 
 from bs4 import BeautifulSoup
 from collections import defaultdict
@@ -288,7 +289,7 @@ class gll:
         #self.presource = presource
         #print(presource, lg, src, imt, trs)
         basename = filename.split('/')[-1]
-        self.license = "CC-BY 4.0"
+        self.license = "https://creativecommons.org/licenses/by/4.0"
         self.book_ID = int(filename.split('/')[-2])
         self.book_URL =  f"https://langsci-press.org/catalog/book/{self.book_ID}"
         self.book_title = titlemapping.get(self.book_ID)
@@ -372,7 +373,7 @@ class gll:
         self.srcwordsbare = [self.striptex(w) for w in srcwordstex]
         self.ID = "%s-%s" % (
             basename.replace(".tex", "").split("/")[-1],
-            str(hash(" ".join(self.srcwordsbare)))[:6],
+            hashlib.sha256(" ".join(self.srcwordsbare).encode('utf-8')).hexdigest()[:10]
         )
         self.imtwordsbare = [self.striptex(w, sc2upper=True) for w in imtwordstex]
         self.clength = len(src)
@@ -504,6 +505,7 @@ def langsciextract(directory):
     chinese = [177]
     spanish = [236]
     books = glob.glob(f"{directory}/*")
+    #books = glob.glob(f"{directory}/16")
     for book in books:
         book_ID = int(book.split("/")[-1])
         if book_ID in superseded:
