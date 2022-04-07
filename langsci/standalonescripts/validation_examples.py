@@ -8,7 +8,7 @@ book_ids = glob.glob("store/*")
 threshold = 200
 excount = 0
 
-d = defaultdict(list)
+d = defaultdict(dict)
 
 print(book_ids)
 while excount < threshold:
@@ -30,10 +30,12 @@ while excount < threshold:
             imts = glls[1:][::2]
             examples = list(zip(keywords,imts))
             example = random.choice(examples)
-            keyword = example[0]
+            keyword = example[0] #gll or glll
             imt  = example[1].split(r"\z")[0].split(r"\end{exe}")[0].split(r"\end{xlist}")[0].split(r"\ex")[0].split("\n")[:10]
-            d[filename].append((keyword,imt))
-            excount += 1
+            condensed_imt = "\n".join(imt)
+            if (keyword,condensed_imt) not in d:
+                d[filename][(keyword,condensed_imt)] = True
+                excount += 1
         except IndexError:
             pass
 
@@ -45,5 +47,5 @@ with open("validationexamples.txt", "w") as out:
             out.write(fn)
             out.write("\n")
             out.write(ex[0])
-            out.write("\n".join(ex[1]))
+            out.write(ex[1])
             out.write("\n")

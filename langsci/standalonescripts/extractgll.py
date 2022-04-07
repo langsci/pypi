@@ -117,7 +117,7 @@ TEXREPLACEMENTS = [
     (r"\lq", '"'),
     (r"\{", '{'),
     (r"\}", '}'),
-    (r"\label", ''),
+    #(r"\label", ''),
     (r"\hfill", ' '),
     (r"\vfill", ' '),
     (r"\sqt", ' '),
@@ -143,7 +143,7 @@ TEXREPLACEMENTS = [
     (r"\nobreakdash", ''),
     (r"\NOBREAKDASH", ''),
     (r"\newpage", ''),
-    (r"\mytrans", '\glt'),
+    (r"\mytrans", r'\glt'),
     (r"\minsp", ''),
     (r"\makebox", ''),
     (r"\longrule", '__'),
@@ -160,6 +160,7 @@ TEXREPLACEMENTS = [
     (r"\sim", '~'),
     (r"\USgreater", '>'),
     (r"\USsmaller", '<'),
+    (r"\USQMark", '?'),
     (r"\slash", '/'),
     (r"\OLDSTYLENUMS", '/'),
     (r"\thirdperson", '3'),
@@ -169,7 +170,7 @@ TEXREPLACEMENTS = [
     (r"\textopeno", 'ɔ'),
     (r"\textstrikeout", ''),
     (r"\textunderscore", ''),
-    (r"\textstyleEmphasizedVernacularWords", '\emph'),
+    (r"\textstyleEmphasizedVernacularWords", r'\emph'),
     (r"\protect", ''),
     (r"\\", ' '),
     (r"\citealt", ''),
@@ -197,7 +198,7 @@ TEXREPLACEMENTS = [
     (r"\USGreater", r">"),
     (r"\USSmaller", r"<"),
     (r"\exi", r" "),
-    (r"\textitshape", r"\textit"),
+    (r"\itshape", r"\textit"),
     (r"\upshape", r""),
     (r"\@", r"@"),
     (r'\"=', r"-"),
@@ -216,6 +217,7 @@ TEXREPLACEMENTS = [
     (r"\medskip", r''),
     (r"\bigskip", r''),
     (r"\extrans", r'\glt '),
+    (r"\glft", r'\glt '),
     (r"\trad", r'\glt '),
     (r"\op", r'('),
     (r"\cp", r')'),
@@ -415,6 +417,7 @@ class gll:
             result = result.replace(*r)
         for r in TEXTARGYANKS:
             result = re.sub(r"\\%s{.*?}"%r, '', result)
+        result = re.sub(r"\footnote{[^}{]*}", "", result)
         result = re.sub(BRACESPATTERN, r"\1", " "+result)[1:]  #add " " in front of string so that lookbehind matches if at beginning of line
         result = re.sub(r"(?<!\\)\\ ", " ", result) #strip "\ " (latex protected space)
         if html: #keep \textbf, \texit for the time being, to be included in <span>s
@@ -427,9 +430,9 @@ class gll:
 
     def tex2categories(self, s):
         d = {}
-        scs = re.findall("\\\\textsc\{([a-zA-Z]*?)\}", s)
+        scs = re.findall("\\\\textsc\{([-=.:a-zA-Z0-9)(/\[\]]*?)\}", s)
         for sc in scs:
-            cats = re.split("[-=.:]", sc)
+            cats = re.split("[-=.:0-9)(/\[\]]", sc)
             for cat in cats:
                 d[cat] = True
         return sorted(list(d.keys()))
