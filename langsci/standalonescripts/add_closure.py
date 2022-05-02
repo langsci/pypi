@@ -4,8 +4,7 @@ import glob
 import json
 import wptools
 
-
-from philosophicalnonsense import nonsense
+from wikidata_exclude import excludelist
 
 from misextractions import misextractions
 
@@ -20,13 +19,18 @@ def get_title(wikidata_ID):
         title = entitiescache[wikidata_ID]
     except KeyError:
         try:
-            title = wptools.page(wikibase=wikidata_ID,silent=True).get_wikidata().data.get('title', 'no title')
-        except: #API KeyError
+            title = (
+                wptools.page(wikibase=wikidata_ID, silent=True)
+                .get_wikidata()
+                .data.get("title", "no title")
+            )
+        except:  # API KeyError
             title = None
         entitiescache[wikidata_ID] = title
     return title
 
-with open("closure.csv")  as closurefile:
+
+with open("closure.csv") as closurefile:
     for line in closurefile.readlines():
         ancestor, degree, child = line.strip().split("\t")
         d[child][ancestor] = True
@@ -42,12 +46,14 @@ for f in glob.glob("entitiesjson/*json"):
             if entity in misextractions:
                 continue
             parents += list(d[entity].keys())
-        parents = {parent:get_title(parent) for parent in parents
-                        if parent not in entities
-                        and parent not in nonsense}
+        parents = {
+            parent: get_title(parent)
+            for parent in parents
+            if parent not in entities and parent not in excludelist
+        }
         if parents != {}:
             file_examples[ex]["parententities"] = parents
-            print(30*'-')
+            print(30 * "-")
             print(entities)
             pprint.pprint(parents)
     with open(f.replace("entitiesjson", "closurejson"), "w") as outcontent:
@@ -55,6 +61,5 @@ for f in glob.glob("entitiesjson/*json"):
         outcontent.write(outjson)
 
 
-with open("entitiestitles.json","w") as out:
+with open("entitiestitles.json", "w") as out:
     out.write(json.dumps(entitiescache, indent=4, sort_keys=True))
-

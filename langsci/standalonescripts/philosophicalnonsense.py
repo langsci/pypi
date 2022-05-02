@@ -1,4 +1,4 @@
-nonsense =  [
+excludelist =  [
 'Q100195948', # 'relative_quality'
 'Q1002697', # 'Periodical_literature',
 'Q100751718', # 'skin_and_integumentary_tissue_symptom',

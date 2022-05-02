@@ -31,4 +31,6 @@ misextractions = [
     'Q664575', #: 'not'}
     'Q16960684', #: 'OG2'} Satellite
     'Q2349', # 'sixty-nine'
+    "Q17150514", #"live life", song by the Kinks
+    "Q3518011", #     "tender years", pop song
         ]

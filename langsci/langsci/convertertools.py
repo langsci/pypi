@@ -673,10 +673,10 @@ class Document:
         modtext = modtext.replace(r"\newline",r"\\")
 
 
-        modtext = re.sub("\n\\\\textit{Table ([0-9]+)[\.:] *(.*?)}\n",r"%%please move \\\\begin{table} just above \\\\begin{tabular . \n\\\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",modtext)
+        modtext = re.sub("\n\\\\textit{Table ([0-9]+)[\.:] *(.*?)}\n",r"%%please move \\begin{table} just above \\\\begin{tabular . \n\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",modtext)
         modtext = re.sub("\nTable ([0-9]+)[\.:] *(.*?) *\n",r"%%please move \\\\begin{table} just above \\\\begin{tabular\n\\\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",modtext)#do not add } after tabular
         modtext = re.sub("Table ([0-9]+)","\\\\tabref{tab:key:\\1}",modtext)
-        modtext = re.sub("\nFigure ([0-9]+)[\.:] *(.*?)\n",r"\\begin{figure}\n\\caption{\2}\n\\label{fig:key:\\1}\n\\end{figure}",modtext)
+        modtext = re.sub("\nFigure ([0-9]+)[\.:] *(.*?)\n",r"\\begin{figure}\n\\caption{\2}\n\\label{fig:key:\1}\n\\end{figure}",modtext)
         modtext = re.sub("Figure ([0-9]+)","\\\\figref{fig:key:\\1}",modtext)
         modtext = re.sub("Section ([0-9\.]*[0-9])","\\\\sectref{sec:key:\\1}",modtext)
         modtext = re.sub("§ *([0-9\.]*[0-9])","\\\\sectref{sec:key:\\1}",modtext)
@@ -755,7 +755,7 @@ class Document:
         modtext = re.sub(r"\\tablefirsthead\{\}\n\n\\tabletail\{\}\n\\tablelasttail\{\}","",modtext)
         
         #duplicated section names 
-        modtext = re.sub("(chapter|section|paragraph)\[.*?\](\{.*\}.*)","\1\2",modtext)
+        modtext = re.sub("(chapter|section|paragraph)\[.*?\](\{.*\}.*)",r"\1\2",modtext)
 
         bogus_styles = """styleStandard
         styleDefault

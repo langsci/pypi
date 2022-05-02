@@ -12,7 +12,7 @@ IGNORECASE = False
 
 if __name__  ==  "__main__":
     #no indexing will take place in lines with the following keywords and {. section also matches subsection.
-    excluders  =  ("section","caption","chapter","addplot")
+    excluders  =  ("section","caption","chapter","addplot","subfigure")
     
     lgs = open("locallanguages.txt").read().split('\n')
     for lg in lgs:
