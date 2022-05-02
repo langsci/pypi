@@ -64,7 +64,7 @@ if __name__ == "__main__":
         mailbody = template.format(**locals())
         # launch mail program
         thunderbirdoptionstring = (
-            """-compose "to=%s,subject='proofreading %s',format=2,from='sebastian.nordhoff@langsci-press.org',body='%s'" """
+            """-compose "to=%s,subject='Proofreading %s',format=2,from='sebastian.nordhoff@langsci-press.org',body='%s'" """
             % (name, authorname, mailbody)
         )
         os.system("thunderbird %s" % thunderbirdoptionstring)
