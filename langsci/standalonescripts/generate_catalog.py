@@ -51,7 +51,7 @@ LICENSES = {
     234: "CC-BY-NC-ND"
     }
 
-SUPERSEDED = [22, 25, 46, 141, 144, 149, 195]
+SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195]
 CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>[0-9]+)\. (?P<title>.*)\. \((?P<series>(.*)) (?P<seriesnumber>[0-9]*)\)\. Berlin: Language Science Press. DOI: (?P<doi>[^ ]*)")
 
 fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators title".split()
