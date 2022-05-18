@@ -271,7 +271,7 @@ permalink: /chapters/%s-%s
 
 #xmlheader = """<?xml version="1.0" encoding="UTF-8"?>
 xmlheader = """<?xml version="1.0"?>
-<ONIXMessage release="3.0">
+<ONIXMessage xmlns="http://ns.editeur.org/onix/3.0/reference" release="3.0">
 <Header>
     <Sender>
         <SenderIdentifier>

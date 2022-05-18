@@ -51,10 +51,89 @@ LICENSES = {
     234: "CC-BY-NC-ND"
     }
 
+ROMANCE = [236,308,165,27,286,258,16,183,143,200,160]
+
+onixtemplate = """
+<?xml version="1.0" encoding="UTF-8"?>
+<ONIXmessage release="2.1" xmlns="http://www.editeur.org/onix/2.1/short"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.editeur.org/onix/2.1/short http://www.editeur.org/onix/2.1/short/ONIX_BookProduct_Release2.1_short.xsd">
+    <header>
+        <senderidentifier>
+            <m379>01</m379>
+            <b244>123</b244>
+        </senderidentifier>
+        <m174>Deutsche Nationalbibliothek</m174>
+        <m182>20101213</m182>
+        <m183>Updates Deutsche Nationalbibliothek 14.03.2011</m183>
+        <m184>ger</m184>
+    </header>
+    <product>
+        <a001>V615</a001>
+        <a002>03</a002>
+        <productidentifier>
+            <b221>15</b221>
+            <b244>9783123567890</b244>
+        </productidentifier>
+        <b012>DG</b012>
+        <b211>002</b211>
+        <b214>02</b214>
+        <title>
+            <b202>01</b202>
+            <b203>
+                Spezifikation von Transferpaketen und deren Übertragung an die Deutsche Nationalbibliothek mittels eines Hotfolders
+            </b203>
+        </title>
+        <contributor>
+            <b034>1</b034>
+            <b035>A01</b035>
+            <b039>Stefan</b039>
+            <b040>Hein</b040>
+        </contributor>
+        <contributor>
+            <b034>2</b034>
+            <b035>A01</b035>
+            <b039>Matthias</b039>
+            <b040>Neubauer</b040>
+        </contributor>
+        <mainsubject>
+            <b191>26</b191>
+            <b068>2.0</b068>
+            <b069>9631</b069>
+        </mainsubject>
+        <subject>
+            <b067>20</b067>
+            <b070>
+                Hotfolder, Netzpublikationen, Transferpaket, Übertragung
+            </b070>
+        </subject>
+        <productwebsite>
+            <b367>02</b367>
+            <f123>
+                http://www.d-nb.de/netzpub/ablief/pdf/Spezifikation_Hotfolder.pdf
+            </f123>
+        </productwebsite>
+        <publisher>
+            <b291>01</b291>
+            <b081>Deutsche Nationalbibliothek</b081>
+            <website>
+                <!--Publisher's corporate website-->
+                <b367>01</b367>
+                <b295>http://www.dnb.de/</b295>
+            </website>
+        </publisher>
+        <b209>Frankfurt</b209>
+        <b083>DE</b083>
+        <b394>04</b394>
+        <b003>20110314</b003>
+    </product>
+</ONIXmessage>
+"""
+
 SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195]
 CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>[0-9]+)\. (?P<title>.*)\. \((?P<series>(.*)) (?P<seriesnumber>[0-9]*)\)\. Berlin: Language Science Press. DOI: (?P<doi>[^ ]*)")
 
-fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators title".split()
+fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators title year".split()
 csvstrings = ["\t".join(fields)]
 for ID in range(16,350):
     url = f"https://langsci-press.org/catalog/book/{ID}"
@@ -87,7 +166,8 @@ for ID in range(16,350):
                 citegroups["series"],
                 citegroups["seriesnumber"],
                 citegroups["creators"].replace("&nbsp;&nbsp;", "&"),
-                citegroups["title"].strip()
+                citegroups["title"].strip(),
+                citegroups["year"].strip()
                 ]
     csvstrings.append("\t".join(fields))
 
