@@ -1,71 +1,93 @@
-import  yaml
-import sys
-from langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches
-from datetime import date
-from catalogmetadata import LICENSES, SERIES, METALANGUAGE
-from xml.etree import ElementTree as ET
-from xml.sax.saxutils import escape
 
-book_ID = sys.argv[1]
-soup = get_soup(book_ID)
-citegroups = get_citeinfo(soup)
+romanistentemplate = """
+<?xml version="1.0" encoding="UTF-8"?>
+<ONIXmessage release="2.1" xmlns="http://www.editeur.org/onix/2.1/short"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.editeur.org/onix/2.1/short http://www.editeur.org/onix/2.1/short/ONIX_BookProduct_Release2.1_short.xsd">
+    <header>
+        <senderidentifier>
+            <m379>01</m379>
+            <b244>123</b244>
+        </senderidentifier>
+        <m174>Deutsche Nationalbibliothek</m174>
+        <m182>20101213</m182>
+        <m183>Updates Deutsche Nationalbibliothek 14.03.2011</m183>
+        <m184>ger</m184>
+    </header>
+    <product>
+        <a001>V615</a001>
+        <a002>03</a002>
+        <productidentifier>
+            <b221>15</b221>
+            <b244>9783123567890</b244>
+        </productidentifier>
+        <b012>DG</b012>
+        <b211>002</b211>
+        <b214>02</b214>
+        <title>
+            <b202>01</b202>
+            <b203>
+                Spezifikation von Transferpaketen und deren Übertragung an die Deutsche Nationalbibliothek mittels eines Hotfolders
+            </b203>
+        </title>
+        <contributor>
+            <b034>1</b034>
+            <b035>A01</b035>
+            <b039>Stefan</b039>
+            <b040>Hein</b040>
+        </contributor>
+        <contributor>
+            <b034>2</b034>
+            <b035>A01</b035>
+            <b039>Matthias</b039>
+            <b040>Neubauer</b040>
+        </contributor>
+        <mainsubject>
+            <b191>26</b191>
+            <b068>2.0</b068>
+            <b069>9631</b069>
+        </mainsubject>
+        <subject>
+            <b067>20</b067>
+            <b070>
+                Hotfolder, Netzpublikationen, Transferpaket, Übertragung
+            </b070>
+        </subject>
+        <productwebsite>
+            <b367>02</b367>
+            <f123>
+                http://www.d-nb.de/netzpub/ablief/pdf/Spezifikation_Hotfolder.pdf
+            </f123>
+        </productwebsite>
+        <publisher>
+            <b291>01</b291>
+            <b081>Deutsche Nationalbibliothek</b081>
+            <website>
+                <!--Publisher's corporate website-->
+                <b367>01</b367>
+                <b295>http://www.dnb.de/</b295>
+            </website>
+        </publisher>
+        <b209>Frankfurt</b209>
+        <b083>DE</b083>
+        <b394>04</b394>
+        <b003>20110314</b003>
+    </product>
+</ONIXmessage>
+"""
 
-titlestring = citegroups["title"]
-title_elements = titlestring.split(": ")
-title = title_elements[0]
-try:
-  subtitle = title_elements[1]
-except IndexError:
-  subtitle = ""
 
-series = citegroups["series"]
-
-publication_date = get_publication_date(soup)
-blurb = get_blurb(soup)
-isbn_digital =  get_ISBN_digital(soup)
-issn =  SERIES[citegroups["series"]]
-metalanguage = METALANGUAGE.get(book_ID, "eng")
-
-biosketches = get_biosketches(soup)
-
-bisac = "LAN009000"
-if series == "Translation and Multilingual Natural Language Processing":
-    bisac = "LAN023000"
-
-license = LICENSES.get(book_ID, "CC-BY")
-license_url = "https://creativecommons.org/licenses/%s/4.0" % license[3:]
-authorrolecode = "A01"
-editorrolecode = "B01"
-
-role = authorrolecode
-if citegroups['ed']:
-  role = editorrolecode
-
-
-#FIXME mix of authors and editors
-
-
-proquest_creator_template=u"""<Contributor>
+proquest_creator_template=u"""
+        <Contributor>
         <SequenceNumber>%s</SequenceNumber>
         <ContributorRole>%s</ContributorRole>
         <NamesBeforeKey>%s</NamesBeforeKey>
         <KeyNames>%s</KeyNames>
         <BiographicalNote>%s</BiographicalNote>
-</Contributor>"""
+      </Contributor>
 
+"""
 
-creators = []
-for i, biosketch in enumerate(biosketches):
-    name = biosketch[0]
-    sketch = biosketch[1]
-    nameparts = name.split()
-    firstname = ' ' .join(nameparts[0:-1])
-    lastname = nameparts[-1]
-    creators.append(proquest_creator_template % (i+1, role, firstname, lastname, escape(sketch)))
-creatorstring = "\n".join(creators)
-
-#creatorstring = authorstring + editorstring
-today = date.today().strftime("%Y-%m-%d")
 
 
 proquest_template = f"""<?xml version="1.0"?>
@@ -86,7 +108,7 @@ proquest_template = f"""<?xml version="1.0"?>
     <SentDateTime>{today}</SentDateTime>
   </Header>
   <Product>
-    <RecordReference>langsci-press.org/{book_ID}</RecordReference>
+    <RecordReference>langsci-press.org/{metadata['bookid']}</RecordReference>
     <NotificationType>03</NotificationType>
     <RecordSourceType>01</RecordSourceType>
     <RecordSourceIdentifier>
@@ -96,7 +118,7 @@ proquest_template = f"""<?xml version="1.0"?>
     <RecordSourceName>Language Science Press</RecordSourceName>
     <ProductIdentifier>
       <ProductIDType>06</ProductIDType>
-      <IDValue>{citegroups["doi"]}</IDValue>
+      <IDValue>{book_DOI}</IDValue>
     </ProductIdentifier>
     <ProductIdentifier>
       <ProductIDType>15</ProductIDType>
@@ -132,12 +154,12 @@ proquest_template = f"""<?xml version="1.0"?>
         <TitleType>01</TitleType>
         <TitleElement>
           <TitleElementLevel>01</TitleElementLevel>
-          <TitleText textcase="01">{title}</TitleText>
-          <Subtitle>{subtitle}</Subtitle>
+          <TitleText textcase="01">{metadata['title']}</TitleText>
+          <Subtitle>{metadata['booksubtitle']}</Subtitle>
         </TitleElement>
         <TitleElement>
           <TitleElementLevel>02</TitleElementLevel>
-          <TitleText textcase="02">{series}</TitleText>
+          <TitleText textcase="02">{metadata['series']}</TitleText>
         </TitleElement>
       </TitleDetail>
       {creatorstring}
@@ -150,12 +172,12 @@ proquest_template = f"""<?xml version="1.0"?>
         <MainSubject />
         <SubjectSchemeIdentifier>10</SubjectSchemeIdentifier>
         <SubjectSchemeVersion>2009</SubjectSchemeVersion>
-        <SubjectCode>{bisac}</SubjectCode>
+        <SubjectCode>{metadata['scheme'][1]}</SubjectCode>
       </Subject>
       <AudienceCode>06</AudienceCode>
       <EpubLicense>
         <EpubLicenseExpression>
-          <EpubLicenseExpressionLink>{license_url.lower()}</EpubLicenseExpressionLink>
+          <EpubLicenseExpressionLink>https://creativecommons.org/licenses/by/4.0</EpubLicenseExpressionLink>
         </EpubLicenseExpression>
       </EpubLicense>
     </DescriptiveDetail>
@@ -164,7 +186,7 @@ proquest_template = f"""<?xml version="1.0"?>
         <TextType>03</TextType>
         <ContentAudience>00</ContentAudience>
         <Text textformat="05">
-          {escape(blurb)}
+          {metadata['blurb']}
         </Text>
       </TextContent>
       <SupportingResource>
@@ -177,12 +199,12 @@ proquest_template = f"""<?xml version="1.0"?>
             <ResourceVersionFeatureType>01</ResourceVersionFeatureType>
             <FeatureValue>D503</FeatureValue>
           </ResourceVersionFeature>
-          <ResourceLink>https://langsci-press.org/$$$call$$$/submission/cover/cover?submissionId={book_ID}</ResourceLink>
+          <ResourceLink>https://langsci-press.org/$$$call$$$/submission/cover/cover?submissionId={metadata['bookid']}</ResourceLink>
         </ResourceVersion>
       </SupportingResource>
       <TextContent>
         <TextType>47</TextType>
-        <Text>This text is licensed as {license} 4.0</Text>
+        <Text>This text is licenced as CC-BY 4.0</Text>
       </TextContent>
     </CollateralDetail>
     <PublishingDetail>
@@ -206,21 +228,12 @@ proquest_template = f"""<?xml version="1.0"?>
     <othertext>
             <d102>47</d102>
             <d103>06</d103>
-            <d104>Der Titel ist Open Access unter der Creative Commons Lizenz {license} 4.0</d104>
+            <d104>Der Titel ist Open Access unter der Creative Commons Lizenz BY 4.0</d104>
   </othertext>
     <othertext>
             <d102>46</d102>
             <d103>01</d103>
-            <d104>{license_url.lower()}</d104>
+            <d104>https://creativecommons.org/licenses/by/4.0/</d104>
   </othertext>
   </Product>
 </ONIXMessage>"""
-
-
-
-with open(f"proquest/{book_ID}.xml", "w") as xmlout:
-  #validate XML
-  ET.fromstring(proquest_template)
-  xmlout.write(proquest_template)
-
-
