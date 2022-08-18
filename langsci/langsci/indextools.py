@@ -86,5 +86,6 @@ def processfile(filename):
     print("Found %i lines" % len(lines))
     # read all lines, process them and write them to output file
     processedlines = list(map(processline, lines))
-    with open(filename.replace(".", "mod."), "w", encoding="utf-8") as out:
+    shutil.copy(filename, f'{filename}.bak')
+    with open(filename), "w", encoding="utf-8") as out:
         out.write("".join(processedlines))
