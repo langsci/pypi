@@ -57,15 +57,65 @@ def get_publication_date(soup):
     return date
 
 
+def get_ISBNs(soup, drophyphens=True):
+    dropee = ""
+    if drophyphens:
+        dropee = '-'
+    isbns = {}
+    publicationformats = soup.find_all("div", "publication_format")
+    for publicationformat in publicationformats:
+        item_heading = publicationformat.find("div", "item_heading")
+        try:
+            label = item_heading.find("div").text.strip()
+        except AttributeError:
+            continue
+        if label == "Softcover":
+            isbns['softcover'] = publicationformat.find("div", "identification_code").find('div').text.strip().replace(dropee, '')
+            continue
+        if label == "Hardcover":
+            isbns['hardcover'] = publicationformat.find("div", "identification_code").find('div').text.strip().replace(dropee, '')
+            continue
+        if label == "PDF":
+            try:
+                isbns['digital'] = publicationformat.find("div", "identification_code").find('div').text.strip().replace(dropee, '')
+            except AttributeError:
+                pass
+    return isbns
+
+
+
+
+
 def get_ISBN_digital(soup, drophyphens=True):
-    ISBNlabel = soup.find("div", "identification_code").findNext('h3')
-    labeltext = ISBNlabel.text.strip()
-    if labeltext == "ISBN-13 (15)":
-        ISBNvalue = ISBNlabel.findNext("div","value")
-        if drophyphens:
-            return ISBNvalue.text.strip().replace("-","")
-        else:
-            return ISBNvalue.text.strip()
+    return get_ISBNs(soup, drophyphens=True)['digital']
+
+def get_ISBN_softcover(soup, drophyphens=True):
+    return get_ISBNs(soup, drophyphens=True)['softcover']
+
+def get_ISBN_hardcover(soup, drophyphens=True):
+    return get_ISBNs(soup, drophyphens=True)['hardcover']
+
+
+#def get_ISBN_softcover(soup, drophyphens=True):
+    #ISBNlabel = soup.find("div", "identification_code").findNext('h3')
+    #labeltext = ISBNlabel.text.strip()
+    #if labeltext == "ISBN-13 (15)":
+        #ISBNvalue = ISBNlabel.findNext("div","value")
+        #if drophyphens:
+            #return ISBNvalue.text.strip().replace("-","")
+        #else:
+            #return ISBNvalue.text.strip()
+
+
+#def get_ISBN_hardcover(soup, drophyphens=True):
+    #ISBNlabel = soup.find("div", "identification_code").findNext('h3')
+    #labeltext = ISBNlabel.text.strip()
+    #if labeltext == "ISBN-13 (15)":
+        #ISBNvalue = ISBNlabel.findNext("div","value")
+        #if drophyphens:
+            #return ISBNvalue.text.strip().replace("-","")
+        #else:
+            #return ISBNvalue.text.strip()
 
 def get_biosketches(soup):
     container = soup.find("div", "author_bios")
@@ -76,7 +126,82 @@ def get_biosketches(soup):
     return result
 
 
+def get_title_subtitle(citegroup):
+    try:
+        titlestring = citegroup["title"]
+    except TypeError:
+        return None
+    title_elements = titlestring.split(": ")
+    title = title_elements[0]
+    try:
+        subtitle = title_elements[1]
+    except IndexError:
+        subtitle = ""
+    return title, subtitle
+
+def biosketches2names(biosketches):
+    resultlist = []
+    for i, biosketch in enumerate(biosketches):
+        name = biosketch[0]
+        sketch = biosketch[1]
+        nameparts = name.split(',')[0].split() #throw away affiliation
+        firstname = ' ' .join(nameparts[0:-1])
+        lastname = nameparts[-1]
+        resultlist.append((firstname, lastname, sketch))
+    return resultlist
+
+
+def get_wiki_citation(creatorlist):
+    vauthors = ''
+    wikiauthors = ''
+    if citeinfo['ed']:
+        creatortype = 'veditors'
+    else:
+        creatortype = 'vauthors'
+    wikicreators = ", ".join([u"%s %s"%(authormetadata[1],
+                                        ''.join([firstname[0]
+                                                    for firstname
+                                                    in authormetadata[0].split()
+                                                    ])
+                                        )
+                                for authormetadata
+                                in creatorlist
+                                ]
+                    )
+    wikiinfo = f"""<ref name="xxx">{{Cite book
+    | {creatortype} = {wikicreators}
+    | title =   %s%s
+    | place = Berlin
+    | publisher = Language Science Press
+    | date = {publication_date}
+    | format = pdf
+    | url = http://langsci-press.org/catalog/book/{book_ID}
+    | doi = {doi}
+    | doi-access=free
+    | isbn = {isbndigital}
+    }}
+    </ref>"""
+    return wikiinfo
 
 
 
+
+
+
+
+
+#out = codecs.open("wikiinfo.txt","w",encoding="utf-8")
+#out.write("""<ref name="xxx">{{Cite book
+#| %s
+#| title =   %s%s
+#| place = Berlin
+#| publisher = Language Science Press
+#| date = %s
+#| format = pdf
+#| url = http://langsci-press.org/catalog/book/%s
+#| doi =
+#| doi-access=free
+#| isbn = %s
+#}}
+#</ref>
 

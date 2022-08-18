@@ -1,6 +1,6 @@
 import  yaml
 import sys
-from langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches
+from langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names
 from datetime import date
 from catalogmetadata import LICENSES, SERIES, METALANGUAGE
 from xml.etree import ElementTree as ET
@@ -10,16 +10,7 @@ book_ID = sys.argv[1]
 soup = get_soup(book_ID)
 citegroups = get_citeinfo(soup)
 
-try:
-  titlestring = citegroups["title"]
-except TypeError:
-  sys.exit()
-title_elements = titlestring.split(": ")
-title = title_elements[0]
-try:
-  subtitle = title_elements[1]
-except IndexError:
-  subtitle = ""
+title, subtitle = get_title_subtitle(citegroups)
 
 series = citegroups["series"]
 
@@ -58,12 +49,13 @@ proquest_creator_template=u"""<Contributor>
 
 
 creators = []
-for i, biosketch in enumerate(biosketches):
-    name = biosketch[0]
-    sketch = biosketch[1]
-    nameparts = name.split(',')[0].split() #throw away affiliation
-    firstname = ' ' .join(nameparts[0:-1])
-    lastname = nameparts[-1]
+
+creatorlist = biosketches2names(biosketches)
+
+for i, creator in enumerate(creatorlist):
+    firstname = creator[0]
+    lastname = creator[1]
+    sketch = creator[2]
     creators.append(proquest_creator_template % (i+1, role, escape(firstname), escape(lastname), escape(sketch)))
 creatorstring = "\n".join(creators)
 
