@@ -10,7 +10,10 @@ book_ID = sys.argv[1]
 soup = get_soup(book_ID)
 citegroups = get_citeinfo(soup)
 
-titlestring = citegroups["title"]
+try:
+  titlestring = citegroups["title"]
+except TypeError:
+  sys.exit()
 title_elements = titlestring.split(": ")
 title = title_elements[0]
 try:
@@ -58,10 +61,10 @@ creators = []
 for i, biosketch in enumerate(biosketches):
     name = biosketch[0]
     sketch = biosketch[1]
-    nameparts = name.split()
+    nameparts = name.split(',')[0].split() #throw away affiliation
     firstname = ' ' .join(nameparts[0:-1])
     lastname = nameparts[-1]
-    creators.append(proquest_creator_template % (i+1, role, firstname, lastname, escape(sketch)))
+    creators.append(proquest_creator_template % (i+1, role, escape(firstname), escape(lastname), escape(sketch)))
 creatorstring = "\n".join(creators)
 
 #creatorstring = authorstring + editorstring

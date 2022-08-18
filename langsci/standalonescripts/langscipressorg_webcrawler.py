@@ -40,15 +40,17 @@ def get_blurb(soup):
 
 def get_publication_date(soup):
     try:
-        date = soup.find("div", "date_published").findNext('div','value').text.strip()
-        months = {m:i+1 for i,m in enumerate("January February March April May June July August September October November December".split())}
-        month, day, year = date.split()
-        numerical_month = months[month]
-        if int(numerical_month) < 10:
-            numerical_month = f"0{numerical_month}"
-        formatted_date =  "%s-%s-%s" % (year.strip(),numerical_month,day.replace(",",''))
-        print(formatted_date)
-        return formatted_date
+        #date = soup.find("div", "date_published").findNext('div','value').text.strip()
+        date = soup.find("meta", {"name" : "citation_publication_date"}).attrs["content"]
+        #months = {m:i+1 for i,m in enumerate("January February March April May June July August September October November December".split())}
+        #print(date)
+        #month, day, year = date.split()
+        #numerical_month = months[month]
+        #if int(numerical_month) < 10:
+            #numerical_month = f"0{numerical_month}"
+        #formatted_date =  "%s-%s-%s" % (year.strip(),numerical_month,day.replace(",",''))
+        #return formatted_date
+        return date
     except AttributeError:
         print("could not retrieve publication date")
         return None
