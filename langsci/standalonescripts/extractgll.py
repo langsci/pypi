@@ -60,6 +60,7 @@ def extract_examples(s, filename, book_language=None, book_metalanguage="eng", a
                 analyze=False,
                 extract_entities=True,
                 parent_entities=True,
+                provider = None,
                 nercache = {}
             )
             if thisgll.book_ID in NON_CCBY_LIST:

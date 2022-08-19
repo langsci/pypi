@@ -41,24 +41,36 @@ class gll:
         filename=None,
         book_language=None,
         book_metalanguage="eng",
+        provider=None,
         abbrkey=None,
         glottolog=False,
         analyze=False,
         extract_entities=False,
         parent_entities=False,
-        nercache = {}
+        categories = "smallcaps",
+        nercache = {},
+        external_ID = None,
+        provided_citation = None
     ):
         basename = filename.split("/")[-1]
         self.license = "https://creativecommons.org/licenses/by/4.0"
-        self.book_ID = int(filename.split("/")[-2])
-        self.book_URL = f"https://langsci-press.org/catalog/book/{self.book_ID}"
-        self.book_title = titlemapping.get(self.book_ID)
+        self.doc_ID = int(filename.split("/")[-2])
+        if provider == "langsci":
+            self.book_URL = f"https://langsci-press.org/catalog/book/{self.doc_ID}"
+            self.book_title = titlemapping.get(self.doc_ID)
+        elif provider == "glossa":
+            self.book_URL = f"https://www.glossa-journal.org/article/id/{self.doc_ID}"
         self.book_metalanguage = book_metalanguage
         self.abbrkey = abbrkey
-        self.categories = self.tex2categories(imt)
-        srcwordstex = self.strip_tex_comment(src).split()
-        imtwordstex = [self.resolve_lgr(i) for i in self.strip_tex_comment(imt).split()]
-        assert len(srcwordstex) == len(imtwordstex)
+        if categories == "smallcaps":
+            self.categories = self.tex2categories(imt)
+        else:
+            self.categories = self.allcaps2categories(imt)
+        srcwordstex = self.strip_tex_comment(src).split("\t")
+        imtwordstex = [self.resolve_lgr(i) for i in self.strip_tex_comment(imt).split("\t")]
+        if len(srcwordstex) != len(imtwordstex):
+            print("number of words don't match in\n%s\n%s"%(srcwordstex,imtwordstex))
+            return None
         imt_html = "\n".join(
             [
                 '\t<div class="imtblock">\n\t\t<div class="srcblock">'
@@ -71,21 +83,26 @@ class gll:
         )
         self.html = f'<div class="imtblocks">\n{imt_html}\n</div>\n'
         self.srcwordsbare = [self.striptex(w) for w in srcwordstex]
-        self.ID = "%s-%s" % (
-            basename.replace(".tex", "").split("/")[-1],
-            hashlib.sha256(" ".join(self.srcwordsbare).encode("utf-8")).hexdigest()[
-                :10
-            ],
-        )
+        if external_ID:
+            self.ID = external_ID
+        else:
+            self.ID = "%s-%s" % (
+                basename.replace(".tex", "").split("/")[-1],
+                hashlib.sha256(" ".join(self.srcwordsbare).encode("utf-8")).hexdigest()[
+                    :10
+                ],
+            )
         self.imtwordsbare = [self.striptex(w, sc2upper=True) for w in imtwordstex]
         self.clength = len(src)
         self.wlength = len(self.srcwordsbare)
 
         self.citation = None
-        match = CITATION.search(presource) or CITATION.search(trs)
-        if match:
-            self.citation = match.group(2)
-
+        if provided_citation is not None:
+            self.citation = provided_citation
+        else:
+            match = CITATION.search(presource) or CITATION.search(trs)
+            if match:
+                self.citation = match.group(2)
         self.trs = trs.replace("\\\\", " ").strip()
         try:
             if self.trs[0] in STARTINGQUOTE:
@@ -192,9 +209,19 @@ class gll:
 
     def tex2categories(self, s):
         d = {}
-        smallcaps = re.findall("\\\\textsc\{([-=.:a-zA-Z0-9)(/\[\]]*?)\}", s)
+        smallcaps = re.findall("\\\\textsc\{([-=.:a-zA-Z0-9)(/\[\]]+?)\}", s)
         for sc in smallcaps:
             cats = re.split("[-=.:0-9)(/\[\]]", sc)
+            for cat in cats:
+                d[cat] = True
+        return sorted(list(d.keys()))
+
+
+    def allcaps2categories(self, s):
+        d = {}
+        allcaps = re.findall("([-=.:A-Z0-9)(/\[\]])", s)
+        for ac in allcaps:
+            cats = re.split("[-=.:0-9)(/\[\]]", ac)
             for cat in cats:
                 d[cat] = True
         return sorted(list(d.keys()))
