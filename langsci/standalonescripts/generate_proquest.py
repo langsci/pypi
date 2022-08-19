@@ -9,6 +9,8 @@ from xml.sax.saxutils import escape
 book_ID = sys.argv[1]
 soup = get_soup(book_ID)
 citegroups = get_citeinfo(soup)
+if citegroups is None:
+  sys.exit()
 
 title, subtitle = get_title_subtitle(citegroups)
 
@@ -213,7 +215,7 @@ proquest_template = f"""<?xml version="1.0"?>
 
 
 
-with open(f"proquest/{book_ID}.xml", "w") as xmlout:
+with open(f"proquest/{isbn_digital}.xml", "w") as xmlout:
   #validate XML
   ET.fromstring(proquest_template)
   xmlout.write(proquest_template)
