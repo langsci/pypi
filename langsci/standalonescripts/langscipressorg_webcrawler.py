@@ -130,7 +130,7 @@ def get_title_subtitle(citegroup):
     try:
         titlestring = citegroup["title"]
     except TypeError:
-        return None
+        return None, None
     title_elements = titlestring.split(": ")
     title = title_elements[0]
     try:
