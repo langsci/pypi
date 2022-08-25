@@ -89,9 +89,9 @@ if __name__  ==  "__main__":
 
     files  =  glob.glob('chapters/*tex')
 
-    for f in files:
-        process_file(f)
+    #for f in files:
+        #process_file(f)
     #multithreading code below. More threads make the indexing slower rather than faster
-    #with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-        #executor.map(process_file, files)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        executor.map(process_file, files)
     print("indexed files are in the folder 'indexed/'")
