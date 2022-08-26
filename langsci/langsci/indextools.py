@@ -5,7 +5,7 @@ The ways how the *dx files are generated varies between different versions of Te
 """
 
 import re, sys
-
+import shutil
 try:
     from langsci.delatex import dediacriticize
 except ImportError:
@@ -87,5 +87,5 @@ def processfile(filename):
     # read all lines, process them and write them to output file
     processedlines = list(map(processline, lines))
     shutil.copy(filename, f'{filename}.bak')
-    with open(filename), "w", encoding="utf-8") as out:
+    with open(filename, "w", encoding="utf-8") as out:
         out.write("".join(processedlines))

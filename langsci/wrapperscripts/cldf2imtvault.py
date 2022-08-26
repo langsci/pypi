@@ -1,6 +1,12 @@
 import json
 import csv
-from interlinear import gll
+try:
+    import titlemapping
+    from interlinear import gll
+except ImportError:
+    from langsci.interlinear import gll
+    from langsci import titlemapping
+
 import re
 
 PROVIDER_ID_PATTERN = re.compile("([a-z]+)([0-9]+)")

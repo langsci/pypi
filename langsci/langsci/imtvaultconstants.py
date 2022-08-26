@@ -1,5 +1,8 @@
 import re
-from lgrlist import LGRLIST
+try:
+    from lgrlist import LGRLIST
+except ImportError:
+    from langsci.lgrlist import LGRLIST
 
 NON_CCBY_LIST = [148, 149, 234]
 
