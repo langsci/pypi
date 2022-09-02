@@ -25,6 +25,7 @@ metalanguage = METALANGUAGE.get(book_ID, "eng")
 biosketches = get_biosketches(soup)
 
 bisac = "LAN009000"
+wgs = "561"
 if series == "Translation and Multilingual Natural Language Processing":
     bisac = "LAN023000"
 
@@ -62,7 +63,7 @@ for i, creator in enumerate(creatorlist):
 creatorstring = "\n".join(creators)
 
 #creatorstring = authorstring + editorstring
-today = date.today().strftime("%Y-%m-%d")
+today = date.today().strftime("%Y%m%d")
 
 
 proquest_template = f"""<?xml version="1.0"?>
@@ -124,6 +125,12 @@ proquest_template = f"""<?xml version="1.0"?>
           <CollectionSequenceType>02</CollectionSequenceType>
           <CollectionSequenceNumber>9</CollectionSequenceNumber>
         </CollectionSequence>
+        <TitleDetail>
+          <TitleElement>
+            <TitleElementLevel>02</TitleElementLevel>
+            <TitleText textcase="02">{series}</TitleText>
+          </TitleElement>
+        </TitleDetail>
       </Collection>
       <TitleDetail>
         <TitleType>01</TitleType>
@@ -131,10 +138,6 @@ proquest_template = f"""<?xml version="1.0"?>
           <TitleElementLevel>01</TitleElementLevel>
           <TitleText textcase="01">{title}</TitleText>
           <Subtitle>{subtitle}</Subtitle>
-        </TitleElement>
-        <TitleElement>
-          <TitleElementLevel>02</TitleElementLevel>
-          <TitleText textcase="02">{series}</TitleText>
         </TitleElement>
       </TitleDetail>
       {creatorstring}
@@ -148,6 +151,12 @@ proquest_template = f"""<?xml version="1.0"?>
         <SubjectSchemeIdentifier>10</SubjectSchemeIdentifier>
         <SubjectSchemeVersion>2009</SubjectSchemeVersion>
         <SubjectCode>{bisac}</SubjectCode>
+      </Subject>
+      <Subject>
+        <MainSubject />
+        <SubjectSchemeIdentifier>26</SubjectSchemeIdentifier>
+        <SubjectCode>{wgs}</SubjectCode>
+        <SubjectSchemeVersion>2007</SubjectSchemeVersion>
       </Subject>
       <AudienceCode>06</AudienceCode>
       <EpubLicense>
@@ -178,7 +187,7 @@ proquest_template = f"""<?xml version="1.0"?>
         </ResourceVersion>
       </SupportingResource>
       <TextContent>
-        <TextType>47</TextType>
+        <TextType>20</TextType>
         <Text>This text is licensed as {license} 4.0</Text>
       </TextContent>
     </CollateralDetail>
@@ -199,9 +208,13 @@ proquest_template = f"""<?xml version="1.0"?>
         <Date dateformat="00">{publication_date}</Date>
       </PublishingDate>
     </PublishingDetail>
-    <UnpricedItemType>01</UnpricedItemType>
+    <ProductSupply>
+      <SupplyDetail>
+        <UnpricedItemType>01</UnpricedItemType>
+      </SupplyDetail>
+    </ProductSupply>
     <othertext>
-            <d102>47</d102>
+            <d102>20</d102>
             <d103>06</d103>
             <d104>Der Titel ist Open Access unter der Creative Commons Lizenz {license} 4.0</d104>
   </othertext>
