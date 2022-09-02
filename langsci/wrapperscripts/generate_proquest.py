@@ -1,10 +1,16 @@
 import  yaml
 import sys
-from langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names
 from datetime import date
-from catalogmetadata import LICENSES, SERIES, METALANGUAGE
 from xml.etree import ElementTree as ET
 from xml.sax.saxutils import escape
+
+try:
+  from langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names
+  from catalogmetadata import LICENSES, SERIES, METALANGUAGE
+except ImportError:
+  from langsci.langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names
+  from langsci.catalogmetadata import LICENSES, SERIES, METALANGUAGE
+
 
 book_ID = sys.argv[1]
 soup = get_soup(book_ID)
@@ -25,7 +31,7 @@ metalanguage = METALANGUAGE.get(book_ID, "eng")
 biosketches = get_biosketches(soup)
 
 bisac = "LAN009000"
-wgs = "561"
+wgs = "9561"
 if series == "Translation and Multilingual Natural Language Processing":
     bisac = "LAN023000"
 
@@ -155,8 +161,8 @@ proquest_template = f"""<?xml version="1.0"?>
       <Subject>
         <MainSubject />
         <SubjectSchemeIdentifier>26</SubjectSchemeIdentifier>
+        <SubjectSchemeVersion>2.0</SubjectSchemeVersion>
         <SubjectCode>{wgs}</SubjectCode>
-        <SubjectSchemeVersion>2007</SubjectSchemeVersion>
       </Subject>
       <AudienceCode>06</AudienceCode>
       <EpubLicense>
