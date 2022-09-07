@@ -16,15 +16,14 @@ try:
     #from lgrlist import LGRLIST
 
     from imtvaultconstants import *
-    from langsci.webglottolog import string2glottocode, glottocode2iso
+    from langsci.webglottolog import string2glottocode, glottocode2iso, glottocode2name
 except ImportError:
     from langsci.titlemapping import titlemapping
     from langsci.named_entities import get_entities, get_parent_entities
     #from lgrlist import LGRLIST
 
     from langsci.imtvaultconstants import *
-
-from langsci.webglottolog import string2glottocode, glottocode2iso
+    from langsci.webglottolog import string2glottocode, glottocode2iso, glottocode2name
 
 
 
@@ -40,13 +39,14 @@ except FileNotFoundError:
 #except FileNotFoundError:
     #glotto_iso6393 = {}
 
-glottotmp = {}
+glottotmpiso = {}
+glottotmpname = {}
 
 class gll:
     def __init__(
         self,
         presource,
-        lg,
+        glottocode,
         src,
         imt,
         trs,
@@ -60,7 +60,7 @@ class gll:
         extract_entities=False,
         parent_entities=False,
         categories = "smallcaps",
-        nercache = {},
+        nercache = None,
         external_ID = None,
         provided_citation = None
     ):
@@ -72,6 +72,7 @@ class gll:
             self.book_title = titlemapping.get(self.doc_ID)
         elif provider == "glossa":
             self.book_URL = f"https://www.glossa-journal.org/article/id/{self.doc_ID}"
+        self.provider = provider
         self.book_metalanguage = book_metalanguage
         self.abbrkey = abbrkey
         if categories == "smallcaps":
@@ -137,37 +138,28 @@ class gll:
             else:
                 self.trs = re.sub(CITATION, r"(\2)", self.trs)
 
-        if book_language:
-            self.language_iso6393 = book_language[0]
-            self.language_glottocode = book_language[1]
-            self.language_name = book_language[2]
-        elif glottolog:
-            self.language_iso6393 = None
-            self.language_name = None
-            if lg not in ("", None):
-                self.language_name = lg
+        self.language_glottocode = glottocode
+        if glottocode not in ("", None):
+            try:
+                self.language_name = glottotmpname['glottocode']
+            except KeyError:
                 try:
-                    self.language_glottocode = glottonames[lg]
-                    glottonames[lg] = self.language_glottocode
-                    self.language_iso6393 = glottocode2iso(self.language_glottocode)
-                except KeyError:
-                    if glottotmp.get(lg):
-                        self.language_glottocode = None
-                    else:
-                        glottocode = string2glottocode(lg)
-                        if glottocode is None:
-                            #we have no information but might get some in the future
-                            pass
-                        elif glottocode is False:
-                            #we have positive information that we cannot resolve this
-                            glottotmp[lg] = False
-                        else:
-                            self.language_glottocode = glottocode
+                    self.language_name = glottocode2name(glottocode)
+                    glottotmpname['glottocode'] = self.language_name
+                except:
+                    self.language_name =  None
+                    print(f"{self.ID} has no retrievable language")
+            try:
+                self.language_iso6393 = glottocode2iso(glottocode)
+            except KeyError:
+                self.language_iso6393 = glottocode2iso(glottocode)
+                glottotmpiso['glottocode'] = self.language_iso6393
+
         if analyze:
             self.analyze()
         self.entities = None
         if extract_entities:
-            self.entities = get_entities(self.trs,cache=True)
+            self.entities = get_entities(self.trs,cache=nercache)
         if parent_entities:
             self.parent_entities = get_parent_entities(self.entities)
 
@@ -235,8 +227,9 @@ class gll:
         for ac in allcaps:
             cats = re.split("[-=.:0-9)(/\[\]]", ac)
             for cat in cats:
-                d[cat] = True
-        print(d)
+                if cat != '':
+                    d[cat] = True
+        #print(d)
         return sorted(list(d.keys()))
 
     #def json(self):

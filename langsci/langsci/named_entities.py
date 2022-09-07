@@ -20,9 +20,7 @@ NUMPATTERN = re.compile("[A-Za-z][-0-9]+")  # stuff like M2-34 is not any good
     #pass
 
 
-
-
-nercache = json.loads(open("nercache.json").read())
+#nercache = json.loads(open("nercache.json").read())
 entitiescache = json.loads(open("entitiestitles.json").read())
 parentcache = defaultdict(dict)
 
@@ -31,11 +29,11 @@ with open("closure.csv") as closurefile:
         ancestor, degree, child = line.strip().split("\t")
         parentcache[child][ancestor] = True
 
-def get_entities(text, cache=True):
+def get_entities(text, cache=None):
     if cache:
-        global nercache
+        #global nercache
         try:
-            entities = nercache[text]
+            entities = cache[text]
             return entities
         except KeyError:
             pass
@@ -56,8 +54,8 @@ def get_entities(text, cache=True):
         and x["wikidataId"] not in misextractions
         and not NUMPATTERN.match(x["rawName"])
     }
-    if nercache:
-        nercache[text] = result
+    #if nercache:
+        #nercache[text] = result
     return result
 
 def get_title(wikidata_ID):

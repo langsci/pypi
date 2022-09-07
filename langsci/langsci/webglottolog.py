@@ -39,3 +39,16 @@ def glottocode2iso(glottocode):
             return "und"
         return iso
 
+
+def glottocode2name(glottocode):
+        request_url = f"https://glottolog.org/resource/languoid/id/{glottocode}"
+        html = requests.get(request_url).text
+        soup = BeautifulSoup(html, "html.parser")
+        try:
+            name = soup.find("h3").find("span").text
+        except AttributeError:
+            print(f"name for {glottocode} could not be established")
+            return ''
+        print(glottocode,name)
+        return name
+
