@@ -40,7 +40,7 @@ except FileNotFoundError:
     #glotto_iso6393 = {}
 
 glottotmpiso = {}
-glottotmpname = {}
+glottotmpname = json.loads(open("g2.json").read())
 
 class gll:
     def __init__(
@@ -68,10 +68,10 @@ class gll:
         self.license = "https://creativecommons.org/licenses/by/4.0"
         self.doc_ID = int(filename.split("/")[-2])
         if provider == "langsci":
-            self.book_URL = f"https://langsci-press.org/catalog/book/{self.doc_ID}"
+            self.doc_URL = f"https://langsci-press.org/catalog/book/{self.doc_ID}"
             self.book_title = titlemapping.get(self.doc_ID)
         elif provider == "glossa":
-            self.book_URL = f"https://www.glossa-journal.org/article/id/{self.doc_ID}"
+            self.doc_URL = f"https://www.glossa-journal.org/article/id/{self.doc_ID}"
         self.provider = provider
         self.book_metalanguage = book_metalanguage
         self.abbrkey = abbrkey
@@ -141,11 +141,12 @@ class gll:
         self.language_glottocode = glottocode
         if glottocode not in ("", None):
             try:
-                self.language_name = glottotmpname['glottocode']
+                self.language_name = glottotmpname[glottocode]
             except KeyError:
                 try:
                     self.language_name = glottocode2name(glottocode)
-                    glottotmpname['glottocode'] = self.language_name
+                    print(f"name for {glottocode} set to {self.language_name}")
+                    glottotmpname[glottocode] = self.language_name
                 except:
                     self.language_name =  None
                     print(f"{self.ID} has no retrievable language")
@@ -153,7 +154,7 @@ class gll:
                 self.language_iso6393 = glottocode2iso(glottocode)
             except KeyError:
                 self.language_iso6393 = glottocode2iso(glottocode)
-                glottotmpiso['glottocode'] = self.language_iso6393
+                glottotmpiso[glottocode] = self.language_iso6393
 
         if analyze:
             self.analyze()
