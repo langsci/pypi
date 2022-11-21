@@ -6,14 +6,14 @@ try:
     import titlemapping
     from interlinear import gll
 except ImportError:
-    from langsci.interlinear import gll
     from langsci import titlemapping
+    from langsci.interlinear import gll
 
 import re
 
 PROVIDER_ID_PATTERN = re.compile("([a-z]+)([0-9]+)")
 skipexisting = True
-nercache = json.loads(open("nercache.json").read())
+#nercache = json.loads(open("nercache.json").read())
 filenametemplate = "langscijson/cldfexamples%s.json"
 examples = []
 current_docID = 'dummy'
@@ -47,11 +47,11 @@ with open('examples.csv', newline='') as csvfile:
             provider = provider,
             categories = "allcaps",
             analyze = True,
-            extract_entities = True,
-            parent_entities = True,
+            extract_entities = False,
+            parent_entities = False,
             provided_citation = citation,
             external_ID = external_ID,
-            nercache = nercache
+            nercache = False
             )
         if (doc_ID != current_docID):
             print(f"writing out {current_docID}")
@@ -65,25 +65,25 @@ with open('examples.csv', newline='') as csvfile:
             jsonname = f"langscijson/cldfexamples{current_docID}.json"
             with open(jsonname, "w", encoding="utf8") as jsonout:
                 jsonout.write(thisjson)
-            with open("nercache.json", "w") as nerout:
-                nerout.write = json.dumps(nercache,
-                                sort_keys=True,
-                                indent=4,
-                                ensure_ascii=False)
+            #with open("nercache.json", "w") as nerout:
+                #nerout.write = json.dumps(nercache,
+                                #sort_keys=True,
+                                #indent=4,
+                                #ensure_ascii=False)
             examples = []
             current_docID = doc_ID
             print(f"reading examples for {current_docID}")
         examples.append(thisgll)
-        try:
-            nercache[thisgll.trs] = thisgll.entities
-        except AttributeError:
-            pass
+        #try:
+            #nercache[thisgll.trs] = thisgll.entities
+        #except AttributeError:
+            #pass
 
-with open("nercache.json", "w") as nerout:
-    nerout.write = json.dumps(nercache,
-                                sort_keys=True,
-                                indent=4,
-                                ensure_ascii=False)
+#with open("nercache.json", "w") as nerout:
+    #nerout.write = json.dumps(nercache,
+                                #sort_keys=True,
+                                #indent=4,
+                                #ensure_ascii=False)
 
 
 

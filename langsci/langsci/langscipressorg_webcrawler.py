@@ -75,7 +75,7 @@ def get_ISBNs(soup, drophyphens=True):
         if label == "Hardcover":
             isbns['hardcover'] = publicationformat.find("div", "identification_code").find('div').text.strip().replace(dropee, '')
             continue
-        if label == "PDF":
+        if "PDF" in label:
             try:
                 isbns['digital'] = publicationformat.find("div", "identification_code").find('div').text.strip().replace(dropee, '')
             except AttributeError:
@@ -182,6 +182,27 @@ def get_wiki_citation(creatorlist):
     }}
     </ref>"""
     return wikiinfo
+
+
+def get_pdf(soup, file_name):
+    publication_formats = soup.find("div", "files")
+    #print(publication_formats)
+    try:
+        zenodolink = [el['href'] for el in publication_formats.find_all("a") if el['href'].startswith('https://zenodo')][0]
+        with open(file_name, "wb") as out:
+            response = requests.get(zenodolink)
+            out.write(response.content)
+    except IndexError:
+        omplinks_pdf = [el['href'] for el in publication_formats.find_all("a","pdf")]
+        #print(omplinks_pdf)
+        if len(omplinks_pdf) > 1:
+           print('more than one pdf')
+           return
+        omplink_pdf = omplinks_pdf[0]
+        with open(file_name, "wb") as out:
+            response = requests.get(omplink_pdf)
+            out.write(response.content)
+        #treat omp link`
 
 
 

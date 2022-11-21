@@ -1,5 +1,9 @@
-from langscipressorg_webcrawler import get_soup, get_citeinfo
-from catalogmetadata import METALANGUAGE, ONE_LANGUAGE_BOOKS, LICENSES, SUPERSEDED
+try:
+    from langscipressorg_webcrawler import get_soup, get_citeinfo
+    from catalogmetadata import METALANGUAGE, ONE_LANGUAGE_BOOKS, LICENSES, SUPERSEDED
+except ImportError:
+    from langsci.langscipressorg_webcrawler import get_soup, get_citeinfo
+    from langsci.catalogmetadata import METALANGUAGE, ONE_LANGUAGE_BOOKS, LICENSES, SUPERSEDED
 
 fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators title year".split()
 csvstrings = ["\t".join(fields)]

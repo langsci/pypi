@@ -12,9 +12,9 @@ lsidrequest = requests.get(
 )
 lsidformated = json.loads(lsidrequest.text)
 # save the ID.
-#paperhiveid = lsidformated["documentItems"][0]["id"]
+paperhiveid = lsidformated["documentItems"][0]["id"]
 
-paperhiveid = "stscTQ_iDyaZ"
+#paperhiveid = "stscTQ_iDyaZ"
 paperhiverequest = requests.get(
     "https://paperhive.org/api/discussions?documentItem=" + paperhiveid
 )

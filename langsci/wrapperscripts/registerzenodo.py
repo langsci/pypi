@@ -30,7 +30,7 @@ except IndexError:
     pass
 extracommunities = []
 try:
-    extracommunities = int(sys.argv[2])
+    extracommunities = sys.argv[2]
 except IndexError:
     pass
 

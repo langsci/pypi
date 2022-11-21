@@ -5,13 +5,14 @@ from datetime import date
 #from xml.sax.saxutils import escape
 import xlrd
 import xlsxwriter
+from os.path import exists
 
 
 try:
-  from langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names
+  from langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names, get_pdf
   from catalogmetadata import LICENSES, SERIES, METALANGUAGE
 except ImportError:
-  from langsci.langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names
+  from langsci.langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names, get_pdf
   from langsci.catalogmetadata import LICENSES, SERIES, METALANGUAGE
 
 today = date.today().strftime("%Y%m%d")
@@ -80,6 +81,12 @@ for book_ID in range(16,400):
   except AttributeError:
     continue
 
+  pdf_path = f"ebscopdfs/{isbn_digital}.pdf"
+  if exists(pdf_path):
+    pass
+  else:
+    get_pdf(soup, pdf_path)
+
   bisac = "LAN009000"
   #wgs = "9561"
   if series == "Translation and Multilingual Natural Language Processing":
@@ -132,11 +139,9 @@ for book_ID in range(16,400):
   for i, h in enumerate(xlsx_headings):
     v =  xlsx_d.get(h)
     newSheet.write(current_row, i, v)
-    print(current_row,i, v)
+    #print(current_row,i, v)
   current_row += 1
 
 workbook_out.close()
-
-
 
 

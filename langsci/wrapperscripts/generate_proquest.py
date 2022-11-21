@@ -109,8 +109,9 @@ proquest_template = f"""<?xml version="1.0"?>
     <DescriptiveDetail>
       <!-- P.3 -->
       <ProductComposition>00</ProductComposition>
-      <ProductForm>ED</ProductForm>
+      #<ProductForm>ED</ProductForm>
       <!-- <EpubType>002</EpubType> -->
+      <!--
       <Measure>
         <MeasureType>01</MeasureType>
         <Measurement>24.00</Measurement>
@@ -121,6 +122,7 @@ proquest_template = f"""<?xml version="1.0"?>
         <Measurement>17.00</Measurement>
         <MeasureUnitCode>cm</MeasureUnitCode>
       </Measure>
+      -->
       <Collection>
         <CollectionType>10</CollectionType>
         <CollectionIdentifier>
@@ -173,8 +175,6 @@ proquest_template = f"""<?xml version="1.0"?>
     </DescriptiveDetail>
     <CollateralDetail>
       <TextContent>
-        <TextType>03</TextType>
-        <ContentAudience>00</ContentAudience>
         <Text textformat="05">
           {escape(blurb)}
         </Text>
@@ -229,6 +229,11 @@ proquest_template = f"""<?xml version="1.0"?>
             <d103>01</d103>
             <d104>{license_url.lower()}</d104>
   </othertext>
+  <OtherText>
+    <TextTypeCode>47</TextTypeCode>
+    <TextFormat>06</TextFormat>
+    <Text>Open access </Text>
+  </OtherText>
   </Product>
 </ONIXMessage>"""
 

@@ -43,7 +43,8 @@ def get_entities(text, cache=None):
         return {}
     rtext = requests.post(ner_url, json={"text": text}).text
     # parse json
-    if rtext == None:
+    print(rtext)
+    if rtext == None or rtext == '':
         return {}
     retrieved_entities = json.loads(rtext).get("entities", [])
     # extract names and wikidataId's

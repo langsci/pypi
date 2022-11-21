@@ -40,19 +40,22 @@ METALANGUAGE = {
     160: "por",
     200: "por",
     177: "cmn",
-    236: "spa"
+    236: "spa",
+    371: "deu",
+    #358: "por"
 }
 
 LICENSES = {
     148: "CC-BY-SA",
     149: "CC-BY-NC-ND",
-    234: "CC-BY-NC-ND"
+    234: "CC-BY-NC-ND",
+    359: "CC-BY-SA"
     }
 
-ROMANCE = [236,308,165,27,286,258,16,183,143,200,160]
+ROMANCE = [236,308,165,27,286,258,16,183,143,200,160,369,358,241]
 
 
-SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195]
+SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195, 231]
 
 SERIES = {
     "Studies in Diversity Linguistics": "2363-5568",
@@ -80,7 +83,7 @@ SERIES = {
     "Research on Comparative Grammar": "2749-781X",
     "Open Germanic Linguistics": "2750-557X",
     "Languages of the Caucasus": "2699-0156",
-    #"Open Romance Linguistics": "",
+    "Open Romance Linguistics": "",
     "Current Issues in Bilingualism": "2747-9927",
     #"Topics in Phonological Diversity": "",
     #"Estudios de Lingüística Amerindia / Estudos de Linguística Ameríndia / Studies of Amerindian Linguistics / Études de Linguistique Amérindienne": "",
