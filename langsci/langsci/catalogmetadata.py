@@ -26,6 +26,7 @@ ONE_LANGUAGE_BOOKS = {
     351: ("fwe", "fwee1238", "Fwe"),
     346: ("eng", "stan1293", "English"),
     344: ("kgv", "kara1499", "Kalamang"),
+    324: ("tcu", "sout2972", "Rarámuri"),
 }
 
 METALANGUAGE = {
@@ -42,7 +43,8 @@ METALANGUAGE = {
     177: "cmn",
     236: "spa",
     371: "deu",
-    #358: "por"
+    358: "por",
+    241: "fra"
 }
 
 LICENSES = {
@@ -55,7 +57,7 @@ LICENSES = {
 ROMANCE = [236,308,165,27,286,258,16,183,143,200,160,369,358,241]
 
 
-SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195, 231]
+SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195, 231, 241, 350, 358, 376 ]
 
 SERIES = {
     "Studies in Diversity Linguistics": "2363-5568",
