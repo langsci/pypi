@@ -10,7 +10,7 @@ def get_soup(book_ID):
     html = requests.get(url).text
     if len(html) in (18920, 18922): #book not found
         return None
-    print(f"{book_ID}", end=" ")
+    #print(f"{book_ID}", end=" ")
     soup = BeautifulSoup(html, 'html.parser')
     return soup
 
@@ -18,16 +18,17 @@ def get_citeinfo(soup):
     try:
         citeinfo = soup.find("div", "series").findNext('div','label').nextSibling.nextSibling.text.strip()
     except AttributeError:
-        print("could not retrieve citeinfo")
+        #print("could not retrieve citeinfo")
         return None
     if "orthcoming" in citeinfo:
-        print("not published yet")
+        #print("not published yet")
         return None
     citegroups = CITEPATTERN.match(citeinfo)
     if citegroups is None:
         print("could not match citeinfo")
     else:
-        print()
+        pass
+        #print()
     return citegroups
 
 def get_blurb(soup):
@@ -185,7 +186,7 @@ def get_wiki_citation(creatorlist):
 
 
 def get_pdf(soup, file_name):
-    publication_formats = soup.find("div", "files")
+    publication_formats = soup.find("div", "entry_details").find("div", "files")
     #print(publication_formats)
     try:
         zenodolink = [el['href'] for el in publication_formats.find_all("a") if el['href'].startswith('https://zenodo')][0]
@@ -193,11 +194,15 @@ def get_pdf(soup, file_name):
             response = requests.get(zenodolink)
             out.write(response.content)
     except IndexError:
-        omplinks_pdf = [el['href'] for el in publication_formats.find_all("a","pdf")]
+        omplinks_pdf = [el['href'] for el in publication_formats.find_all("a","pdf") if "PDF" in el.text]
         #print(omplinks_pdf)
+        if len(omplinks_pdf) == 0:
+            print("publication format PDF could not be retrieved")
+            return
         if len(omplinks_pdf) > 1:
-           print('more than one pdf')
-           return
+            print('more than one pdf')
+            print(omplinks_pdf)
+            return
         omplink_pdf = omplinks_pdf[0]
         with open(file_name, "wb") as out:
             response = requests.get(omplink_pdf)

@@ -85,6 +85,7 @@ for book_ID in range(16,400):
   if exists(pdf_path):
     pass
   else:
+    print(book_ID)
     get_pdf(soup, pdf_path)
 
   bisac = "LAN009000"
