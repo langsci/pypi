@@ -8,7 +8,7 @@ except ImportError:
 fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators title year".split()
 csvstrings = ["\t".join(fields)]
 
-for ID in range(16,350):
+for ID in range(16,400):
     soup = get_soup(ID)
     citegroups = get_citeinfo(soup)
     if citegroups is None:

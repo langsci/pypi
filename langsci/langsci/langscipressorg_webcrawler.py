@@ -35,9 +35,30 @@ def get_blurb(soup):
     try:
         synopsis = soup.find("div", "main_entry").findNext('div','value').text.strip()
     except AttributeError:
-        print("could not retrieve blurb")
+        #print("could not retrieve blurb")
         return None
     return synopsis
+
+def get_chapters(soup):
+    try:
+        chapterlis = soup.find("div", "chapters").find_all('li')
+    except AttributeError:
+        return []
+    chapters = {}
+    for chapterli in chapterlis:
+        title = chapterli.find("div", "title").text.strip().replace('\t','').replace('\n',': ')
+        authors = chapterli.find("div", "authors").text.strip()
+        identifier = chapterli.find("a").text.strip()
+        try:
+            numerical_identifer = int(identifier.replace("Chapter ", ''))
+        except ValueError:
+            numerical_identifer = None
+        chapters[identifier]= {'title': title,
+                        'authors':authors}
+        chapters[numerical_identifer]= {'title': title,
+                        'authors':authors}
+    return chapters
+
 
 def get_publication_date(soup):
     try:
@@ -133,9 +154,9 @@ def get_title_subtitle(citegroup):
     except TypeError:
         return None, None
     title_elements = titlestring.split(": ")
-    title = title_elements[0]
+    title = title_elements[0].strip().replace(r'\t',' ').replace(r'\n',' ')
     try:
-        subtitle = title_elements[1]
+        subtitle = title_elements[1].strip().replace(r'\t',' ').replace(r'\n',' ')
     except IndexError:
         subtitle = ""
     return title, subtitle
