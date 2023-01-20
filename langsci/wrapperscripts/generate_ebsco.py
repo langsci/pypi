@@ -85,7 +85,7 @@ for book_ID in range(16,400):
   if exists(pdf_path):
     pass
   else:
-    print(book_ID)
+    print(f"fetching pdf for {book_ID}")
     get_pdf(soup, pdf_path)
 
   bisac = "LAN009000"
@@ -144,5 +144,6 @@ for book_ID in range(16,400):
   current_row += 1
 
 workbook_out.close()
+print("ebsco_langsci.xlsx written")
 
 
