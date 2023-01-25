@@ -41,7 +41,7 @@ METALANGUAGE = {
     160: "por",
     177: "cmn",
     200: "por",
-    241: "fra"
+    241: "fra",
     236: "spa",
     340: "deu",
     358: "por",

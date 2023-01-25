@@ -291,7 +291,8 @@ class Record():
     self.checkthesis()
     self.checkbook()
     self.checkincollection()
-    self.checklanguagenames()
+    self.checkdecapitalizationprotection()
+    self.checkmonths()
 
   def report(self):
     """
@@ -312,7 +313,7 @@ class Record():
 
     return match.group(1) + ' {{' +match.group(2).upper()+'}}'
 
-  def checklanguagenames(self):
+  def checkdecapitalizationprotection(self):
     #CONFERENCEPATTERN = re.compile("([A-Z][^ ]*[A-Z][A-Z-a-z]]+)") #Binnenmajuskeln should be kept
     #PROCEEDINGSPATTERN = re.compile("(.* (?:Proceedings|Workshop|Conference|Symposium).*)\}$") #Binnenmajuskeln should be kept
 
@@ -461,11 +462,33 @@ class Record():
 
     edn =  self.fields.get('edition')
     if edn:
-      edn = edn.replace('{','').replace('}','').replace('"','').strip()
+      edn = edn.replace('{','').replace('}','').replace('"','').strip().replace("2nd", 2).replace("3rd", 3)
       try:
         int(edn)
+        self.fields['edition'] = edn
       except ValueError:
           self.errors.append("incorrect format for edition: %s"% (edn))
+
+
+  def checkmonths(self):
+    """
+    use numerical represenation for months
+    """
+    d = dict(jan=1,feb=2,mar=3,apr=4,may=5,jun=6,jul=7,aug=8,sep=9,oct=10,nov=11,dec=12,            january=1,february=2,march=3,april=4 ,june=6,july=7,august=8,september=9,october=10,november=11,december=12)
+
+    m =  self.fields.get('month')
+    if m:
+      try:
+        if int(m) > 12:
+          self.errors.append("incorrect format for month: %s"% (m))
+        else:
+          pass
+      except ValueError:
+        m = m.lower().replace('{','').replace('}','').replace('"','').strip()
+        try:
+          self.fields['month'] = "{%s}" % d[m]
+        except KeyError:
+          self.errors.append("incorrect format for month: %s"% (m))
 
   def checkurl(self):
     """

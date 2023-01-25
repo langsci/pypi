@@ -135,11 +135,19 @@ class TestBibConversion(unittest.TestCase):
             ("""\n@book{Schmitz2011,\n\taddress = {Cologne},\n\tauthor = {Schmitz, Ulrich},\n\tpublisher = {Cologne University},\n\tyear = {2011},\n\tbooktitle = {bare booktitle}\n}""",
              """\n@book{Schmitz2011,\n\taddress = {Cologne},\n\tauthor = {Schmitz, Ulrich},\n\tbooktitle = {bare booktitle},\n\tpublisher = {Cologne University},\n\ttitle = {bare booktitle},\n\tyear = {2011}\n}"""),
             ("""\n@comment{useless comment}""",
-             "\n")
+             "\n"),
+            ("""\n@book{Schmitz2011,\n\taddress = {Cologne},\n\tauthor = {Schmitz, Ulrich},\n\tpublisher = {Cologne University},\n\tyear = {2011},\n\tbooktitle = {bare booktitle},\n\tmonth = nov}""",
+             """\n@book{Schmitz2011,\n\taddress = {Cologne},\n\tauthor = {Schmitz, Ulrich},\n\tbooktitle = {bare booktitle},\n\tmonth = {11},\n\tpublisher = {Cologne University},\n\ttitle = {bare booktitle},\n\tyear = {2011}\n}"""),
+
+             ("""\n@book{Schmitz2011,\n\taddress = {Cologne},\n\tauthor = {Schmitz, Ulrich},\n\tpublisher = {Cologne University},\n\tyear = {2011},\n\tbooktitle = {bare booktitle},\n\tmonth = {February}}""",
+             """\n@book{Schmitz2011,\n\taddress = {Cologne},\n\tauthor = {Schmitz, Ulrich},\n\tbooktitle = {bare booktitle},\n\tmonth = {2},\n\tpublisher = {Cologne University},\n\ttitle = {bare booktitle},\n\tyear = {2011}\n}"""),
+
             )
         for s, expected in normalizetests:
             record = bibtools.normalize(s)
             self.assertEqual(record, expected)
+
+
 
 
     
