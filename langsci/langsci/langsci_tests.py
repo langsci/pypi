@@ -98,11 +98,11 @@ class TestBibConversion(unittest.TestCase):
                     ("""Rissanen, Matti. 1999. Syntax. In Roger Lass (ed.), Cambridge History of the English Language, vol. 3, 187-331. Cambridge & New York: Cambridge University Press."""
                                 ,"""@incollection{Rissanen1999,\n\taddress = {Cambridge \& New York},\n\tauthor = {Rissanen, Matti},\n\tbooktitle = {{Cambridge} History of the {English} Language},\n\teditor = {Roger Lass},\n\tpages = {187--331},\n\tpublisher = {Cambridge University Press},\n\ttitle = {Syntax},\n\tvolume = {3},\n\tyear = {1999}\n}\n"""),
                     ("""Stewart, Thomas W., Jr. 2000. Mutation as morphology: Bases, stems, and shapes in Scottish Gaelic. Columbus, OH: The Ohio State University dissertation."""
-                                ,"""@thesis{Stewart2000,\n\taddress = {Columbus, OH},\n\tauthor = {Stewart, Thomas W., Jr},\n\tschool = {The Ohio State University},\n\ttitle = {Mutation as morphology: {{B}}ases, stems, and shapes in {Scottish} {Gaelic}},\n\tyear = {2000}\n}\n"""),
+                                ,"""@phdthesis{Stewart2000,\n\tauthor = {Stewart, Thomas W., Jr},\n\tschool = {The Ohio State University},\n\ttitle = {Mutation as morphology: {{B}}ases, stems, and shapes in {Scottish} {Gaelic}},\n\tyear = {2000}\n}\n"""),
                     ("""Webelhuth, Gert (ed.). 1995. Government and binding theory and the minimalist program: Principles and parameters in syntactic theory. Oxford: Blackwell."""
                                 ,"""@book{Webelhuth1995,\n\taddress = {Oxford},\n\tbooktitle = {Government and binding theory and the minimalist program: {{P}}rinciples and parameters in syntactic theory},\n\teditor = {Webelhuth, Gert},\n\tpublisher = {Blackwell},\n\ttitle = {Government and binding theory and the minimalist program: {{P}}rinciples and parameters in syntactic theory},\n\tyear = {1995}\n}\n"""),
                     ("""Yu, Alan C. L. 2003. The morphology and phonology of infixation. Berkeley, CA: University of California dissertation."""
-                                ,"""@thesis{Yu2003,\n\taddress = {Berkeley, CA},\n\tauthor = {Yu, Alan C. L.},\n\tschool = {University of California},\n\ttitle = {The morphology and phonology of infixation},\n\tyear = {2003}\n}\n"""),
+                                ,"""@phdthesis{Yu2003,\n\tauthor = {Yu, Alan C. L.},\n\tschool = {University of California},\n\ttitle = {The morphology and phonology of infixation},\n\tyear = {2003}\n}\n"""),
                     #("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith""",
                                 #"""@book{Smith2000,\n\taddress = {Newton},\n\tauthor = {Smith, John},\n\tpublisher = {Mypress},\n\ttitle = {Thoughts on stuff},\n\turl = {www.mypress.com/smith},\n\tyear = {2000}\n}\n"""),
                     ("""Smith, John. 2000. Thoughts on stuff. Newton: Mypress. www.mypress.com/smith (2021-12-24)""",
@@ -114,7 +114,8 @@ class TestBibConversion(unittest.TestCase):
                     ("""Gray, Hazel. 2013. Locatives in Ikizu. Leiden: Leiden University. (M.A. thesis)."""
                     ,"""@mastersthesis{Gray2013,\n\tauthor = {Gray, Hazel},\n\tschool = {Leiden University},\n\ttitle = {Locatives in Ikizu},\n\tyear = {2013}\n}\n"""),
                     #("Parkvall, Mikael. 2005. Foreword. In Alan D. Corré (ed.), A glossary of lingua franca. https://minds.wisconsin.edu/bitstream/item/3920/edition2/edition3/foreword.htm (Accessed 2016-10-07).",""""""),
-                    #("maitrise",""""""),
+                    ("Baker, Mark Cleland. 1985. Incorporation: A Theory of Grammatical Function Changing. Cambridge, MA: Massachusetts Institute of Technology. (PhD dissertation)",
+                     """@phdthesis{Baker1985,\n\tauthor = {Baker, Mark Cleland},\n\tschool = {Massachusetts Institute of Technology},\n\ttitle = {Incorporation: {{A}} Theory of Grammatical Function Changing},\n\tyear = {1985}\n}\n"""),
                     #("maitrise",""""""),
                     #("maitrise","""""")
                     #Maynor, Natalie. 1988. Written records of spoken language: How reliable are they? In Alan R. Thomas (ed.), Methods in dialectology: Proceedings of the sixth international conference held at the University College of North Wales, 3rd-7th August 1987, 109-120. Clevedon, PA: Multilingual Matters Ltd.

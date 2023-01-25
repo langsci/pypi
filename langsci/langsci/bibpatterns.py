@@ -41,7 +41,7 @@ PROCEEDINGSPATTERN = re.compile(
 )  # Binnenmajuskeln should be kept
 
 VOLUMEPATTERN = re.compile("(, )?([Vv]olume|[Vv]ol.?|Band|[Tt]ome) *([0-9IVXivx]+)")
-THESISPATTERN = re.compile("(.*?)( doctoral)? dissertation")
+THESISPATTERN = re.compile(f"(.*?)")
 
 # pattern definitions
 year = "\(? *(?P<year>[12][678901][0-9][0-9][a-f]?) *\)?"
@@ -54,6 +54,8 @@ booktitle = "(?P<booktitle>.+)"
 title = "(?P<title>.*?)"
 journal = "(?P<journal>.*?)"
 note = "(?P<note>.*)"
+phdthesisnote = "\(?([Dd]octoral|PhD|Ph\.D.)? ([Tt]hesis|[Dd]issertation)\)?"
+phdthesisnote = "dissertation"
 mathesisnote = "\(?(MA|Master's|Masters|Master|M\. ?A\.) [Tt]hesis\)?"
 numbervolume = "(?P<volume>[-\.0-9/]+) *(\((?P<number>[-0-9/]+)\))?"
 pubaddr = "(?P<address>.+) *:(?!/) *(?P<publisher>[^:]\.?[^\.]+)"
@@ -118,6 +120,10 @@ INCOLLECTION = re.compile(
 
 MASTERSTHESIS = re.compile(
     f"{author}[., ]*{year}[\., ]*{title}\. +{pubaddr}\. *{mathesisnote}"
+    )
+
+PHDTHESIS = re.compile(
+    f"{author}[., ]*{year}[\., ]*{title}\. +{pubaddr}\.?.*{phdthesisnote}"
     )
 
 MISC = re.compile(

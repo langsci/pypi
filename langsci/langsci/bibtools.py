@@ -164,6 +164,19 @@ class Record():
                 d["school"] = m.group('publisher')
                 #d["pages"] = m.group('pages')
                 #d["note"] = m.group('note')
+        elif  bibpatterns.PHDTHESIS.search(s):
+            self.typ = "phdthesis"
+            m = bibpatterns.PHDTHESIS.search(s)
+            if m:
+                d["author"] = m.group('author')
+                #d["editor"] = m.group('editor')
+                d["title"] = m.group('title')
+                #d["booktitle"] = m.group('booktitle')
+                d["year"] = m.group('year')
+                #d["address"] = m.group('address')
+                d["school"] = m.group('publisher').strip()
+                #d["pages"] = m.group('pages')
+                #d["note"] = m.group('note')
         elif  bibpatterns.EDITOR.search(s):
             self.typ = "incollection"
             m = bibpatterns.INCOLLECTION.search(s)
@@ -302,7 +315,7 @@ class Record():
     self.checkurl()
     self.checkquestionmarks()
     self.checkarticle()
-    self.checkthesis()
+    #self.checkthesis()
     self.checkbook()
     self.checkincollection()
     self.checkdecapitalizationprotection()
@@ -555,18 +568,18 @@ class Record():
         if self.fields.get('url') == None:
             self.errors.append("urldate without url")
 
-  def checkthesis(self):
-    if self.typ != 'book':
-      return
-    m = bibpatterns.THESISPATTERN.search(self.fields.get("publisher",""))
-    if m != None:
-        self.typ = "thesis"
-        school = m.group(1)
-        self.fields["school"] = school
-        thesistype = m.group(2)
-        if m.group(2) in ("doctoral","PhD"):
-            self.typ = "phdthesis"
-        del self.fields["publisher"]
+  #def checkthesis(self):
+    #if self.typ != 'book':
+      #return
+    #m = bibpatterns.THESISPATTERN.search(self.fields.get("publisher",""))
+    #if m != None:
+        #self.typ = "thesis"
+        #school = m.group(1)
+        #self.fields["school"] = school
+        #thesistype = m.group(2)
+        #if m.group(2) in ("doctoral","PhD"):
+            #self.typ = "phdthesis"
+        #del self.fields["publisher"]
 
 
   def checkbook(self):
