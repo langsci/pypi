@@ -39,9 +39,9 @@ CONFERENCEPATTERN = re.compile(
 PROCEEDINGSPATTERN = re.compile(
     "(.* (?:Proceedings|Workshop|Conference|Symposium).*)\}$"
 )  # Binnenmajuskeln should be kept
+
 VOLUMEPATTERN = re.compile("(, )?([Vv]olume|[Vv]ol.?|Band|[Tt]ome) *([0-9IVXivx]+)")
 THESISPATTERN = re.compile("(.*?)( doctoral)? dissertation")
-
 
 # pattern definitions
 year = "\(? *(?P<year>[12][678901][0-9][0-9][a-f]?) *\)?"
@@ -54,6 +54,7 @@ booktitle = "(?P<booktitle>.+)"
 title = "(?P<title>.*?)"
 journal = "(?P<journal>.*?)"
 note = "(?P<note>.*)"
+mathesisnote = "\(?(MA|Master's|Masters|Master|M\. ?A\.) [Tt]hesis\)?"
 numbervolume = "(?P<volume>[-\.0-9/]+) *(\((?P<number>[-0-9/]+)\))?"
 pubaddr = "(?P<address>.+) *:(?!/) *(?P<publisher>[^:]\.?[^\.]+)"
 #                      for http://                For J. Smith
@@ -70,6 +71,8 @@ URLDATE = re.compile(
         urlyear=urlyear, urlday=urlday, urlmonth=urlmonth
     )
 )
+
+
 
 # compiled regexes
 BOOK = re.compile(
@@ -112,6 +115,11 @@ INCOLLECTION = re.compile(
         note=note,
     )
 )
+
+MASTERSTHESIS = re.compile(
+    f"{author}[., ]*{year}[\., ]*{title}\. +{pubaddr}\. *{mathesisnote}"
+    )
+
 MISC = re.compile(
     "{author}[., ]*{year}[., ]*{title}\. *(?P<note>.*)".format(
         author=author, year=year, title=title

@@ -111,8 +111,8 @@ class TestBibConversion(unittest.TestCase):
                     ("""Braun, Sabine & Sara Dicerto. 2016. The use of videoconferencing in proceedings conducted with the assistance of an interpreter. http://www.videoconference-interpreting.net/wp-content/uploads/2016/11/AVIDICUS3_Research_Report.pdf"""
                         ,"""@misc{BraunDicerto2016,\n\tauthor = {Braun, Sabine and Sara Dicerto},\n\ttitle = {The use of videoconferencing in proceedings conducted with the assistance of an interpreter},\n\turl = {http://www.videoconference-interpreting.net/wp-content/uploads/2016/11/AVIDICUS3_Research_Report.pdf},\n\tyear = {2016}\n}\n"""),
                     #("""bad Url"""      ,""""""),
-                    ("""Gray, Hazel. 2013. Locatives in Ikizu. Leiden: Leiden University. (MA thesis)."""
-                    ,"""@mastersthesis{Gray2013,\n\taddress = {Leiden},\n\tauthor = {Gray, Hazel},\n\tschool={Leiden University}\n\ttitle = {Locatives in Ikizu},\n\tyear = {2013}}"""),
+                    ("""Gray, Hazel. 2013. Locatives in Ikizu. Leiden: Leiden University. (M.A. thesis)."""
+                    ,"""@mastersthesis{Gray2013,\n\tauthor = {Gray, Hazel},\n\tschool = {Leiden University},\n\ttitle = {Locatives in Ikizu},\n\tyear = {2013}\n}\n"""),
                     #("Parkvall, Mikael. 2005. Foreword. In Alan D. Corré (ed.), A glossary of lingua franca. https://minds.wisconsin.edu/bitstream/item/3920/edition2/edition3/foreword.htm (Accessed 2016-10-07).",""""""),
                     #("maitrise",""""""),
                     #("maitrise",""""""),

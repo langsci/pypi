@@ -150,7 +150,21 @@ class Record():
         d["publisher"] = None
         d["note"] = None
         d["url"] = None
-        if  bibpatterns.EDITOR.search(s):
+        print(s)
+        if  bibpatterns.MASTERSTHESIS.search(s):
+            self.typ = "mastersthesis"
+            m = bibpatterns.MASTERSTHESIS.search(s)
+            if m:
+                d["author"] = m.group('author')
+                #d["editor"] = m.group('editor')
+                d["title"] = m.group('title')
+                #d["booktitle"] = m.group('booktitle')
+                d["year"] = m.group('year')
+                #d["address"] = m.group('address')
+                d["school"] = m.group('publisher')
+                #d["pages"] = m.group('pages')
+                #d["note"] = m.group('note')
+        elif  bibpatterns.EDITOR.search(s):
             self.typ = "incollection"
             m = bibpatterns.INCOLLECTION.search(s)
             if m:
