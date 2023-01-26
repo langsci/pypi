@@ -160,6 +160,7 @@ class Record():
                 d["title"] = m.group('title')
                 #d["booktitle"] = m.group('booktitle')
                 d["year"] = m.group('year')
+                d["extrayear"] = m.group('extrayear')
                 #d["address"] = m.group('address')
                 d["school"] = m.group('publisher')
                 #d["pages"] = m.group('pages')
@@ -173,6 +174,7 @@ class Record():
                 d["title"] = m.group('title')
                 #d["booktitle"] = m.group('booktitle')
                 d["year"] = m.group('year')
+                d["extrayear"] = m.group('extrayear')
                 #d["address"] = m.group('address')
                 d["school"] = m.group('publisher').strip()
                 #d["pages"] = m.group('pages')
@@ -186,6 +188,7 @@ class Record():
                 d["title"] = m.group('title')
                 d["booktitle"] = m.group('booktitle')
                 d["year"] = m.group('year')
+                d["extrayear"] = m.group('extrayear')
                 d["address"] = m.group('address')
                 d["publisher"] = m.group('publisher')
                 d["pages"] = m.group('pages')
@@ -197,6 +200,7 @@ class Record():
                 d["author"] = m.group('author')
                 d["title"] = m.group('title')
                 d["year"] = m.group('year')
+                d["extrayear"] = m.group('extrayear')
                 d["journal"] = m.group('journal')
                 d["number"] = m.group('number')
                 d["volume"] = m.group('volume')
@@ -209,6 +213,7 @@ class Record():
                 d["author"] = m.group('author')
                 d["title"] = m.group('title')
                 d["year"] = m.group('year')
+                d["extrayear"] = m.group('extrayear')
                 d["journal"] = m.group('journal')
                 d["number"] = m.group('number')
                 d["volume"] = m.group('volume')
@@ -224,6 +229,7 @@ class Record():
                     d["author"] = None
                 d["title"] = m.group('title')
                 d["year"] = m.group('year')
+                d["extrayear"] = m.group('extrayear')
                 d["address"] = m.group('address')
                 d["publisher"] = m.group('publisher')
                 d["note"] = m.group('note')
@@ -233,6 +239,7 @@ class Record():
                 d["author"] = m.group('author')
                 d["title"] = m.group('title')
                 d["year"] = m.group('year')
+                d["extrayear"] = m.group('extrayear')
                 d["note"] = m.group('note')
         if d["note"] == '.':
             d["note"] = None
@@ -266,7 +273,8 @@ class Record():
             creatorpart = d["editor"].split(',')[0].split(' ')[0]
             creator = d["editor"]
         try:
-            yearpart = d["year"][:4]
+            yearpart = d["year"][:4] + d["extrayear"]
+            del d["extrayear"]
         except TypeError:
             return
         andcount = creator.count(' and ')

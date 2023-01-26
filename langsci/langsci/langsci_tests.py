@@ -116,7 +116,7 @@ class TestBibConversion(unittest.TestCase):
                     #("Parkvall, Mikael. 2005. Foreword. In Alan D. Corré (ed.), A glossary of lingua franca. https://minds.wisconsin.edu/bitstream/item/3920/edition2/edition3/foreword.htm (Accessed 2016-10-07).",""""""),
                     ("Baker, Mark Cleland. 1985. Incorporation: A Theory of Grammatical Function Changing. Cambridge, MA: Massachusetts Institute of Technology. (PhD dissertation)",
                      """@phdthesis{Baker1985,\n\tauthor = {Baker, Mark Cleland},\n\tschool = {Massachusetts Institute of Technology},\n\ttitle = {Incorporation: {{A}} Theory of Grammatical Function Changing},\n\tyear = {1985}\n}\n"""),
-                    #("maitrise",""""""),
+                    ("Smith, John (2000c). All on verbs. Bern: Blunder Press.","""@book{Smith2000c,\n\taddress = {Bern},\n\tauthor = {Smith, John},\n\tpublisher = {Blunder Press},\n\ttitle = {All on verbs},\n\tyear = {2000}\n}\n"""),
                     #("maitrise","""""")
                     #Maynor, Natalie. 1988. Written records of spoken language: How reliable are they? In Alan R. Thomas (ed.), Methods in dialectology: Proceedings of the sixth international conference held at the University College of North Wales, 3rd-7th August 1987, 109-120. Clevedon, PA: Multilingual Matters Ltd.
                     )
