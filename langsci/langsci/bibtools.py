@@ -186,7 +186,7 @@ class Record():
                 d["author"] = m.group('author')
                 d["editor"] = m.group('editor')
                 d["title"] = m.group('title')
-                d["booktitle"] = re.sub('[,.] [Pp]+\.?$','',m.group('booktitle'))
+                d["booktitle"] = re.sub('[,.] [Pp]+\.?$','',m.group('booktitle')) # get rid of pp. in "pp 123-234"
                 d["year"] = m.group('year')
                 d["extrayear"] = m.group('extrayear')
                 d["address"] = m.group('address')
