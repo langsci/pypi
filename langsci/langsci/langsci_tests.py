@@ -117,6 +117,10 @@ class TestBibConversion(unittest.TestCase):
                     ("Baker, Mark Cleland. 1985. Incorporation: A Theory of Grammatical Function Changing. Cambridge, MA: Massachusetts Institute of Technology. (PhD dissertation)",
                      """@phdthesis{Baker1985,\n\tauthor = {Baker, Mark Cleland},\n\tschool = {Massachusetts Institute of Technology},\n\ttitle = {Incorporation: {{A}} Theory of Grammatical Function Changing},\n\tyear = {1985}\n}\n"""),
                     ("Smith, John (2000c). All on verbs. Bern: Blunder Press.","""@book{Smith2000c,\n\taddress = {Bern},\n\tauthor = {Smith, John},\n\tpublisher = {Blunder Press},\n\ttitle = {All on verbs},\n\tyear = {2000}\n}\n"""),
+                    ("Van de Velde, Mark. 2005. The order of noun and demonstrative in Bantu. In Bostoen, Koen & Jacky Maniacky (eds). Studies in African Comparative Linguistics with Special Focus on Bantu and Mande, pp. 425-441. Tervuren: Royal Museum for Central Africa.","""@incollection{VandeVelde2005,\n\taddress = {Tervuren},\n\tauthor = {Van de Velde, Mark},\n\tbooktitle = {Studies in {African} Comparative Linguistics with Special Focus on {Bantu} and {Mande}},\n\teditor = {Bostoen, Koen and Jacky Maniacky},\n\tpages = {425--441},\n\tpublisher = {Royal Museum for Central Africa},\n\ttitle = {The order of noun and demonstrative in {Bantu}},\n\tyear = {2005}\n}\n""")
+                    #("maitrise","""""")
+                    #("maitrise","""""")
+                    #("maitrise","""""")
                     #("maitrise","""""")
                     #Maynor, Natalie. 1988. Written records of spoken language: How reliable are they? In Alan R. Thomas (ed.), Methods in dialectology: Proceedings of the sixth international conference held at the University College of North Wales, 3rd-7th August 1987, 109-120. Clevedon, PA: Multilingual Matters Ltd.
                     )

@@ -45,8 +45,8 @@ THESISPATTERN = re.compile(f"(.*?)")
 
 # pattern definitions
 year = "\(? *(?P<year>[12][678901][0-9][0-9])(?P<extrayear>[a-f]?) *\)?"
-pages = u"(?P<pages>[0-9xivXIV]+[-––]+[0-9xivXIV]+)"
-pppages = u"\(?[Pps\. ]*%s\)?" % pages
+pages = u"(?P<pages>[0-9xivlcXIVLC]+[-––]+[0-9xivlcXIVLC]+)"
+pppages = u"[Pps\. ]*%s" % pages
 author = "(?P<author>.*?)"  # do not slurp the year
 ed = "(?P<ed>\([Ee]ds?\.?\))?"
 editor = "(?P<editor>.+)"
@@ -106,7 +106,7 @@ ONLINEARTICLE = re.compile(
     )
 )
 INCOLLECTION = re.compile(
-    u"{author}[., ]*{year}[., ]*{title}\. In {editor} \([Ee]ds?\. *\)[\.,]? {booktitle}[\.,] {pages}\. +{pubaddr}\.{note}".format(
+    u"{author}[., ]*{year}[., ]*{title}\. In {editor} \([Ee]ds?\.? *\)[\.,]? {booktitle}[\.,] {pages}\. +{pubaddr}\.{note}".format(
         author=author,
         year=year,
         title=title,

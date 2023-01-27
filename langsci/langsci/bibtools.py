@@ -186,7 +186,7 @@ class Record():
                 d["author"] = m.group('author')
                 d["editor"] = m.group('editor')
                 d["title"] = m.group('title')
-                d["booktitle"] = m.group('booktitle')
+                d["booktitle"] = re.sub('[,.] [Pp]+\.?$','',m.group('booktitle'))
                 d["year"] = m.group('year')
                 d["extrayear"] = m.group('extrayear')
                 d["address"] = m.group('address')
@@ -666,7 +666,7 @@ class Record():
     """
     if not self.fields.get('address'):
       publisher = self.fields.get('publisher','')
-      if "John Benjamins" in publisher:
+      if "Benjamins" in publisher:
         self.fields['address'] = "{Amsterdam}"
       elif "Cambridge" in publisher or "CUP" in publisher :
         self.fields['address'] = "{Cambridge}"
@@ -678,6 +678,12 @@ class Record():
         self.fields['address'] = "{Berlin}"
       elif "Wiley" in publisher:
         self.fields['address'] = "{Hoboken}"
+      elif "Brill" in publisher:
+        self.fields['address'] = "{Leiden}"
+      elif "lincom" in publisher.lower():
+        self.fields['address'] = "{München}"
+      elif "Foris" in publisher:
+        self.fields['address'] = "{Dordrecht}"
 
   def checkincollection(self):
     """
