@@ -109,7 +109,7 @@ proquest_template = f"""<?xml version="1.0"?>
     <DescriptiveDetail>
       <!-- P.3 -->
       <ProductComposition>00</ProductComposition>
-      #<ProductForm>ED</ProductForm>
+      <ProductForm>ED</ProductForm>
       <!-- <EpubType>002</EpubType> -->
       <!--
       <Measure>
