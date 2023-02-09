@@ -22,7 +22,7 @@ title, subtitle = get_title_subtitle(citegroups)
 
 series = citegroups["series"]
 
-publication_date = get_publication_date(soup)
+publication_date = get_publication_date(soup).replace('-','')
 blurb = get_blurb(soup)
 isbn_digital =  get_ISBN_digital(soup)
 issn =  SERIES[citegroups["series"]]
@@ -134,6 +134,7 @@ proquest_template = f"""<?xml version="1.0"?>
           <CollectionSequenceNumber>9</CollectionSequenceNumber>
         </CollectionSequence>
         <TitleDetail>
+          <TitleType>01</TitleType>
           <TitleElement>
             <TitleElementLevel>02</TitleElementLevel>
             <TitleText textcase="02">{series}</TitleText>
@@ -175,6 +176,7 @@ proquest_template = f"""<?xml version="1.0"?>
     </DescriptiveDetail>
     <CollateralDetail>
       <TextContent>
+        <TextType>03</TextType>
         <Text textformat="05">
           {escape(blurb)}
         </Text>
