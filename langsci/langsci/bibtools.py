@@ -497,7 +497,7 @@ class Record():
 
     edn =  self.fields.get('edition')
     if edn:
-      edn = edn.replace('{','').replace('}','').replace('"','').strip().replace("2nd", 2).replace("3rd", 3)
+      edn = edn.replace('{','').replace('}','').replace('"','').strip().replace("2nd", "2").replace("3rd", "3")
       try:
         int(edn)
         self.fields['edition'] = edn
