@@ -49,16 +49,16 @@ METALANGUAGE = {
 }
 
 LICENSES = {
-    148: "CC-BY-SA",
-    149: "CC-BY-NC-ND",
-    234: "CC-BY-NC-ND",
-    359: "CC-BY-SA"
+    148: "CC-BY-SA 4.0",
+    149: "CC-BY-NC-ND 4.0",
+    234: "CC-BY-NC-ND 4.0",
+    359: "CC-BY-SA 4.0"
     }
 
 ROMANCE = [236,308,165,27,286,258,16,183,143,200,160,369,358,241,358]
 
 
-SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195, 231, 241, 350, 358, 376, 287 ]
+SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195, 231, 241, 255, 350, 358, 376, 287]
 
 SERIES = {
     "Studies in Diversity Linguistics": "2363-5568",
