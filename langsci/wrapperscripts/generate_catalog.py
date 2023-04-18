@@ -22,8 +22,8 @@ parser.add_argument(
 args = parser.parse_args()
 
 AUTHOR_AFFILIATION_PATTERN = re.compile(r"(.*?) *(\\orcid\{.*\})?\\affiliation\{(.*?)\} *(\\orcid\{.*\})?")
-AND_PATTERN = re.compile(r"(\\lastand |\\and |lastand | and )")
-TITLE_PATTERN = re.compile(r"\\title\{(.*)\}")
+AND_PATTERN = re.compile(r"(\\lastand |\\and |lastand | and | with)")
+TITLE_PATTERN = re.compile(r"\\(markup)?title(\[.*?\] *)?\{(.*)\}")
 AUTHOR_PATTERN = re.compile(r"\\author\{(.*)\}")
 
 
@@ -52,22 +52,20 @@ def second_comma_to_ampersand(s):
     result += last_creator
     return result
 
-def get_title(filename):
-    with open(filename) as filecontent:
-        title = TITLE_PATTERN.search(filecontent.read()).group(1)
+def get_title(filecontent):
+    title = TITLE_PATTERN.search(filecontent).group(3)
     return title
 
 
-def get_chapter_author_affiliations(filename):
+def get_chapter_author_affiliations(filecontent):
     d = defaultdict(list)
-    with open(filename) as filecontent:
-        tex_author_string = AUTHOR_PATTERN.search(filecontent.read()).group(1)
-        authors_and_affiliations = AUTHOR_AFFILIATION_PATTERN.findall(tex_author_string)
-        for aa in authors_and_affiliations:
-            print(aa)
-            author = AND_PATTERN.split(aa[0])[-1]
-            affiliation = aa[2]
-            d[affiliation].append(author)
+    tex_author_string = AUTHOR_PATTERN.search(filecontent).group(1)
+    authors_and_affiliations = AUTHOR_AFFILIATION_PATTERN.findall(tex_author_string)
+    for aa in authors_and_affiliations:
+        print(aa)
+        author = AND_PATTERN.split(aa[0])[-1].strip()
+        affiliation = aa[2]
+        d[affiliation].append(author)
     print(d)
     return d
 
@@ -76,11 +74,11 @@ def get_chapter_author_affiliations(filename):
 
 
 
-fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators title year".split()
+fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators book_title year institution chapter_author chapter_title".split()
 csvstrings = ["\t".join(fields)]
 
-#for ID in range(16,400):
-for ID in [239]:
+for ID in range(16,400):
+#for ID in [239]:
     soup = get_soup(ID)
     citegroups = get_citeinfo(soup)
     if citegroups is None:
@@ -102,13 +100,27 @@ for ID in [239]:
                 citegroups["year"].strip()
                 ]
     csvstrings.append("\t".join(fields))
-    print(repr(citegroups["ed"]))
     if args.chapters and citegroups["ed"]:
         chapters = glob.glob(f"langscitex/{ID}/chapters/*tex")
         for chapter in chapters:
+            with open(chapter) as infile:
+                filecontent = infile.read()
+            if "documentclass" not in filecontent:
+                continue
+            if chapter.endswith("acknowledgments.tex"):
+                continue
+            if chapter.endswith("preface.tex"):
+                continue
+            if chapter.endswith("prefaceEd.tex"):
+                continue
+            if chapter.endswith("abbreviations.tex"):
+                continue
+            if chapter.endswith("204/chapters/Savary.tex"):
+                continue
+            print()
             print(chapter)
-            chapter_title = get_title(chapter)
-            chapter_author_affiliation = get_chapter_author_affiliations(chapter)
+            chapter_title = get_title(filecontent)
+            chapter_author_affiliation = get_chapter_author_affiliations(filecontent)
             for affiliation in chapter_author_affiliation:
                 for author in chapter_author_affiliation[affiliation]:
                     string = "\t".join(fields+[affiliation,author,chapter_title])
