@@ -5,10 +5,38 @@ except ImportError:
     from langsci.langscipressorg_webcrawler import get_soup, get_citeinfo
     from langsci.catalogmetadata import METALANGUAGE, ONE_LANGUAGE_BOOKS, LICENSES, SUPERSEDED
 
+import argparse
+import re
+import glob
+from collections import defaultdict
+
+parser = argparse.ArgumentParser(
+description="Generate tabular data for the langsci catalog"
+)
+#parser.add_argument("texdir", type=str, help="The directory where the tex sources for the books are stored")
+parser.add_argument(
+    "--chapters",
+    action="store_true",
+    help="Generate catalog entries for chapters as well",
+)
+args = parser.parse_args()
+
+AUTHOR_AFFILIATION_PATTERN = re.compile(r"(.*?) *(\\orcid\{.*\})?\\affiliation\{(.*?)\} *(\\orcid\{.*\})?")
+AND_PATTERN = re.compile(r"(\\lastand |\\and |lastand | and )")
+TITLE_PATTERN = re.compile(r"\\title\{(.*)\}")
+AUTHOR_PATTERN = re.compile(r"\\author\{(.*)\}")
+
+
+
+
+texdir = "langscitex"
+outfilename = "sorted.bib"
+
+
+
 def second_comma_to_ampersand(s):
     if not " & " in s:
         return s
-    print(s)
     non_last_creator_string, last_creator = s.split(" & ")
     non_last_creator_list = non_last_creator_string.split(", ")
     result = ""
@@ -24,11 +52,35 @@ def second_comma_to_ampersand(s):
     result += last_creator
     return result
 
+def get_title(filename):
+    with open(filename) as filecontent:
+        title = TITLE_PATTERN.search(filecontent.read()).group(1)
+    return title
+
+
+def get_chapter_author_affiliations(filename):
+    d = defaultdict(list)
+    with open(filename) as filecontent:
+        tex_author_string = AUTHOR_PATTERN.search(filecontent.read()).group(1)
+        authors_and_affiliations = AUTHOR_AFFILIATION_PATTERN.findall(tex_author_string)
+        for aa in authors_and_affiliations:
+            print(aa)
+            author = AND_PATTERN.split(aa[0])[-1]
+            affiliation = aa[2]
+            d[affiliation].append(author)
+    print(d)
+    return d
+
+
+
+
+
 
 fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators title year".split()
 csvstrings = ["\t".join(fields)]
 
-for ID in range(16,400):
+#for ID in range(16,400):
+for ID in [239]:
     soup = get_soup(ID)
     citegroups = get_citeinfo(soup)
     if citegroups is None:
@@ -50,6 +102,21 @@ for ID in range(16,400):
                 citegroups["year"].strip()
                 ]
     csvstrings.append("\t".join(fields))
+    print(repr(citegroups["ed"]))
+    if args.chapters and citegroups["ed"]:
+        chapters = glob.glob(f"langscitex/{ID}/chapters/*tex")
+        for chapter in chapters:
+            print(chapter)
+            chapter_title = get_title(chapter)
+            chapter_author_affiliation = get_chapter_author_affiliations(chapter)
+            for affiliation in chapter_author_affiliation:
+                for author in chapter_author_affiliation[affiliation]:
+                    string = "\t".join(fields+[affiliation,author,chapter_title])
+                    print(string)
+                    csvstrings.append(string)
 
-with open("catalog.csv", "w") as csvout:
+catalog_name = "catalog.csv"
+if args.chapters:
+    catalog_name = "catalog_chapters.csv"
+with open(catalog_name, "w") as csvout:
     csvout.write("\n".join(csvstrings))
