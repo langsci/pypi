@@ -22,7 +22,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 AUTHOR_AFFILIATION_PATTERN = re.compile(r"(.*?) *(\\orcid\{.*\})?\\affiliation\{(.*?)\} *(\\orcid\{.*\})?")
-AND_PATTERN = re.compile(r"(\\lastand |\\and |lastand | and | with)")
+AND_PATTERN = re.compile(r"(\\lastand |\\and |lastand | and | with )")
 TITLE_PATTERN = re.compile(r"\\(markup)?title(\[.*?\] *)?\{(.*)\}")
 AUTHOR_PATTERN = re.compile(r"\\author\{(.*)\}")
 
@@ -62,11 +62,9 @@ def get_chapter_author_affiliations(filecontent):
     tex_author_string = AUTHOR_PATTERN.search(filecontent).group(1)
     authors_and_affiliations = AUTHOR_AFFILIATION_PATTERN.findall(tex_author_string)
     for aa in authors_and_affiliations:
-        print(aa)
-        author = AND_PATTERN.split(aa[0])[-1].strip()
+        author = AND_PATTERN.split(aa[0])[-1].strip().replace('and ', '').strip()
         affiliation = aa[2]
         d[affiliation].append(author)
-    print(d)
     return d
 
 
@@ -74,7 +72,7 @@ def get_chapter_author_affiliations(filecontent):
 
 
 
-fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators book_title year institution chapter_author chapter_title".split()
+fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber book_title year creator institution chapter_author chapter_title".split()
 csvstrings = ["\t".join(fields)]
 
 for ID in range(16,400):
@@ -83,8 +81,9 @@ for ID in range(16,400):
     citegroups = get_citeinfo(soup)
     if citegroups is None:
         continue
-    creators = citegroups["creators"].replace("&nbsp;&nbsp;", "&")
-    creators = second_comma_to_ampersand(creators)
+    creators = citegroups["creators"]
+    creatorstring = creators.replace("&nbsp;&nbsp;", "&")
+    creatorstring = second_comma_to_ampersand(creators)
     fields = [str(ID),
                 citegroups["doi"] or '',
                 citegroups["ed"] or '',
@@ -95,12 +94,12 @@ for ID in range(16,400):
                 '',
                 citegroups["series"],
                 citegroups["seriesnumber"],
-                creators,
                 citegroups["title"].strip(),
-                citegroups["year"].strip()
+                citegroups["year"].strip(),
+                creatorstring,
                 ]
-    csvstrings.append("\t".join(fields))
     if args.chapters and citegroups["ed"]:
+        fields[2] = "chapter"
         chapters = glob.glob(f"langscitex/{ID}/chapters/*tex")
         for chapter in chapters:
             with open(chapter) as infile:
@@ -117,15 +116,23 @@ for ID in range(16,400):
                 continue
             if chapter.endswith("204/chapters/Savary.tex"):
                 continue
-            print()
-            print(chapter)
+            #print()
+            #print(chapter)
             chapter_title = get_title(filecontent)
             chapter_author_affiliation = get_chapter_author_affiliations(filecontent)
             for affiliation in chapter_author_affiliation:
                 for author in chapter_author_affiliation[affiliation]:
                     string = "\t".join(fields+[affiliation,author,chapter_title])
-                    print(string)
+                    #print(string)
                     csvstrings.append(string)
+    for creator in creatorstring.split(" & "):
+        #add all book creators in their own line
+        fields[12] = creator
+        if fields[2]:
+            fields[2] = "editor"
+        else:
+            fields[2] = "author"
+        csvstrings.append("\t".join(fields))
 
 catalog_name = "catalog.csv"
 if args.chapters:
