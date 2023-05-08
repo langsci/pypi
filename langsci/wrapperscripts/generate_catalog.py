@@ -72,7 +72,9 @@ def get_chapter_author_affiliations(filecontent):
 
 
 
-fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber book_title year creator institution chapter_author chapter_title".split()
+fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators title year".split()
+
+#fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber book_title year creator institution chapter_author chapter_title".split()
 csvstrings = ["\t".join(fields)]
 
 for ID in range(16,400):
@@ -94,9 +96,9 @@ for ID in range(16,400):
                 '',
                 citegroups["series"],
                 citegroups["seriesnumber"],
+                creatorstring,
                 citegroups["title"].strip(),
                 citegroups["year"].strip(),
-                creatorstring,
                 ]
     if args.chapters and citegroups["ed"]:
         fields[2] = "chapter"
@@ -125,14 +127,24 @@ for ID in range(16,400):
                     string = "\t".join(fields+[affiliation,author,chapter_title])
                     #print(string)
                     csvstrings.append(string)
-    for creator in creatorstring.split(" & "):
-        #add all book creators in their own line
-        fields[12] = creator
-        if fields[2]:
-            fields[2] = "editor"
-        else:
-            fields[2] = "author"
-        csvstrings.append("\t".join(fields))
+    #split_creators = False #should each editor have their own line?
+    #if split_creators:
+        #for creator in creatorstring.split(" & "):
+            ##add all book creators in their own line
+            #fields[12] = creator
+            #if fields[2]:
+                #fields[2] = "editor"
+            #else:
+                #fields[2] = "author"
+            #csvstrings.append("\t".join(fields))
+    #else:
+        #fields[12] = creatorstring
+        #if fields[2]:
+            #fields[2] = "editor"
+        #else:
+            #fields[2] = "author"
+        #csvstrings.append("\t".join(fields))
+
 
 catalog_name = "catalog.csv"
 if args.chapters:
