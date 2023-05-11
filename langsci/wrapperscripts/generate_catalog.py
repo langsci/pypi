@@ -127,23 +127,23 @@ for ID in range(16,400):
                     string = "\t".join(fields+[affiliation,author,chapter_title])
                     #print(string)
                     csvstrings.append(string)
-    #split_creators = False #should each editor have their own line?
-    #if split_creators:
-        #for creator in creatorstring.split(" & "):
-            ##add all book creators in their own line
-            #fields[12] = creator
-            #if fields[2]:
-                #fields[2] = "editor"
-            #else:
-                #fields[2] = "author"
-            #csvstrings.append("\t".join(fields))
-    #else:
+    split_creators = False #should each editor have their own line?
+    if split_creators:
+        for creator in creatorstring.split(" & "):
+            #add all book creators in their own line
+            fields[12] = creator
+            if fields[2]:
+                fields[2] = "editor"
+            else:
+                fields[2] = "author"
+            csvstrings.append("\t".join(fields))
+    else:
         #fields[12] = creatorstring
-        #if fields[2]:
-            #fields[2] = "editor"
-        #else:
-            #fields[2] = "author"
-        #csvstrings.append("\t".join(fields))
+        if fields[2]:
+            fields[2] = "editor"
+        else:
+            fields[2] = "author"
+        csvstrings.append("\t".join(fields))
 
 
 catalog_name = "catalog.csv"
