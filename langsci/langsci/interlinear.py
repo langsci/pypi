@@ -26,6 +26,9 @@ except ImportError:
     from langsci.webglottolog import string2glottocode, glottocode2iso, glottocode2name
 
 
+SMALLCAPS = re.compile("\\\\textsc\{([-=.:a-zA-Z0-9)(/\[\]]+?)\}")
+
+ALLCAPS = re.compile("([-=.:A-Z0-9)(/\[\]]+)")
 
 converter = LaTexAccents.AccentConverter()
 
@@ -151,7 +154,7 @@ class gll:
                     self.language_name =  None
                     print(f"{self.ID} has no retrievable language")
             try:
-                self.language_iso6393 = glottocode2iso(glottocode)
+                self.language_iso6393 = glottotmpiso[glottocode]
             except KeyError:
                 self.language_iso6393 = glottocode2iso(glottocode)
                 glottotmpiso[glottocode] = self.language_iso6393
@@ -214,7 +217,7 @@ class gll:
 
     def tex2categories(self, s):
         d = {}
-        smallcaps = re.findall("\\\\textsc\{([-=.:a-zA-Z0-9)(/\[\]]+?)\}", s)
+        smallcaps = SMALLCAPS.findall(s)
         for sc in smallcaps:
             cats = re.split("[-=.:0-9)(/\[\]]", sc)
             for cat in cats:
@@ -224,7 +227,8 @@ class gll:
 
     def allcaps2categories(self, s):
         d = {}
-        allcaps = re.findall("([-=.:A-Z0-9)(/\[\]]+)", s)
+        #allcaps = re.findall("([-=.:A-Z0-9)(/\[\]]+)", s)
+        allcaps = ALLCAPS.findall(s)
         for ac in allcaps:
             cats = re.split("[-=.:0-9)(/\[\]]", ac)
             for cat in cats:

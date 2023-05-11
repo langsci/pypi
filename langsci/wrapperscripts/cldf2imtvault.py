@@ -34,7 +34,7 @@ with open('examples.csv', newline='') as csvfile:
             continue
         citation = row['Source']
         external_ID = row['ID']
-        print(external_ID)
+        #print(external_ID)
         thisgll = gll(
             '',
             row['Language_ID'],
