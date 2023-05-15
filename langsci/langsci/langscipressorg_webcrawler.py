@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 
 CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>[0-9]+)\. (?P<title>.*)\. \((?P<series>(.*)) (?P<seriesnumber>[0-9]*)\)\. Berlin: Language Science Press. DOI: (?P<doi>[^ ]*)")
 
+CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>20[1-9][0-9]|Forthcoming)\. (?P<title>.*)\. \((?P<series>(.*)) ?(?P<seriesnumber>[0-9]*)\)\. Berlin: Language Science Press.( DOI: (?P<doi>[^ ]*))?")
+
 def get_soup(book_ID):
     url = f"https://langsci-press.org/catalog/book/{book_ID}"
     html = requests.get(url).text
@@ -18,11 +20,11 @@ def get_citeinfo(soup):
     try:
         citeinfo = soup.find("div", "series").findNext('div','label').nextSibling.nextSibling.text.strip()
     except AttributeError:
-        #print("could not retrieve citeinfo")
+        print("could not retrieve citeinfo")
         return None
-    if "orthcoming" in citeinfo:
+    #if "orthcoming" in citeinfo:
         #print("not published yet")
-        return None
+        #return None
     citegroups = CITEPATTERN.match(citeinfo)
     if citegroups is None:
         print("could not match citeinfo")
