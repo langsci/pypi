@@ -321,10 +321,12 @@ class Document:
         ("{\\textquotedouble}",'"'), 
         ("\\par}","}"),
         ("\\clearpage","\n"),
+        ("\\textstyleLangSciCategory","\\textsc"),
         #("\\begin","\n\\begin"),
         #("\\end","\n\\end"), 
         #(" }","} "),%causes problems with '\ '
-        ("supertabular","tabular"),  
+        ("supertabular","tabular"),
+        ("\\mdseries","\\bfseries"),
         ("\~{}","{\\textasciitilde}"), 
         #("\\section","\\chapter"),  
         #("\\subsection","\\section"),  
@@ -467,6 +469,7 @@ class Document:
         yanks =  ("\\begin{flushleft}",
                     "\\end{flushleft}",
                     "\\centering",
+                    "\\rmfamily",
                     "\\raggedright",
                     "\\par ",
                     "\\tablehead{}", 
@@ -477,10 +480,13 @@ class Document:
                     "\\textstyleFootnoteTextChar",
                     "\\textstylepagenumber",
                     "\\textstyleappleconvertedspace",
+                    "\\textstyleDefaultParagraphFont",
                     "\\pagestyle{Standard}",
                     "\\hline",
                     "\\begin{center}",
                     "\\end{center}",
+                    "\\begin{styleNormal}",
+                    "\\end{styleNormal}",
                     "\\begin{styleStandard}",
                     "\\end{styleStandard}",
                     "\\begin{styleBodytextC}",
@@ -491,10 +497,14 @@ class Document:
                     "\\end{styleIllustration}",
                     "\\begin{styleTabelle}",
                     "\\end{styleTabelle}",
+                    "\\begin{styleCaption}",
+                    "\\end{styleCaption}",
                     "\\begin{styleAbbildung}",
                     "\\end{styleAbbildung}",
                     "\\begin{styleTextbody}",
                     "\\end{styleTextbody}",
+                    "\\begin{styleLangSciBulletList}",
+                    "\\end{styleLangSciBulletList}",
                     "\\maketitle",
                     "\\hline",
                     "\\arraybslash",
@@ -699,7 +709,14 @@ class Document:
 
 
         modtext = re.sub("""listWWNum[ivxlc]+level[ivxlc]+""","itemize",modtext)
-        modtext = re.sub("""listL[ivxlc]+level[ivxlc]+""","itemize",modtext)
+        modtext = modtext.replace("\\begin{listLFOiileveli}\n\\item","")
+        modtext = modtext.replace("\\begin{listLFOiilevelii}\n\\item","")
+        modtext = modtext.replace("\\begin{listLFOiileveliii}\n\\item","")
+        modtext = modtext.replace("\\end{listLFOiileveli}","")
+        modtext = modtext.replace("\\end{listLFOiilevelii}","")
+        modtext = modtext.replace("\\end{listLFOiileveliii}","")
+        modtext = re.sub("""listL[FO]*[ivxlc]+level[ivxlc]+""","itemize",modtext)
+
 
 
         modtext = modtext.replace("& \\begin{itemize}\n\\item","& \n%%\\begin{itemize}\\item\n")
@@ -707,7 +724,7 @@ class Document:
         modtext = modtext.replace("& \\end{itemize}","& %%\\end{itemize}\n")
 
 
-        modtext = re.sub(r"""\n+\\z""",r"\\z",modtext)
+        modtext = re.sub(r"""\n+\\z""",r"\n\\z",modtext)
         modtext = re.sub("""\n\n+""",r"\n\n",modtext)
         
         
@@ -779,6 +796,21 @@ class Document:
         """.split()
 
         modtext = re.sub("\\\\(begin|end){(%s)}"% '|'.join(bogus_styles),'',modtext)
+
+        modtext = modtext.replace("\\begin{itemize}\n\\item \\begin{styleLangSciEnumerated}\n","\\begin{enumerate}\n\\item ")
+        modtext = modtext.replace("\\end{styleLangSciEnumerated}\n\\end{itemize}","\\end{enumerate}")
+        modtext = modtext.replace("\\begin{styleLangSciEnumerated}","")
+        modtext = modtext.replace("\\end{styleLangSciEnumerated}","")
+
+
+        modtext = modtext.replace("\n\n\\item","\n\\item")
+        modtext = modtext.replace("\n\n\\end","\n\\end")
+        modtext = modtext.replace("\n\n\\gll","\n\\gll")
+        modtext = modtext.replace("\n\n\\lsptoprule","\n\\lsptoprule")
+        modtext = modtext.replace("\n\n\n\\ea","\n\n\\ea")
+        modtext = modtext.replace(r"\section{ ","\section{")
+        modtext = modtext.replace(r"\section{}","")
+        modtext = modtext.replace(r"\z","\z % you might need an extra \z if this is the last of several subexamples")
 
         bibliography = ''
         modtext = modtext.replace(r'\textbf{References}','References')
