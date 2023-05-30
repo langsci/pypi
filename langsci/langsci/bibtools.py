@@ -761,7 +761,7 @@ class Record():
 
 
 def normalize(s, inkeysd={}, restrict=False):
-  a = s.split('\n@')
+  a = re.split('\n *@',s)
   #split preamble (if any) from records
   preamble = a[0]
   rest = a[1:]

@@ -75,8 +75,14 @@ def convert(fn, wd=WD, tmpdir=False):
     #print syscall
     os.system(syscall)
     w2lcontent = open(texfn, encoding='utf-8').read()
+    ipacharcodes = "251 25B 26A 254 28A? 259 268 289".split()
+    IPACHARS = re.compile("(%s)" % "|".join(["\[%s\?\]"%char for char in ipacharcodes]))
+    found_ipa_chars = set(IPACHARS.findall(w2lcontent))
+    warning = "warning"
+    if found_ipa_chars:
+            warning = f"% ATTENTION: Diacritics on the following phonetic characters might have been lost during conversion: {found_ipa_chars}\n"
     preamble, text = w2lcontent.split(r"\begin{document}")
-    text = text.split(r"\end{document}")[0] 
+    text = warning + text.split(r"\end{document}")[0]
     preamble=preamble.split('\n')
     newcommands = '\n'.join([l for l in preamble if l.startswith('\\newcommand') and '@' not in l and 'writerlist' not in l and 'labellistLi' not in l and 'textsubscript' not in l]) # or l.startswith('\\renewcommand')])
     #replace all definitions of new environments by {}{}
