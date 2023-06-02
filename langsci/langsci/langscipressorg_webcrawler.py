@@ -7,6 +7,13 @@ CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>[0-9
 
 CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>20[1-9][0-9]|Forthcoming)\. (?P<title>.*)\. \((?P<series>(.*)) ?(?P<seriesnumber>[0-9]*)\)\. Berlin: Language Science Press.( DOI: (?P<doi>[^ ]*))?")
 
+
+def ID2title(book_ID):
+    soup = get_soup(book_ID)
+    citeinfo = get_citeinfo(soup)
+    title = get_title_subtitle(citeinfo)[0]
+    return title
+
 def get_soup(book_ID):
     url = f"https://langsci-press.org/catalog/book/{book_ID}"
     html = requests.get(url).text
