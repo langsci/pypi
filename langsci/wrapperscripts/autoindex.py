@@ -79,8 +79,8 @@ if __name__  ==  "__main__":
             if "(" in lg:
                 print(f"{lg} contains parentheses. Parentheses are not allowed in indexed language names. Exiting.")
                 sys.exit()
-    terms = open("localsubjectterms.txt").read().split('\n')[::-1]#reverse to avoid double indexing
-    for term in terms:
+    terms = open("localsubjectterms.txt").read().split('\n')
+    for term in reversed(sorted(terms, key=len)): #start with longest term to avoid double indexing
             if "(" in term:
                 print(f"{term} contains parentheses. Parentheses are not allowed in indexed language names. Exiting.")
                 sys.exit()
