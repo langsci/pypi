@@ -17,6 +17,7 @@ soup = get_soup(book_ID)
 citegroups = get_citeinfo(soup)
 if citegroups is None:
   sys.exit()
+print(book_ID)
 
 title, subtitle = get_title_subtitle(citegroups)
 

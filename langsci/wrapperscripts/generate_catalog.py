@@ -77,12 +77,13 @@ fields = "ID DOI edited metalanguage objectlanguage license superseded pages ser
 #fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber book_title year creator institution chapter_author chapter_title".split()
 csvstrings = ["\t".join(fields)]
 
-for ID in range(16,400):
+for ID in range(16,450):
 #for ID in [239]:
     soup = get_soup(ID)
     citegroups = get_citeinfo(soup)
     if citegroups is None:
         continue
+    print(ID)
     creators = citegroups["creators"]
     creatorstring = creators.replace("&nbsp;&nbsp;", "&")
     creatorstring = second_comma_to_ampersand(creators)

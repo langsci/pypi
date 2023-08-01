@@ -66,13 +66,17 @@ for book_ID in range(16,400):
   citegroups = get_citeinfo(soup)
   if citegroups is None:
     continue
+  print(book_ID)
   title, subtitle = get_title_subtitle(citegroups)
 
   series = citegroups["series"]
 
   publication_date = get_publication_date(soup)
   blurb = get_blurb(soup)
-  isbn_digital =  get_ISBN_digital(soup)
+  try:
+    isbn_digital =  get_ISBN_digital(soup)
+  except KeyError:
+    continue
   issn =  SERIES[citegroups["series"]]
   metalanguage = METALANGUAGE.get(book_ID, "eng")
 
