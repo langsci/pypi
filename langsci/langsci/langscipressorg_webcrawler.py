@@ -3,9 +3,9 @@ import re
 from bs4 import BeautifulSoup
 
 
-CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>[0-9]+)\. (?P<title>.*)\. \((?P<series>(.*)) (?P<seriesnumber>[0-9]*)\)\. Berlin: Language Science Press. DOI: (?P<doi>[^ ]*)")
+# CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>[0-9]+)\. +(?P<title>.*)\. \((?P<series>(.*)) (?P<seriesnumber>[0-9]*)\)\. Berlin: Language Science Press. DOI: (?P<doi>[^ ]*)")
 
-CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>20[1-9][0-9]|Forthcoming)\. (?P<title>.*)\. \((?P<series>(.*?)) ?(?P<seriesnumber>[0-9]+)\)\. Berlin: Language Science Press.( DOI: (?P<doi>[^ ]*))?")
+CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>20[1-9][0-9]|Forthcoming)\. +(?P<title>.*)\. \((?P<series>(.*?)) ?(?P<seriesnumber>[0-9]*)\)\. Berlin: Language Science Press.( DOI: (?P<doi>[^ ]*))?")
 
 
 def ID2title(book_ID):
@@ -32,6 +32,7 @@ def get_citeinfo(soup):
     #if "orthcoming" in citeinfo:
         #print("not published yet")
         #return None
+    print(citeinfo)
     citegroups = CITEPATTERN.match(citeinfo)
     if citegroups is None:
         print("could not match citeinfo")
