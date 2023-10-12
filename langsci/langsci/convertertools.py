@@ -544,7 +544,7 @@ class Document:
         #remove marked up white space and punctuation
         modtext = re.sub("\\text(it|bf|sc)\{([ \.,]*)\}","\2",modtext)
         
-        #remove explicit counters. These are not usefull when from autoconversion 
+        #remove explicit counters. These are not useful when from autoconversion
         
         #remove explicit table widths
         modtext = re.sub("m\{-?[0-9.]+(in|cm)\}","X",modtext)  
@@ -584,7 +584,7 @@ class Document:
         #collapse newlines
         modtext = re.sub("\n*\\\\\\\\\n*",'\\\\\\\\\n',modtext) 
         #bib
-        authorchars = "[A-ZÅÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛŐŰĆĆÇČÐĐŘŚŠŞŌǪØŽ][-a-záéíóúaèìòùâeîôûäëïöüőűðĺłŁøæœåćĆçÇčČĐđǧñńŘřŚśŠšŞşŽž’'’'A-Z]+"
+        authorchars = "[A-ZÅÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛŐŰĆĆÇČÐĐŘŚŠŞŌǪØŽ][-a-záéíóúaèìòùâeîôûäëïöüőűðĺłŁøæœåćĆçÇčČĐđǧñńŘřŚśŠšŞşŽžA-Z]+"
         yearchars = "[12][0-9]{3}[a-z]?"
         modtext = re.sub("\((%s) +et al\.?  +(%s): *([0-9,-]+)\)"%(authorchars,yearchars),
                          r"\\citep[\3]{\1EtAl\2}",
@@ -652,7 +652,7 @@ class Document:
                          modtext)
         #Smith 2000, 2001
         modtext = re.sub(r"\\citealt{(%s)(%s)}[,;] (%s)"%(authorchars, yearchars, yearchars),
-                         r"\\citealt{\1\2,\3\2}",
+                         r"\\citealt{\1\2,\1\3}",
                          modtext)
         #condense chains of citations
         modtext = re.sub(r"(\\citealt{%s)\}[,;] \\citealt{"%authorchars,
