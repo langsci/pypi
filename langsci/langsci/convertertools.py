@@ -78,7 +78,7 @@ def convert(fn, wd=WD, tmpdir=False):
     ipacharcodes = "251 25B 26A 254 28A? 259 268 289".split()
     IPACHARS = re.compile("(%s)" % "|".join(["\[%s\?\]"%char for char in ipacharcodes]))
     found_ipa_chars = set(IPACHARS.findall(w2lcontent))
-    warning = "warning"
+    warning = ""
     if found_ipa_chars:
             warning = f"% ATTENTION: Diacritics on the following phonetic characters might have been lost during conversion: {found_ipa_chars}\n"
     preamble, text = w2lcontent.split(r"\begin{document}")
@@ -511,8 +511,9 @@ class Document:
                     "\\end{styleTextbody}",
                     "\\begin{styleLangSciBulletList}",
                     "\\end{styleLangSciBulletList}",
+                    "\\begin{stylelsBulletList}",
+                    "\\end{stylelsBulletList}",
                     "\\maketitle",
-                    "\\hline",
                     "\\arraybslash",
                     "\\textstyleAbsatzStandardschriftart{}",
                     "\\textstyleAbsatzStandardschriftart",
@@ -817,6 +818,9 @@ class Document:
         modtext = modtext.replace(r"\section{ ","\section{")
         modtext = modtext.replace(r"\section{}","")
         modtext = modtext.replace(r"\z","\z % you might need an extra \z if this is the last of several subexamples")
+
+
+        modtext = modtext.replace("XX}","XX}\n") #extra line after table start
 
         bibliography = ''
         modtext = modtext.replace(r'\textbf{References}','References')
