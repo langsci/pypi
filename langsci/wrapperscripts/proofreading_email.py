@@ -24,10 +24,19 @@ number_of_pages = pdf.numPages
 
 with open("main.toc") as tocfile:
     content = tocfile.read()
-    chapters = re.findall(r"numberline \{[0-9]+}*([A-Z].*?)\}",content)
+    chapters = re.findall(r"chapter.*numberline \{[0-9]+}*([A-Z].*?)\}",content)
 
-number_of_chapters = len(chapters)
-toc = "\n".join([f"{i+1} {ch}" for i, ch in enumerate(chapters)])
+newchapters = []
+for chapter in chapters:
+  try:
+    ch,au = chapter.split(r"~\newline {\normalfont \ResolveAffiliations {")
+  except ValueError:
+    ch = chapter
+    au = "FIXAUTHOR"
+  newchapters.append(f"{ch}\n{au}\n")
+
+number_of_chapters = len(newchapters)
+toc = "\n".join([f"{i+1} {ch}" for i, ch in enumerate(newchapters)])
 
 
 template = f"""Dear proofreader,
