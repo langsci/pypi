@@ -27,6 +27,9 @@ ONE_LANGUAGE_BOOKS = {
     346: ("eng", "stan1293", "English"),
     344: ("kgv", "kara1499", "Kalamang"),
     324: ("tcu", "sout2972", "Rarámuri"),
+    354: ("hye", "nucl1235", "Armenian"),
+    372: ("yla", "yaul1241", "Ulwa"),
+    374: ("deu", "stan1295", "German"),
 }
 
 METALANGUAGE = {
@@ -55,10 +58,10 @@ LICENSES = {
     359: "CC-BY-SA 4.0"
     }
 
-ROMANCE = [236,308,165,27,286,258,16,183,143,200,160,369,358,241,358]
+ROMANCE = [236,308,165,27,286,258,16,183,143,200,160,369,358,241,350,358,369,376,384]
 
 
-SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195, 231, 241, 255, 287, 350, 358, 376]
+SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195, 231, 241, 255, 287, 350, 358, 376, 387]
 
 SERIES = {
     "Studies in Diversity Linguistics": "2363-5568",
