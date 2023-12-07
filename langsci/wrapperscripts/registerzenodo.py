@@ -6,11 +6,11 @@ except ImportError:
     from langsci import zenodo
 
 glottolog = False
-from pyglottolog import Glottolog
-try:
-    glottolog = Glottolog('.')
-except ValueError:
-    print("Glottolog tree directory not found. Glottocodes will not work. Please symlink the directories glottolog/languoids and glottolog/references")
+# from pyglottolog import Glottolog
+# try:
+#     glottolog = Glottolog('.')
+# except ValueError:
+#     print("Glottolog tree directory not found. Glottocodes will not work. Please symlink the directories glottolog/languoids and glottolog/references")
 
 """
 usage: > python3 zenodo.py 7
