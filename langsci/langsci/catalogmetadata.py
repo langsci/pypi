@@ -30,6 +30,7 @@ ONE_LANGUAGE_BOOKS = {
     354: ("hye", "nucl1235", "Armenian"),
     372: ("yla", "yaul1241", "Ulwa"),
     374: ("deu", "stan1295", "German"),
+    382: ("deu", "ital1282", "Italian"),
 }
 
 METALANGUAGE = {
@@ -48,7 +49,9 @@ METALANGUAGE = {
     236: "spa",
     340: "deu",
     358: "por",
+    363: "deu",
     371: "deu",
+    406: "deu",
 }
 
 LICENSES = {
@@ -58,10 +61,10 @@ LICENSES = {
     359: "CC-BY-SA 4.0"
     }
 
-ROMANCE = [236,308,165,27,286,258,16,183,143,200,160,369,358,241,350,358,369,376,384]
+ROMANCE = [236,308,165,27,286,258,16,183,143,200,160,369,358,241,350,358,369,376,382,384]
 
 
-SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195, 231, 241, 255, 287, 350, 358, 376, 387]
+SUPERSEDED = [22, 25, 46, 101, 141, 144, 149, 195, 231, 241, 251, 255, 287, 350, 358, 376, 387]
 
 SERIES = {
     "Studies in Diversity Linguistics": "2363-5568",
@@ -89,7 +92,7 @@ SERIES = {
     "Research on Comparative Grammar": "2749-781X",
     "Open Germanic Linguistics": "2750-557X",
     "Languages of the Caucasus": "2699-0156",
-    "Open Romance Linguistics": "",
+    "Open Romance Linguistics": "2940-1100",
     "Current Issues in Bilingualism": "2747-9927",
     #"Topics in Phonological Diversity": "",
     #"Estudios de Lingüística Amerindia / Estudos de Linguística Ameríndia / Studies of Amerindian Linguistics / Études de Linguistique Amérindienne": "",

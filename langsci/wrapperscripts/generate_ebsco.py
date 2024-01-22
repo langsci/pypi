@@ -61,7 +61,7 @@ for row in range(sheet.nrows):
         newSheet.write(row, col, sheet.cell(row, col).value)
 
 current_row = 3
-for book_ID in range(16,400):
+for book_ID in range(16,500):
   soup = get_soup(book_ID)
   citegroups = get_citeinfo(soup)
   if citegroups is None:
