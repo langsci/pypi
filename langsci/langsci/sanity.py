@@ -245,6 +245,10 @@ class TexFile(SanityFile):
             r"\\textsuperscript\{h\}",
             "Please use Unicode ʰ for aspiration instead of superscript h",
         ),
+        (
+            r"\\texttipa",
+            "Do not use the tipa package. Use Unicode or the package langsci-textipa",
+        ),
     )
 
     posnegpatterns = (

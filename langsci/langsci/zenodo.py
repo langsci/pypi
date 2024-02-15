@@ -15,6 +15,12 @@ try:
 except ImportError:
     from langsci.texpatterns import *
 
+def addcomma(self,s):
+    try:
+        first, last = s.strip().split()
+        return f"{last}, {first}"
+    except ValueError: #complex name, we have to rely on humans to sort first/last names
+        return s
 
 class Publication:
     """
@@ -57,6 +63,7 @@ class Publication:
             raise
 
 
+
 class Book(Publication):
     """
   A full-length publication, either a monograph or an edited volume
@@ -77,8 +84,9 @@ class Book(Publication):
         self.metadata['related_identifiers'] = [{'relation':'isAlternateIdentifier', 'identifier':self.digitalisbn}]
         self.metadata["title"] = self.title
         self.metadata["description"] = self.abstract
-        self.metadata["creators"] = [{"name": au} for au in self.authors]
+        self.metadata["creators"] = [{"name": addcomma(self,au)} for au in self.authors]
         self.metadata["keywords"] = self.keywords
+
 
     def getBookMetadata(self):
         """
@@ -191,10 +199,10 @@ class Chapter(Publication):
             self.metadata["partof_pages"] = self.pagerange
         # retrieve affiliations from texfile
         authorlist = CHAPTERAUTHORP.findall(preamble)
-        print(authorlist)
+        # print(authorlist)
         creatorslist = []
         for au in authorlist:
-            name = au[1]
+            name = addcomma(self,au[1])
             orcid = au[3]
             affiliation = au[4]
             creatorslist.append(dict(name=name, affiliation=affiliation, orcid=orcid))
