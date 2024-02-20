@@ -19,8 +19,8 @@ edited = citeinfo['ed'] or ""
 creators = citeinfo['creators']
 blurb = get_blurb(soup)
 
-pdf = PyPDF2.PdfFileReader(open('main.pdf', 'rb'))
-number_of_pages = pdf.numPages
+pdf = PyPDF2.PdfReader(open('main.pdf', 'rb'))
+number_of_pages = len(pdf.pages)
 
 with open("main.toc") as tocfile:
     content = tocfile.read()

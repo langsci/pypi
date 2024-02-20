@@ -1,4 +1,5 @@
 import sys
+import requests
 
 from langsci.langscipressorg_webcrawler import get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_title_subtitle, get_biosketches, biosketches2names
 

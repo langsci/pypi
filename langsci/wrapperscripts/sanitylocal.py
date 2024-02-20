@@ -7,10 +7,8 @@ usage:
 
 import sys
 
-try:
-    import sanity
-except ImportError:
-    from langsci import sanity
+
+from langsci import sanity
 
 try:
     directory = sys.argv[1]
