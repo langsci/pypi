@@ -1,8 +1,10 @@
 import json
-#import glob
+
+# import glob
 import requests
 import re
-#import sys
+
+# import sys
 from collections import defaultdict
 
 try:
@@ -13,14 +15,14 @@ except ImportError:
 
 NUMPATTERN = re.compile("[A-Za-z][-0-9]+")  # stuff like M2-34 is not any good
 
-#offset = 0
-#try:
-    #offset = int(sys.argv[1])
-#except IndexError:
-    #pass
+# offset = 0
+# try:
+# offset = int(sys.argv[1])
+# except IndexError:
+# pass
 
 
-#nercache = json.loads(open("nercache.json").read())
+# nercache = json.loads(open("nercache.json").read())
 entitiescache = json.loads(open("entitiestitles.json").read())
 parentcache = defaultdict(dict)
 
@@ -29,9 +31,10 @@ with open("closure.csv") as closurefile:
         ancestor, degree, child = line.strip().split("\t")
         parentcache[child][ancestor] = True
 
+
 def get_entities(text, cache=None):
     if cache:
-        #global nercache
+        # global nercache
         try:
             entities = cache[text]
             return entities
@@ -44,7 +47,7 @@ def get_entities(text, cache=None):
     rtext = requests.post(ner_url, json={"text": text}).text
     # parse json
     print(rtext)
-    if rtext == None or rtext == '':
+    if rtext == None or rtext == "":
         return {}
     retrieved_entities = json.loads(rtext).get("entities", [])
     # extract names and wikidataId's
@@ -55,9 +58,10 @@ def get_entities(text, cache=None):
         and x["wikidataId"] not in misextractions
         and not NUMPATTERN.match(x["rawName"])
     }
-    #if nercache:
-        #nercache[text] = result
+    # if nercache:
+    # nercache[text] = result
     return result
+
 
 def get_title(wikidata_ID):
     global entitiescache
@@ -90,22 +94,22 @@ def get_parent_entities(entities, excludelist=misextractions):
         return result
 
 
-#for f in glob.glob("langscijson/*json")[offset:]:
-    #print(f)
-    #with open(f) as jsoncontent:
-        #writedict = {}
-        #file_examples = json.loads(jsoncontent.read())
-        #for ex in file_examples:
-            #ID = ex["ID"]
-            #trs = ex["trs"]
-            #try:
-                #entities = nercache[trs]
-            #except KeyError:
-                #entities = get_entities(trs)
-                #nercache[trs] = entities
-            #writedict[ID] = {"entities": entities, "trs": trs}
-    #entitiesfile = f.replace("langscijson", "entitiesjson")
-    #with open(entitiesfile, "w") as entitiesjson:
-        #entitiesjson.write(json.dumps(writedict, indent=4, sort_keys=True))
-    #with open("nercache.json", "w") as nercachejson:
-        #nercachejson.write(json.dumps(nercache, indent=4, sort_keys=True))
+# for f in glob.glob("langscijson/*json")[offset:]:
+# print(f)
+# with open(f) as jsoncontent:
+# writedict = {}
+# file_examples = json.loads(jsoncontent.read())
+# for ex in file_examples:
+# ID = ex["ID"]
+# trs = ex["trs"]
+# try:
+# entities = nercache[trs]
+# except KeyError:
+# entities = get_entities(trs)
+# nercache[trs] = entities
+# writedict[ID] = {"entities": entities, "trs": trs}
+# entitiesfile = f.replace("langscijson", "entitiesjson")
+# with open(entitiesfile, "w") as entitiesjson:
+# entitiesjson.write(json.dumps(writedict, indent=4, sort_keys=True))
+# with open("nercache.json", "w") as nercachejson:
+# nercachejson.write(json.dumps(nercache, indent=4, sort_keys=True))

@@ -20,6 +20,7 @@ import os
 import textwrap
 import uuid
 import unicodedata
+
 # import enchant
 # from enchant.tokenize import get_tokenizer
 from PIL import Image
@@ -32,20 +33,20 @@ from PIL import Image
 
 class SanityError:
     """A record of a potentially problematic passage
-  
-  Attributes:
-    filename (str): the path to the file where the error is found
-    linenr (int): the number of the line where the error is found 
-    line (str): the full line under consideration
-    offendingstring (str): the string which was identified as problematic
-    msg (str): information on why this string was found problematic
-    pre (str): left context of the offending string
-    post (str): right context of the offending string
-    ID (str): ID to uniquely refer to a given error in HTML-DOM
-    name (str): hexadecimal string used for colour coding based on msg
-    color (str): a rgb color string
-    bordercolor (str): a rgb color string, which is darker than color 
-  """
+
+    Attributes:
+      filename (str): the path to the file where the error is found
+      linenr (int): the number of the line where the error is found
+      line (str): the full line under consideration
+      offendingstring (str): the string which was identified as problematic
+      msg (str): information on why this string was found problematic
+      pre (str): left context of the offending string
+      post (str): right context of the offending string
+      ID (str): ID to uniquely refer to a given error in HTML-DOM
+      name (str): hexadecimal string used for colour coding based on msg
+      color (str): a rgb color string
+      bordercolor (str): a rgb color string, which is darker than color
+    """
 
     def __init__(self, filename, linenr, line, offendingstring, msg):
         self.filename = filename.split("/")[-1]
@@ -75,15 +76,15 @@ class SanityError:
 
 class SanityFile:
     """A file with information about potentially problematic passages
-  
-  Attributes:
-    filename (str): the path to the file
-    content (str): the content of the file 
-    lines ([]str): the lines of the file 
-    errors ([]SanityError): the list of found errors
-    spellerrors ([]SanityError): the list of words not found in the spell dictionary
-  
-  """
+
+    Attributes:
+      filename (str): the path to the file
+      content (str): the content of the file
+      lines ([]str): the lines of the file
+      errors ([]SanityError): the list of found errors
+      spellerrors ([]SanityError): the list of words not found in the spell dictionary
+
+    """
 
     def __init__(self, filename):
         self.filename = filename
@@ -99,8 +100,14 @@ class SanityFile:
                 )
             ]
         self.lines = self.split_(self.content)
-        #get a list of all characters outside of low ASCII range, together with their Unicode name
-        self.characters = sorted([(k,unicodedata.name(k)) for k in set([x for x in self.content]) if ord(k)>255 and k not in "‘’“…−–—””"])
+        # get a list of all characters outside of low ASCII range, together with their Unicode name
+        self.characters = sorted(
+            [
+                (k, unicodedata.name(k))
+                for k in set([x for x in self.content])
+                if ord(k) > 255 and k not in "‘’“…−–—””"
+            ]
+        )
         # self.spellerrors = []
 
     def split_(self, c):
@@ -119,15 +126,15 @@ class SanityFile:
         return result
 
     def check(self):
-        """ 
-    check the file for errors
-    """
+        """
+        check the file for errors
+        """
 
         for i, line in enumerate(self.lines):
             if "\\chk" in line:  # the line is explicitely marked as being correct
                 continue
             for antipattern, msg in self.antipatterns:
-                #print(antipattern)
+                # print(antipattern)
                 m = re.search("(%s)" % antipattern, line)
                 if m != None:
                     g = m.group(1)
@@ -146,11 +153,12 @@ class SanityFile:
                     self.errors.append(SanityError(self.filename, i, line, g, msg))
 
         for ch in self.characters:
-            self.errors.append(SanityError(self.filename, 0, '', ch[0],f'uncommon character: {ch[1]}'))
+            self.errors.append(
+                SanityError(self.filename, 0, "", ch[0], f"uncommon character: {ch[1]}")
+            )
 
     def spellcheck(self):
-        """return a list of all words which are neither known LaTeX terms nor found in the enchant dictionary
-    """
+        """return a list of all words which are neither known LaTeX terms nor found in the enchant dictionary"""
         result = sorted(
             list(
                 set(
@@ -164,21 +172,20 @@ class SanityFile:
         )
         self.spellerrors = result
 
-
     def uncommon_chars(self):
-            for ch in self.characters:
-                return(f"The following uncommon characters were found:\n{ch[0]}:{ch[1]}")
+        for ch in self.characters:
+            return f"The following uncommon characters were found:\n{ch[0]}:{ch[1]}"
 
 
 class TexFile(SanityFile):
     """
-  A tex file to be checked 
-  
-  Attributes:
-    antipatterns (str[]): a list of 2-tuples consisting of a string to match and a message to deliver if the string is found 
-    posnegpatterns (str[]): a list of 3-tuples consisting a pattern to match, a pattern NOT to match, and a message 
-    filechecks: currently unused #TODO
-  """
+    A tex file to be checked
+
+    Attributes:
+      antipatterns (str[]): a list of 2-tuples consisting of a string to match and a message to deliver if the string is found
+      posnegpatterns (str[]): a list of 3-tuples consisting a pattern to match, a pattern NOT to match, and a message
+      filechecks: currently unused #TODO
+    """
 
     antipatterns = (
         (
@@ -283,12 +290,12 @@ class TexFile(SanityFile):
 
 
 class BibFile(SanityFile):
-    """ 
-  A bib file to be checked 
-  
-  Attributes:
-    antipatterns (str[]): a list of 2-tuples consisting of a string to match and a message to deliver if the string is found 
-  """
+    """
+    A bib file to be checked
+
+    Attributes:
+      antipatterns (str[]): a list of 2-tuples consisting of a string to match and a message to deliver if the string is found
+    """
 
     antipatterns = (
         # ("[Aa]ddress *=.*[,/].*[^ ]","No more than one place of publication. No indications of countries or provinces"), #double cities in address
@@ -315,17 +322,26 @@ class BibFile(SanityFile):
             "In order to keep the Roman numbers in capitals, enclose them in braces {}",
         ),
         ("\.[A-Z]", "Please use a space after a period or an abbreviated name"),
-        (r"\\underline", "Please do not use underlining. Consult with support if you really need it"),
-        ("""quote}[\s]*['’’'‘’'‘'′ʼ´ʹʻˈʹ՚＇‛"“”]""", "Please do not use quotation marks for indented quotes"),
-        (r"\begin{tabular}[c]{l}", "Please do not use nested tables. Get in touch with support"),
+        (
+            r"\\underline",
+            "Please do not use underlining. Consult with support if you really need it",
+        ),
+        (
+            """quote}[\s]*['’’'‘’'‘'′ʼ´ʹʻˈʹ՚＇‛"“”]""",
+            "Please do not use quotation marks for indented quotes",
+        ),
+        (
+            r"\begin{tabular}[c]{l}",
+            "Please do not use nested tables. Get in touch with support",
+        ),
     )
 
     posnegpatterns = []
 
 
 class ImgFile(SanityFile):
-    """ 
-    An image file to be checked 
+    """
+    An image file to be checked
     """
 
     def __init__(self, filename):
@@ -374,8 +390,8 @@ class ImgFile(SanityFile):
 
 class SanityDir:
     """
-  A directory with various files to be checked
-  """
+    A directory with various files to be checked
+    """
 
     def __init__(self, dirname, ignorecodes):
         self.dirname = dirname
@@ -389,14 +405,14 @@ class SanityDir:
 
     def findallfiles(self, extension):
         """
-    find all files in or below the current directory with a given extension 
-    
-    args:
-      extension (str):  the extension to be looked for 
-      
-    returns: 
-      a list of paths for the retrieved filescd -
-    """
+        find all files in or below the current directory with a given extension
+
+        args:
+          extension (str):  the extension to be looked for
+
+        returns:
+          a list of paths for the retrieved filescd -
+        """
 
         matches = []
         localfiles = glob.glob("%s/local*" % self.dirname)
@@ -408,10 +424,9 @@ class SanityDir:
             matches.append(filename)
         return sorted(matches)
 
-
     def printErrors(self):
         """
-    Print all identified possible errors with metadata (filename, line number, reason
+        Print all identified possible errors with metadata (filename, line number, reason
         """
         for filename in sorted(self.texterrors):
             fileerrors = self.texterrors[filename]
@@ -434,11 +449,10 @@ class SanityDir:
                 print(filename)
                 print("    ", e)
 
-
     def check(self):
         """
-    Check all files in the directory
-    """
+        Check all files in the directory
+        """
 
         for tfilename in self.texfiles:
             try:

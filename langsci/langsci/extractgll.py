@@ -2,27 +2,34 @@ from interlinear import gll
 
 import glob
 import sys
-#import re
-#import sre_constants
-#import pprint
-import json
-#import operator
-#import os
-import LaTexAccents
-#import requests
-#import hashlib
 
-#from bs4 import BeautifulSoup
+# import re
+# import sre_constants
+# import pprint
+import json
+
+# import operator
+# import os
+import LaTexAccents
+
+# import requests
+# import hashlib
+
+# from bs4 import BeautifulSoup
 from collections import defaultdict
-#from titlemapping import titlemapping
-#from lgrlist import LGRLIST
+
+# from titlemapping import titlemapping
+# from lgrlist import LGRLIST
 
 from imtvaultconstants import *
 from langsci.webglottolog import string2glottocode, glottocode2iso
+
 converter = LaTexAccents.AccentConverter()
 
 
-def extract_examples(s, filename, book_language=None, book_metalanguage="eng", abbrkey={}):
+def extract_examples(
+    s, filename, book_language=None, book_metalanguage="eng", abbrkey={}
+):
     s = s.replace(r"{\bfseries ", r"\textbf{")
     s = s.replace(r"{\itshape ", r"\textit{")
     s = s.replace(r"{\scshape ", r"\textsc{")
@@ -60,8 +67,8 @@ def extract_examples(s, filename, book_language=None, book_metalanguage="eng", a
                 analyze=False,
                 extract_entities=True,
                 parent_entities=True,
-                provider = None,
-                nercache = {}
+                provider=None,
+                nercache={},
             )
             if thisgll.book_ID in NON_CCBY_LIST:
                 continue
@@ -69,6 +76,7 @@ def extract_examples(s, filename, book_language=None, book_metalanguage="eng", a
             continue
         examples.append(thisgll)
     return examples
+
 
 def get_abbreviations(lines):
     result = {}
@@ -88,8 +96,6 @@ def get_abbreviations(lines):
             )
             result[abbreviation] = expansion
     return result
-
-
 
 
 def langsciextract(directory):
@@ -127,7 +133,12 @@ def langsciextract(directory):
                 s = open(filename).read()
             except UnicodeDecodeError:
                 print("Unicode problem in %s" % filename)
-            examples = extract_examples(s,filename,book_language=book_language,book_metalanguage=book_metalanguage)
+            examples = extract_examples(
+                s,
+                filename,
+                book_language=book_language,
+                book_metalanguage=book_metalanguage,
+            )
             if examples != []:
                 jsons = json.dumps(
                     [ex.__dict__ for ex in examples],
@@ -135,20 +146,22 @@ def langsciextract(directory):
                     indent=4,
                     ensure_ascii=False,
                 )
-                jsonname = "langscijson/%sexamples.json" % filename[:-4]\
-                            .replace("/", "-")
+                jsonname = "langscijson/%sexamples.json" % filename[:-4].replace(
+                    "/", "-"
+                )
                 print("   ", jsonname)
                 with open(jsonname, "w", encoding="utf8") as jsonout:
                     jsonout.write(jsons)
 
-    #with open("glottonames.json", "w") as namesout:
-        #namesout.write(
-            #json.dumps(glottonames, sort_keys=True, indent=4, ensure_ascii=False)
-        #)
-    #with open("glottoiso.json", "w") as glottoisoout:
-        #glottoisoout.write(
-            #json.dumps(glotto_iso6393, sort_keys=True, indent=4, ensure_ascii=False)
-        #)
+    # with open("glottonames.json", "w") as namesout:
+    # namesout.write(
+    # json.dumps(glottonames, sort_keys=True, indent=4, ensure_ascii=False)
+    # )
+    # with open("glottoiso.json", "w") as glottoisoout:
+    # glottoisoout.write(
+    # json.dumps(glotto_iso6393, sort_keys=True, indent=4, ensure_ascii=False)
+    # )
+
 
 if __name__ == "__main__":
     langsciextract(sys.argv[1])

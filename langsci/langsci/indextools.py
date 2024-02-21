@@ -6,6 +6,7 @@ The ways how the *dx files are generated varies between different versions of Te
 
 import re, sys
 import shutil
+
 try:
     from langsci.delatex import dediacriticize
 except ImportError:
@@ -20,9 +21,8 @@ except ImportError:
 p = re.compile(r"\\indexentry \{(.*)\|hyper")
 
 
+ignoredic = {}
 
-
-ignoredic={}
 
 def processline(s):
     global ignoredic
@@ -50,7 +50,7 @@ def processline(s):
         items = p.match(s).group(1).split("@")
         sortstring = items[0]
         has_at = False
-        if len(items)>1:
+        if len(items) > 1:
             has_at = True
     except AttributeError:
         print("%s could not be parsed" % repr(s))
@@ -66,26 +66,26 @@ def processline(s):
             result = s.replace("%s@" % sortstring, "%s@" % processedstring)
             return result
         else:
-            result = s.replace(sortstring, "%s@%s" % (processedstring,sortstring))
+            result = s.replace(sortstring, "%s@%s" % (processedstring, sortstring))
             return result
 
 
 def processfile(filename):
     """Read a file and write the fixed output to another file with "mod" appended to its name
 
-  Args:
-    filename (str): the path to the file
+    Args:
+      filename (str): the path to the file
 
-  Returns:
-    None
+    Returns:
+      None
 
-  """
+    """
     print("Reading", filename)
     with open(filename, encoding="utf-8") as indexfile:
         lines = indexfile.readlines()
     print("Found %i lines" % len(lines))
     # read all lines, process them and write them to output file
     processedlines = list(map(processline, lines))
-    shutil.copy(filename, f'{filename}.bak')
+    shutil.copy(filename, f"{filename}.bak")
     with open(filename, "w", encoding="utf-8") as out:
         out.write("".join(processedlines))

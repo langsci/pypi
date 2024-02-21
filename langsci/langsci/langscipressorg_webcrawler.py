@@ -5,7 +5,9 @@ from bs4 import BeautifulSoup
 
 # CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>[0-9]+)\. +(?P<title>.*)\. \((?P<series>(.*)) (?P<seriesnumber>[0-9]*)\)\. Berlin: Language Science Press. DOI: (?P<doi>[^ ]*)")
 
-CITEPATTERN = re.compile("(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>20[1-9][0-9]|Forthcoming)\. +(?P<title>.*)\. \((?P<series>(.*?)) ?(?P<seriesnumber>[0-9]*)\)\. Berlin: Language Science Press.( DOI: (?P<doi>[^ ]*))?")
+CITEPATTERN = re.compile(
+    "(?P<creators>[^(]*)(?P<ed>\(eds?\.\))?\. (?P<year>20[1-9][0-9]|Forthcoming)\. +(?P<title>.*)\. \((?P<series>(.*?)) ?(?P<seriesnumber>[0-9]*)\)\. Berlin: Language Science Press.( DOI: (?P<doi>[^ ]*))?"
+)
 
 
 def ID2title(book_ID):
@@ -14,74 +16,85 @@ def ID2title(book_ID):
     title = get_title_subtitle(citeinfo)[0]
     return title
 
+
 def get_soup(book_ID):
     url = f"https://langsci-press.org/catalog/book/{book_ID}"
     html = requests.get(url).text
-    if len(html) in (18920, 18922): #book not found
+    if len(html) in (18920, 18922):  # book not found
         return None
-    #print(f"{book_ID}", end=" ")
-    soup = BeautifulSoup(html, 'html.parser')
+    # print(f"{book_ID}", end=" ")
+    soup = BeautifulSoup(html, "html.parser")
     return soup
+
 
 def get_citeinfo(soup):
     try:
-        citeinfo = soup.find("div", "series").findNext('div','label').nextSibling.nextSibling.text.strip()
+        citeinfo = (
+            soup.find("div", "series")
+            .findNext("div", "label")
+            .nextSibling.nextSibling.text.strip()
+        )
     except AttributeError:
         print("could not retrieve citeinfo")
         return None
-    #if "orthcoming" in citeinfo:
-        #print("not published yet")
-        #return None
+    # if "orthcoming" in citeinfo:
+    # print("not published yet")
+    # return None
     print(citeinfo)
     citegroups = CITEPATTERN.match(citeinfo)
     if citegroups is None:
         print("could not match citeinfo")
     else:
         pass
-        #print()
+        # print()
     return citegroups
+
 
 def get_blurb(soup):
     try:
-        synopsis = soup.find("div", "main_entry").findNext('div','value').text.strip()
+        synopsis = soup.find("div", "main_entry").findNext("div", "value").text.strip()
     except AttributeError:
-        #print("could not retrieve blurb")
+        # print("could not retrieve blurb")
         return None
     return synopsis
 
+
 def get_chapters(soup):
     try:
-        chapterlis = soup.find("div", "chapters").find_all('li')
+        chapterlis = soup.find("div", "chapters").find_all("li")
     except AttributeError:
         return []
     chapters = {}
     for chapterli in chapterlis:
-        title = chapterli.find("div", "title").text.strip().replace('\t','').replace('\n',': ')
+        title = (
+            chapterli.find("div", "title")
+            .text.strip()
+            .replace("\t", "")
+            .replace("\n", ": ")
+        )
         authors = chapterli.find("div", "authors").text.strip()
         identifier = chapterli.find("a").text.strip()
         try:
-            numerical_identifer = int(identifier.replace("Chapter ", ''))
+            numerical_identifer = int(identifier.replace("Chapter ", ""))
         except ValueError:
             numerical_identifer = None
-        chapters[identifier]= {'title': title,
-                        'authors':authors}
-        chapters[numerical_identifer]= {'title': title,
-                        'authors':authors}
+        chapters[identifier] = {"title": title, "authors": authors}
+        chapters[numerical_identifer] = {"title": title, "authors": authors}
     return chapters
 
 
 def get_publication_date(soup):
     try:
-        #date = soup.find("div", "date_published").findNext('div','value').text.strip()
-        date = soup.find("meta", {"name" : "citation_publication_date"}).attrs["content"]
-        #months = {m:i+1 for i,m in enumerate("January February March April May June July August September October November December".split())}
-        #print(date)
-        #month, day, year = date.split()
-        #numerical_month = months[month]
-        #if int(numerical_month) < 10:
-            #numerical_month = f"0{numerical_month}"
-        #formatted_date =  "%s-%s-%s" % (year.strip(),numerical_month,day.replace(",",''))
-        #return formatted_date
+        # date = soup.find("div", "date_published").findNext('div','value').text.strip()
+        date = soup.find("meta", {"name": "citation_publication_date"}).attrs["content"]
+        # months = {m:i+1 for i,m in enumerate("January February March April May June July August September October November December".split())}
+        # print(date)
+        # month, day, year = date.split()
+        # numerical_month = months[month]
+        # if int(numerical_month) < 10:
+        # numerical_month = f"0{numerical_month}"
+        # formatted_date =  "%s-%s-%s" % (year.strip(),numerical_month,day.replace(",",''))
+        # return formatted_date
         return date
     except AttributeError:
         print("could not retrieve publication date")
@@ -92,7 +105,7 @@ def get_publication_date(soup):
 def get_ISBNs(soup, drophyphens=True):
     dropee = ""
     if drophyphens:
-        dropee = '-'
+        dropee = "-"
     isbns = {}
     publicationformats = soup.find_all("div", "publication_format")
     for publicationformat in publicationformats:
@@ -102,59 +115,78 @@ def get_ISBNs(soup, drophyphens=True):
         except AttributeError:
             continue
         if label == "Softcover":
-            isbns['softcover'] = publicationformat.find("div", "identification_code").find('div').text.strip().replace(dropee, '')
+            isbns["softcover"] = (
+                publicationformat.find("div", "identification_code")
+                .find("div")
+                .text.strip()
+                .replace(dropee, "")
+            )
             continue
         if label == "Hardcover":
-            isbns['hardcover'] = publicationformat.find("div", "identification_code").find('div').text.strip().replace(dropee, '')
+            isbns["hardcover"] = (
+                publicationformat.find("div", "identification_code")
+                .find("div")
+                .text.strip()
+                .replace(dropee, "")
+            )
             continue
         if "PDF" in label:
             try:
-                isbns['digital'] = publicationformat.find("div", "identification_code").find('div').text.strip().replace(dropee, '')
+                isbns["digital"] = (
+                    publicationformat.find("div", "identification_code")
+                    .find("div")
+                    .text.strip()
+                    .replace(dropee, "")
+                )
             except AttributeError:
                 pass
     return isbns
 
 
-
-
-
 def get_ISBN_digital(soup, drophyphens=True):
-    return get_ISBNs(soup, drophyphens=True)['digital']
+    return get_ISBNs(soup, drophyphens=True)["digital"]
+
 
 def get_ISBN_softcover(soup, drophyphens=True):
-    return get_ISBNs(soup, drophyphens=True)['softcover']
+    return get_ISBNs(soup, drophyphens=True)["softcover"]
+
 
 def get_ISBN_hardcover(soup, drophyphens=True):
-    return get_ISBNs(soup, drophyphens=True)['hardcover']
+    return get_ISBNs(soup, drophyphens=True)["hardcover"]
 
 
-#def get_ISBN_softcover(soup, drophyphens=True):
-    #ISBNlabel = soup.find("div", "identification_code").findNext('h3')
-    #labeltext = ISBNlabel.text.strip()
-    #if labeltext == "ISBN-13 (15)":
-        #ISBNvalue = ISBNlabel.findNext("div","value")
-        #if drophyphens:
-            #return ISBNvalue.text.strip().replace("-","")
-        #else:
-            #return ISBNvalue.text.strip()
+# def get_ISBN_softcover(soup, drophyphens=True):
+# ISBNlabel = soup.find("div", "identification_code").findNext('h3')
+# labeltext = ISBNlabel.text.strip()
+# if labeltext == "ISBN-13 (15)":
+# ISBNvalue = ISBNlabel.findNext("div","value")
+# if drophyphens:
+# return ISBNvalue.text.strip().replace("-","")
+# else:
+# return ISBNvalue.text.strip()
 
 
-#def get_ISBN_hardcover(soup, drophyphens=True):
-    #ISBNlabel = soup.find("div", "identification_code").findNext('h3')
-    #labeltext = ISBNlabel.text.strip()
-    #if labeltext == "ISBN-13 (15)":
-        #ISBNvalue = ISBNlabel.findNext("div","value")
-        #if drophyphens:
-            #return ISBNvalue.text.strip().replace("-","")
-        #else:
-            #return ISBNvalue.text.strip()
+# def get_ISBN_hardcover(soup, drophyphens=True):
+# ISBNlabel = soup.find("div", "identification_code").findNext('h3')
+# labeltext = ISBNlabel.text.strip()
+# if labeltext == "ISBN-13 (15)":
+# ISBNvalue = ISBNlabel.findNext("div","value")
+# if drophyphens:
+# return ISBNvalue.text.strip().replace("-","")
+# else:
+# return ISBNvalue.text.strip()
+
 
 def get_biosketches(soup):
     container = soup.find("div", "author_bios")
     creators = container.find_all("div", "sub_item")
-    result = [(creator.find("div", "label").text.strip(),
-               creator.find("div", "value").text.strip()
-               ) for creator in creators]
+    result = [
+        (
+            creator.find("div", "label").text.strip(),
+            creator.find("div", "value").text.strip(),
+        )
+        for creator in creators
+    ]
     return result
 
 
@@ -164,42 +196,43 @@ def get_title_subtitle(citegroup):
     except TypeError:
         return None, None
     title_elements = titlestring.split(": ")
-    title = title_elements[0].strip().replace(r'\t',' ').replace(r'\n',' ')
+    title = title_elements[0].strip().replace(r"\t", " ").replace(r"\n", " ")
     try:
-        subtitle = title_elements[1].strip().replace(r'\t',' ').replace(r'\n',' ')
+        subtitle = title_elements[1].strip().replace(r"\t", " ").replace(r"\n", " ")
     except IndexError:
         subtitle = ""
     return title, subtitle
+
 
 def biosketches2names(biosketches):
     resultlist = []
     for i, biosketch in enumerate(biosketches):
         name = biosketch[0]
         sketch = biosketch[1]
-        nameparts = name.split(',')[0].split() #throw away affiliation
-        firstname = ' ' .join(nameparts[0:-1])
+        nameparts = name.split(",")[0].split()  # throw away affiliation
+        firstname = " ".join(nameparts[0:-1])
         lastname = nameparts[-1]
         resultlist.append((firstname, lastname, sketch))
     return resultlist
 
 
 def get_wiki_citation(creatorlist):
-    vauthors = ''
-    wikiauthors = ''
-    if citeinfo['ed']:
-        creatortype = 'veditors'
+    vauthors = ""
+    wikiauthors = ""
+    if citeinfo["ed"]:
+        creatortype = "veditors"
     else:
-        creatortype = 'vauthors'
-    wikicreators = ", ".join([u"%s %s"%(authormetadata[1],
-                                        ''.join([firstname[0]
-                                                    for firstname
-                                                    in authormetadata[0].split()
-                                                    ])
-                                        )
-                                for authormetadata
-                                in creatorlist
-                                ]
-                    )
+        creatortype = "vauthors"
+    wikicreators = ", ".join(
+        [
+            "%s %s"
+            % (
+                authormetadata[1],
+                "".join([firstname[0] for firstname in authormetadata[0].split()]),
+            )
+            for authormetadata in creatorlist
+        ]
+    )
     wikiinfo = f"""<ref name="xxx">{{Cite book
     | {creatortype} = {wikicreators}
     | title =   %s%s
@@ -218,47 +251,48 @@ def get_wiki_citation(creatorlist):
 
 def get_pdf(soup, file_name):
     publication_formats = soup.find("div", "entry_details").find("div", "files")
-    #print(publication_formats)
+    # print(publication_formats)
     try:
-        zenodolink = [el['href'] for el in publication_formats.find_all("a") if el['href'].startswith('https://zenodo')][0]
+        zenodolink = [
+            el["href"]
+            for el in publication_formats.find_all("a")
+            if el["href"].startswith("https://zenodo")
+        ][0]
         with open(file_name, "wb") as out:
             response = requests.get(zenodolink)
             out.write(response.content)
     except IndexError:
-        omplinks_pdf = [el['href'] for el in publication_formats.find_all("a","pdf") if "PDF" in el.text]
-        #print(omplinks_pdf)
+        omplinks_pdf = [
+            el["href"]
+            for el in publication_formats.find_all("a", "pdf")
+            if "PDF" in el.text
+        ]
+        # print(omplinks_pdf)
         if len(omplinks_pdf) == 0:
             print("publication format PDF could not be retrieved")
             return
         if len(omplinks_pdf) > 1:
-            print('more than one pdf')
+            print("more than one pdf")
             print(omplinks_pdf)
             return
         omplink_pdf = omplinks_pdf[0]
         with open(file_name, "wb") as out:
             response = requests.get(omplink_pdf)
             out.write(response.content)
-        #treat omp link`
+        # treat omp link`
 
 
-
-
-
-
-
-
-#out = codecs.open("wikiinfo.txt","w",encoding="utf-8")
-#out.write("""<ref name="xxx">{{Cite book
-#| %s
-#| title =   %s%s
-#| place = Berlin
-#| publisher = Language Science Press
-#| date = %s
-#| format = pdf
-#| url = http://langsci-press.org/catalog/book/%s
-#| doi =
-#| doi-access=free
-#| isbn = %s
-#}}
-#</ref>
-
+# out = codecs.open("wikiinfo.txt","w",encoding="utf-8")
+# out.write("""<ref name="xxx">{{Cite book
+# | %s
+# | title =   %s%s
+# | place = Berlin
+# | publisher = Language Science Press
+# | date = %s
+# | format = pdf
+# | url = http://langsci-press.org/catalog/book/%s
+# | doi =
+# | doi-access=free
+# | isbn = %s
+# }}
+# </ref>

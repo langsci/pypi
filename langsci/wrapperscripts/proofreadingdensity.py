@@ -14,14 +14,14 @@ lsidformated = json.loads(lsidrequest.text)
 # save the ID.
 paperhiveid = lsidformated["documentItems"][0]["id"]
 
-#paperhiveid = "stscTQ_iDyaZ"
+# paperhiveid = "stscTQ_iDyaZ"
 paperhiverequest = requests.get(
     "https://paperhive.org/api/discussions?documentItem=" + paperhiveid
 )
 paperhiveformated = json.loads(paperhiverequest.text)
 # get the number of pages
 pages = []  # create empty list for storage of pages
-print(lsID,len(paperhiveformated["discussions"]))
+print(lsID, len(paperhiveformated["discussions"]))
 for discussion in paperhiveformated["discussions"]:
     for page in discussion["target"]["selectors"]["pdfTextPositions"]:
         pages += [page["pageNumber"]]

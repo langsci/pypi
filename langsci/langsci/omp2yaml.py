@@ -97,7 +97,7 @@ chapterauthorsselector = """
  ;
 """
 
-prefixselector ="""
+prefixselector = """
 select setting_value from submission_settings
 where setting_name='prefix'
 and submission_id = %s
@@ -125,17 +125,23 @@ def get_one(selector, book_id):
     try:
         return tuple_[0]
     except TypeError:
-        return ''
+        return ""
+
 
 def get_proofreaders(book_id):
-    proofreaders = [" ".join([y for y in x if y]) for x in conn.execute(proofreadersselector % book_id).fetchall()]
+    proofreaders = [
+        " ".join([y for y in x if y])
+        for x in conn.execute(proofreadersselector % book_id).fetchall()
+    ]
     return proofreaders
+
 
 def get_doi(book_id):
     return get_one(doiselector, book_id)
 
+
 def get_prefix(book_id):
-    return get_one(prefixselector, book_id).replace(':', '')
+    return get_one(prefixselector, book_id).replace(":", "")
 
 
 def get_urls(book_id):
@@ -161,12 +167,18 @@ def get_urls(book_id):
             )
     return d
 
+
 def get_book_creators(book_id):
     creators = [list(x) for x in conn.execute(creatorselector % book_id).fetchall()]
-    #print(creators)
-    authors = [au[:4] for au in creators if au[4] == 'AU'] #AU is code for user role 'author'
-    editors = [ed[:4] for ed in creators if ed[4] == 'VE'] #VE is code for user role 'editor'
-    return {'authors': authors, 'editors': editors}
+    # print(creators)
+    authors = [
+        au[:4] for au in creators if au[4] == "AU"
+    ]  # AU is code for user role 'author'
+    editors = [
+        ed[:4] for ed in creators if ed[4] == "VE"
+    ]  # VE is code for user role 'editor'
+    return {"authors": authors, "editors": editors}
+
 
 def get_isbns(book_id):
     digital = get_one(isbndigitalselector, book_id)
@@ -174,16 +186,25 @@ def get_isbns(book_id):
     softcover = get_one(isbnsoftcoverselector, book_id)
     return {"digital": digital, "softcover": softcover, "hardcover": hardcover}
 
+
 def get_reviews(book_id):
     reviews = [list(x) for x in conn.execute(rezensionselector % book_id).fetchall()]
-    return [{"reviewer_name": t[0],
-             "money_quote": t[1].replace('<em','<span>').replace('</em>','</span>')\
-                    .replace('<it>','<span style="font-style:italic;">').replace('</it>','</span>')\
-                    .replace('allowfullscreen>','allowfullscreen="true">') ,
-             "date": t[2],
-             "link": t[3],
-             "link_name": t[4]
-            } for t in reviews]
+    return [
+        {
+            "reviewer_name": t[0],
+            "money_quote": t[1]
+            .replace("<em", "<span>")
+            .replace("</em>", "</span>")
+            .replace("<it>", '<span style="font-style:italic;">')
+            .replace("</it>", "</span>")
+            .replace("allowfullscreen>", 'allowfullscreen="true">'),
+            "date": t[2],
+            "link": t[3],
+            "link_name": t[4],
+        }
+        for t in reviews
+    ]
+
 
 def get_chapters(book_id):
     chapter_tuples = conn.execute(chaptersselector % book_id).fetchall()
@@ -196,8 +217,18 @@ def get_chapters(book_id):
         except ValueError:
             chapter_main_title = whole_chapter_title
             chapter_subtitle = None
-        chapter_authors = [list(x) for x in conn.execute(chapterauthorsselector % chapter_id).fetchall()]
-        chapters.append({"number":running_number+1, "title": chapter_main_title,"subtitle": chapter_subtitle, "authors": chapter_authors}) # chapter number, subtitle, chapterdoi
+        chapter_authors = [
+            list(x)
+            for x in conn.execute(chapterauthorsselector % chapter_id).fetchall()
+        ]
+        chapters.append(
+            {
+                "number": running_number + 1,
+                "title": chapter_main_title,
+                "subtitle": chapter_subtitle,
+                "authors": chapter_authors,
+            }
+        )  # chapter number, subtitle, chapterdoi
     return chapters
 
 
@@ -230,13 +261,16 @@ books = {
         "series": t[1],
         "seriesnumber": t[2],
         "booksubtitle": get_one(subtitleselector, t[0]),
-        "blurb": get_one(abstractselector, t[0])\
-                    .replace('<em','<span').replace('</em>','</span>')\
-                    .replace('<it>','<span style="font-style:italic">').replace('</it>','</span>')\
-                    .replace('<blockquote>','<blockquote><p>').replace('</blockquote>','</p></blockquote>')\
-                    .replace('<hr>','<hr />')\
-                    .replace('<br>','<br />')\
-                    .replace('align="justify"',''),
+        "blurb": get_one(abstractselector, t[0])
+        .replace("<em", "<span")
+        .replace("</em>", "</span>")
+        .replace("<it>", '<span style="font-style:italic">')
+        .replace("</it>", "</span>")
+        .replace("<blockquote>", "<blockquote><p>")
+        .replace("</blockquote>", "</p></blockquote>")
+        .replace("<hr>", "<hr />")
+        .replace("<br>", "<br />")
+        .replace('align="justify"', ""),
         "doi": get_doi(t[0]),
         "isbns": get_isbns(t[0]),
         "remote_urls": get_urls(t[0]),
@@ -267,9 +301,9 @@ title: %s-%s
 permalink: /chapters/%s-%s
 ---"""
 
-#<ONIXMessage release="3.0" xmlns="http://ns.editeur.org/onix/3.0/reference">
+# <ONIXMessage release="3.0" xmlns="http://ns.editeur.org/onix/3.0/reference">
 
-#xmlheader = """<?xml version="1.0" encoding="UTF-8"?>
+# xmlheader = """<?xml version="1.0" encoding="UTF-8"?>
 xmlheader = """<?xml version="1.0"?>
 <ONIXMessage xmlns="http://ns.editeur.org/onix/3.0/reference" release="3.0">
 <Header>
@@ -287,25 +321,30 @@ xmlheader = """<?xml version="1.0"?>
     </Addressee>
     <SentDateTime>{}</SentDateTime>
 </Header>
-""".format(datetime.today().strftime('%Y%m%d'))
+""".format(
+    datetime.today().strftime("%Y%m%d")
+)
 
 xmlfooter = """</ONIXMessage>"""
 
 
 def to_yaml():
     for book in books:
-        with open("tmp/%s.yaml"%book, 'w') as yamlout:
+        with open("tmp/%s.yaml" % book, "w") as yamlout:
             yamlout.write(yaml.dump(books[book]))
-        with open("tmp/%s.md"%book, 'w') as mdout:
-            mdout.write(mdbooktemplate%(books[book]["series"],book,book))
-        for chapter in books[book]['chapters']:
-            chapternumber = chapter['number']
-            with open("tmp/%s-%s.md"%(book,chapternumber), 'w') as chapterout:
-                chapterout.write(mdchaptertemplate%(book,chapternumber,book,chapternumber,book,chapternumber))
+        with open("tmp/%s.md" % book, "w") as mdout:
+            mdout.write(mdbooktemplate % (books[book]["series"], book, book))
+        for chapter in books[book]["chapters"]:
+            chapternumber = chapter["number"]
+            with open("tmp/%s-%s.md" % (book, chapternumber), "w") as chapterout:
+                chapterout.write(
+                    mdchaptertemplate
+                    % (book, chapternumber, book, chapternumber, book, chapternumber)
+                )
 
 
 def to_onix():
-    xmlbooktemplate ="""<Product>
+    xmlbooktemplate = """<Product>
     <RecordReference>langsci-press.org/{bookid}</RecordReference>
     <NotificationType>03</NotificationType>
     <RecordSourceType>01</RecordSourceType>
@@ -413,29 +452,35 @@ def to_onix():
 """
 
     seriesd = {
-        "algad": ['African Language Grammars and Dictionaries','2512-4862'],
-        "cal": ['Contemporary African Linguistics','2511-7726'],
-        "cam": ['Contact and Multilingualism','2700-855X'],
-        "cfls": ['Conceptual Foundations of Language Science','2363-877X'],
-        "classics": ['Classics in Linguistics','2366-374X'],
-        "cmle": ['Computational Models of Language Evolution','2364-7809'],
-        "eotms": ['Empirically Oriented Theoretical Morphology and Syntax','2366-3529'],
-        "eurosla": ['Eurosla Studies','2626-2665'],
-        "hpls": ['History and Philosophy of the Language Sciences','2629-172X'],
-        "loc": ['Languages of the Caucasus','2699-0156'],
-        "lv": ['Language Variation','2366-7818'],
-        "mi": ['Morphological Investigations','2567-742X'],
-        "nccs": ['Niger-Congo Comparative Studies','2627-0048'],
-        "mcnc": ['Niger-Congo Comparative Studies','2627-0048'],
-        "ogs": ['Open Generative Syntax','2568-7336'],
-        "osl": ['Open Slavic Linguistics','2627-8332'],
-        "pmwe": ['Phraseology and Multiword Expressions','2625-3127'],
-        "scl": ['Studies in Caribbean Languages','2627-1834'],
-        "sidl": ['Studies in Diversity Linguistics','2363-5568'],
-        "silp": ['Studies in Laboratory Phonology','2363-5576'],
-        "tbls": ['Textbooks in Language Sciences','2364-6209'],
-        "tgdi": ['Topics at the Grammar-Discourse Interface','2567-3335'],
-        "tmnlp": ['Translation and Multilingual Natural Language Processing','2364-8899'],
+        "algad": ["African Language Grammars and Dictionaries", "2512-4862"],
+        "cal": ["Contemporary African Linguistics", "2511-7726"],
+        "cam": ["Contact and Multilingualism", "2700-855X"],
+        "cfls": ["Conceptual Foundations of Language Science", "2363-877X"],
+        "classics": ["Classics in Linguistics", "2366-374X"],
+        "cmle": ["Computational Models of Language Evolution", "2364-7809"],
+        "eotms": [
+            "Empirically Oriented Theoretical Morphology and Syntax",
+            "2366-3529",
+        ],
+        "eurosla": ["Eurosla Studies", "2626-2665"],
+        "hpls": ["History and Philosophy of the Language Sciences", "2629-172X"],
+        "loc": ["Languages of the Caucasus", "2699-0156"],
+        "lv": ["Language Variation", "2366-7818"],
+        "mi": ["Morphological Investigations", "2567-742X"],
+        "nccs": ["Niger-Congo Comparative Studies", "2627-0048"],
+        "mcnc": ["Niger-Congo Comparative Studies", "2627-0048"],
+        "ogs": ["Open Generative Syntax", "2568-7336"],
+        "osl": ["Open Slavic Linguistics", "2627-8332"],
+        "pmwe": ["Phraseology and Multiword Expressions", "2625-3127"],
+        "scl": ["Studies in Caribbean Languages", "2627-1834"],
+        "sidl": ["Studies in Diversity Linguistics", "2363-5568"],
+        "silp": ["Studies in Laboratory Phonology", "2363-5576"],
+        "tbls": ["Textbooks in Language Sciences", "2364-6209"],
+        "tgdi": ["Topics at the Grammar-Discourse Interface", "2567-3335"],
+        "tmnlp": [
+            "Translation and Multilingual Natural Language Processing",
+            "2364-8899",
+        ],
     }
 
     authortemplate = """<Contributor>
@@ -462,52 +507,74 @@ def to_onix():
             <SourceTitle>{}​</SourceTitle>
         </TextContent>"""
 
-
-
     for book in books:
-        if book in (16,17,18,19,22,25):
+        if book in (16, 17, 18, 19, 22, 25):
             continue
-        #if book not in (159, 192, 46,214,143,186,48,121,52,157,149,51,196,107,191,234,132,120,248,153,210,78,53):
-            #continue
-        #if book not in (200,):
-            #continue
-        with open("onix-xml/%s.xml"%book, 'w') as xmlout:
+        # if book not in (159, 192, 46,214,143,186,48,121,52,157,149,51,196,107,191,234,132,120,248,153,210,78,53):
+        # continue
+        # if book not in (200,):
+        # continue
+        with open("onix-xml/%s.xml" % book, "w") as xmlout:
             d = books[book]
-            #pprint.pprint(d)
-            d['subtitlestring'] = ""
-            subtitle = d.get('booksubtitle', False)
+            # pprint.pprint(d)
+            d["subtitlestring"] = ""
+            subtitle = d.get("booksubtitle", False)
             if subtitle:
-                d['subtitlestring'] = f"\n            <Subtitle>{subtitle}</Subtitle>"
-            d['isbndigital'] = books[book]['isbns']['digital']
-            d['seriesname'] = seriesd[d['series']][0]
-            d['audiencecode'] = '06' #academic
-            if d['series'] == 'tbls':
-                  d['audiencecode'] = '05' #higher education
-            d['issn'] = seriesd[d['series']][1]
-            d['contributorstring'] = ""
+                d["subtitlestring"] = f"\n            <Subtitle>{subtitle}</Subtitle>"
+            d["isbndigital"] = books[book]["isbns"]["digital"]
+            d["seriesname"] = seriesd[d["series"]][0]
+            d["audiencecode"] = "06"  # academic
+            if d["series"] == "tbls":
+                d["audiencecode"] = "05"  # higher education
+            d["issn"] = seriesd[d["series"]][1]
+            d["contributorstring"] = ""
             offset = 1
-            d['contributorstring']  += "\n        ".join([authortemplate.format(i+offset,au[0],au[1],au[2],escape(au[3])) for i,au in enumerate(d['creators']['authors'])])
-            offset += len(d['creators']['authors'])
-            d['contributorstring']  += "\n        ".join([editortemplate.format(i+offset,au[0],au[1],au[2],escape(au[3])) for i,au in enumerate(d['creators']['editors'])])
-            d['edition'] = 1
+            d["contributorstring"] += "\n        ".join(
+                [
+                    authortemplate.format(
+                        i + offset, au[0], au[1], au[2], escape(au[3])
+                    )
+                    for i, au in enumerate(d["creators"]["authors"])
+                ]
+            )
+            offset += len(d["creators"]["authors"])
+            d["contributorstring"] += "\n        ".join(
+                [
+                    editortemplate.format(
+                        i + offset, au[0], au[1], au[2], escape(au[3])
+                    )
+                    for i, au in enumerate(d["creators"]["editors"])
+                ]
+            )
+            d["edition"] = 1
             try:
-                toplanguage = detect_langs(" ".join([d['title'], d['booksubtitle']]))[0].lang
+                toplanguage = detect_langs(" ".join([d["title"], d["booksubtitle"]]))[
+                    0
+                ].lang
             except:
                 pprint.pprint(d)
             if toplanguage not in ["en", "fr", "de", "pt", "es", "zh"]:
                 print("Unexpected language %s for %s." % (toplanguage, book))
-            lgcode23 = {'de':'ger', 'fr':'fre', 'es':'esp', 'ro': 'por', 'zh': 'cmn'  }
-            toplanguage = lgcode23.get(toplanguage, 'eng')
-            #d['blurb'] = escape(d['blurb'])
-            d['language'] = toplanguage
-            d['reviewstring'] = ""
-            d['reviewstring'] += "        ".join(reviewtemplate.format(review['money_quote'],review['reviewer_name']) for review in d['reviews'])
-            d['coverurl'] = "https://langsci-press.org/$$$call$$$/submission/cover/cover?submissionId=%s"%d['bookid']
-            d['bookurl'] = "https://langsci-press.org/catalog/book/%s"%d['bookid']
-            d['collectionsequence'] = ''
+            lgcode23 = {"de": "ger", "fr": "fre", "es": "esp", "ro": "por", "zh": "cmn"}
+            toplanguage = lgcode23.get(toplanguage, "eng")
+            # d['blurb'] = escape(d['blurb'])
+            d["language"] = toplanguage
+            d["reviewstring"] = ""
+            d["reviewstring"] += "        ".join(
+                reviewtemplate.format(review["money_quote"], review["reviewer_name"])
+                for review in d["reviews"]
+            )
+            d["coverurl"] = (
+                "https://langsci-press.org/$$$call$$$/submission/cover/cover?submissionId=%s"
+                % d["bookid"]
+            )
+            d["bookurl"] = "https://langsci-press.org/catalog/book/%s" % d["bookid"]
+            d["collectionsequence"] = ""
             try:
-                d['seriesnumber'] = int(d['seriesnumber'])
-                d['collectionsequence']=f"""<CollectionSequence>
+                d["seriesnumber"] = int(d["seriesnumber"])
+                d[
+                    "collectionsequence"
+                ] = f"""<CollectionSequence>
                 <CollectionSequenceType>02</CollectionSequenceType>
                 <CollectionSequenceNumber>{d['seriesnumber']}</CollectionSequenceNumber>
             </CollectionSequence>
@@ -515,37 +582,23 @@ def to_onix():
             except ValueError:
                 print(f"series number missing for {d['bookid']}")
 
-            myxmlstring = xmlheader+xmlbooktemplate.format(**d).replace("&nbsp;",' ')+xmlfooter
-            #xmldoc = etree.fromstring(myxmlstring)
-            #schemaXML.validate(xmldoc)
-            #schemafilename = "ONIX_BookProduct_3.0_reference.xsd"
-            #etree.XMLSchema(etree.parse(open(schemafilename).read()))
+            myxmlstring = (
+                xmlheader
+                + xmlbooktemplate.format(**d).replace("&nbsp;", " ")
+                + xmlfooter
+            )
+            # xmldoc = etree.fromstring(myxmlstring)
+            # schemaXML.validate(xmldoc)
+            # schemafilename = "ONIX_BookProduct_3.0_reference.xsd"
+            # etree.XMLSchema(etree.parse(open(schemafilename).read()))
 
             xmlout.write(myxmlstring)
-        #for chapter in books[book]['chapters']:
-            #chapternumber = chapter['number']
-            #with open("onix-xml/%s-%s.xml"%(book,chapternumber), 'w') as chapterout:
-                #chapterout.write("")
+        # for chapter in books[book]['chapters']:
+        # chapternumber = chapter['number']
+        # with open("onix-xml/%s-%s.xml"%(book,chapternumber), 'w') as chapterout:
+        # chapterout.write("")
+
 
 if __name__ == "__main__":
     to_onix()
     print("Completed. Run onixcheck -p onix-xml/")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

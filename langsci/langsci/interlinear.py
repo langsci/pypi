@@ -1,26 +1,31 @@
-#import glob
-#import sys
+# import glob
+# import sys
 import re
-#import sre_constants
-#import pprint
+
+# import sre_constants
+# import pprint
 import json
-#import operator
+
+# import operator
 import os
 import LaTexAccents
 import hashlib
 
 from collections import defaultdict
+
 try:
     from titlemapping import titlemapping
     from named_entities import get_entities, get_parent_entities
-    #from lgrlist import LGRLIST
+
+    # from lgrlist import LGRLIST
 
     from imtvaultconstants import *
     from langsci.webglottolog import string2glottocode, glottocode2iso, glottocode2name
 except ImportError:
     from langsci.titlemapping import titlemapping
     from langsci.named_entities import get_entities, get_parent_entities
-    #from lgrlist import LGRLIST
+
+    # from lgrlist import LGRLIST
 
     from langsci.imtvaultconstants import *
     from langsci.webglottolog import string2glottocode, glottocode2iso, glottocode2name
@@ -37,13 +42,14 @@ try:
 except FileNotFoundError:
     glottonames = {}
 
-#try:
-    #glotto_iso6393 = json.loads(open("glottoiso.json").read())
-#except FileNotFoundError:
-    #glotto_iso6393 = {}
+# try:
+# glotto_iso6393 = json.loads(open("glottoiso.json").read())
+# except FileNotFoundError:
+# glotto_iso6393 = {}
 
 glottotmpiso = {}
 glottotmpname = json.loads(open("g2.json").read())
+
 
 class gll:
     def __init__(
@@ -62,10 +68,10 @@ class gll:
         analyze=False,
         extract_entities=False,
         parent_entities=False,
-        categories = "smallcaps",
-        nercache = None,
-        external_ID = None,
-        provided_citation = None
+        categories="smallcaps",
+        nercache=None,
+        external_ID=None,
+        provided_citation=None,
     ):
         basename = filename.split("/")[-1]
         self.license = "https://creativecommons.org/licenses/by/4.0"
@@ -83,9 +89,11 @@ class gll:
         else:
             self.categories = self.allcaps2categories(imt)
         srcwordstex = self.strip_tex_comment(src).split("\t")
-        imtwordstex = [self.resolve_lgr(i) for i in self.strip_tex_comment(imt).split("\t")]
+        imtwordstex = [
+            self.resolve_lgr(i) for i in self.strip_tex_comment(imt).split("\t")
+        ]
         if len(srcwordstex) != len(imtwordstex):
-            print("number of words don't match in\n%s\n%s"%(srcwordstex,imtwordstex))
+            print("number of words don't match in\n%s\n%s" % (srcwordstex, imtwordstex))
             return None
         imt_html = "\n".join(
             [
@@ -151,7 +159,7 @@ class gll:
                     print(f"name for {glottocode} set to {self.language_name}")
                     glottotmpname[glottocode] = self.language_name
                 except:
-                    self.language_name =  None
+                    self.language_name = None
                     print(f"{self.ID} has no retrievable language")
             try:
                 self.language_iso6393 = glottotmpiso[glottocode]
@@ -163,10 +171,9 @@ class gll:
             self.analyze()
         self.entities = None
         if extract_entities:
-            self.entities = get_entities(self.trs,cache=nercache)
+            self.entities = get_entities(self.trs, cache=nercache)
         if parent_entities:
             self.parent_entities = get_parent_entities(self.entities)
-
 
     def strip_tex_comment(self, s):
         return re.split(r"(?<!\\)%", s)[0].replace(r"\%", "%")
@@ -209,7 +216,7 @@ class gll:
         if html:  # keep \textbf, \texit for the time being, to be included in <span>s
             return result
         else:
-            #repeat  for nested  \textsomething{\textsomethingelse{}}
+            # repeat  for nested  \textsomething{\textsomethingelse{}}
             result = re.sub(TEXTEXT, "\\2", result)
             result = re.sub(TEXTEXT, "\\2", result)
             result = re.sub(BRACESPATTERN, r"\1", " " + result)[1:]
@@ -224,24 +231,23 @@ class gll:
                 d[cat] = True
         return sorted(list(d.keys()))
 
-
     def allcaps2categories(self, s):
         d = {}
-        #allcaps = re.findall("([-=.:A-Z0-9)(/\[\]]+)", s)
+        # allcaps = re.findall("([-=.:A-Z0-9)(/\[\]]+)", s)
         allcaps = ALLCAPS.findall(s)
         for ac in allcaps:
             cats = re.split("[-=.:0-9)(/\[\]]", ac)
             for cat in cats:
-                if cat != '':
+                if cat != "":
                     d[cat] = True
-        #print(d)
+        # print(d)
         return sorted(list(d.keys()))
 
-    #def json(self):
-        #print(json.dumps(self.__dict__, sort_keys=True, indent=4))
+    # def json(self):
+    # print(json.dumps(self.__dict__, sort_keys=True, indent=4))
 
-    #def __str__(self):
-        #return "%s\n%s\n%s\n" % (self.srcwordshtml, self.imtwordshtml, self.trs)
+    # def __str__(self):
+    # return "%s\n%s\n%s\n" % (self.srcwordshtml, self.imtwordshtml, self.trs)
 
     def analyze(self):
         if " and " in self.trs:

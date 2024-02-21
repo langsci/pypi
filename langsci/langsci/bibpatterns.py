@@ -45,8 +45,8 @@ THESISPATTERN = re.compile(f"(.*?)")
 
 # pattern definitions
 year = "\(? *(?P<year>[12][678901][0-9][0-9])(?P<extrayear>[a-f]?) *\)?"
-pages = u"(?P<pages>[0-9xivlcXIVLC]+[-––]+[0-9xivlcXIVLC]+)"
-pppages = u"[Pps\. ]*%s" % pages
+pages = "(?P<pages>[0-9xivlcXIVLC]+[-––]+[0-9xivlcXIVLC]+)"
+pppages = "[Pps\. ]*%s" % pages
 author = "(?P<author>.*?)"  # do not slurp the year
 ed = "(?P<ed>\([Ee]ds?\.?\))?"
 editor = "(?P<editor>.+)"
@@ -75,15 +75,14 @@ URLDATE = re.compile(
 )
 
 
-
 # compiled regexes
 BOOK = re.compile(
-    u"{author}[., ]* {ed}[\., ]*{year}[\., ]*{title}\. +{pubaddr}\. *{note}".format(
+    "{author}[., ]* {ed}[\., ]*{year}[\., ]*{title}\. +{pubaddr}\. *{note}".format(
         author=author, ed=ed, year=year, title=title, pubaddr=pubaddr, note=note
     )
 )
 ARTICLE = re.compile(
-    u"{author}[., ]*{year}[., ]*{title}\. +{journal}[\.,]? *{numbervolume}[\.,:] *{pages}{note}".format(
+    "{author}[., ]*{year}[., ]*{title}\. +{journal}[\.,]? *{numbervolume}[\.,:] *{pages}{note}".format(
         pages=pppages,
         author=author,
         year=year,
@@ -94,7 +93,7 @@ ARTICLE = re.compile(
     )
 )
 ONLINEARTICLE = re.compile(
-    u"{author}[., ]*{year}[., ]*{title}\. +{journal}[\.,]? *{numbervolume}[\.,:] *{url}.{note}".format(
+    "{author}[., ]*{year}[., ]*{title}\. +{journal}[\.,]? *{numbervolume}[\.,:] *{url}.{note}".format(
         pages=pppages,
         author=author,
         year=year,
@@ -106,7 +105,7 @@ ONLINEARTICLE = re.compile(
     )
 )
 INCOLLECTION = re.compile(
-    u"{author}[., ]*{year}[., ]*{title}\. In {editor} \([Ee]ds?\.? *\)[\.,]? {booktitle}[\.,] {pages}\. +{pubaddr}\.{note}".format(
+    "{author}[., ]*{year}[., ]*{title}\. In {editor} \([Ee]ds?\.? *\)[\.,]? {booktitle}[\.,] {pages}\. +{pubaddr}\.{note}".format(
         author=author,
         year=year,
         title=title,
@@ -120,11 +119,11 @@ INCOLLECTION = re.compile(
 
 MASTERSTHESIS = re.compile(
     f"{author}[., ]*{year}[\., ]*{title}\. +{pubaddr}\. *{mathesisnote}"
-    )
+)
 
 PHDTHESIS = re.compile(
     f"{author}[., ]*{year}[\., ]*{title}\. +{pubaddr}\.?.*{phdthesisnote}"
-    )
+)
 
 MISC = re.compile(
     "{author}[., ]*{year}[., ]*{title}\. *(?P<note>.*)".format(

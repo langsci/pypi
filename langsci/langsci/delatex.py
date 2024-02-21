@@ -10,7 +10,7 @@ LATEXDIACRITICS = """'`^~"=.vdHuk"""
 def dediacriticize(s, stripbraces=True):
     """
     Remove all LaTeX styles diacritics from the input and return the bare string
-     
+
     LaTeX offers a variety of diacritics via {\_{x}}, where the underscore can be any of the following
     - ' : acute
     - ` :grave
@@ -25,14 +25,14 @@ def dediacriticize(s, stripbraces=True):
     - u :breve
     - k :ogonek
 
-    The braces are optional, but commonly used. 
-    
-    Args: 
+    The braces are optional, but commonly used.
+
+    Args:
       s (str): the string to dediacriticize
-      
+
     Returns:
       str: the input string stripped of LaTeX diacritics
-      
+
     """
     tmpstring = s
     if stripbraces:

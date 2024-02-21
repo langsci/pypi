@@ -15,18 +15,22 @@ try:
 except ImportError:
     from langsci.texpatterns import *
 
-def addcomma(self,s):
+
+def addcomma(self, s):
     try:
         first, last = s.strip().split()
         return f"{last}, {first}"
-    except ValueError: #complex name, we have to rely on humans to sort first/last names
+    except (
+        ValueError
+    ):  # complex name, we have to rely on humans to sort first/last names
         return s
+
 
 class Publication:
     """
-  A Publication holds all the metadata which are
-  generic for books and papers
-  """
+    A Publication holds all the metadata which are
+    generic for books and papers
+    """
 
     def __init__(self, extracommunities=[]):
         communities = ["langscipress"] + extracommunities
@@ -43,8 +47,8 @@ class Publication:
 
     def register(self, token):
         """
-    register the publication with Zenodo
-    """
+        register the publication with Zenodo
+        """
 
         data = {"metadata": self.metadata}
         pprint.pprint(json.dumps(data))
@@ -63,11 +67,10 @@ class Publication:
             raise
 
 
-
 class Book(Publication):
     """
-  A full-length publication, either a monograph or an edited volume
-  """
+    A full-length publication, either a monograph or an edited volume
+    """
 
     def __init__(self, extracommunities=[], glottolog=False):
         Publication.__init__(self)
@@ -81,17 +84,20 @@ class Book(Publication):
         self.extracommunities = extracommunities
         self.getChapters(glottolog=glottolog)
         self.metadata["publication_type"] = "book"
-        self.metadata['related_identifiers'] = [{'relation':'isAlternateIdentifier', 'identifier':self.digitalisbn}]
+        self.metadata["related_identifiers"] = [
+            {"relation": "isAlternateIdentifier", "identifier": self.digitalisbn}
+        ]
         self.metadata["title"] = self.title
         self.metadata["description"] = self.abstract
-        self.metadata["creators"] = [{"name": addcomma(self,au)} for au in self.authors]
+        self.metadata["creators"] = [
+            {"name": addcomma(self, au)} for au in self.authors
+        ]
         self.metadata["keywords"] = self.keywords
-
 
     def getBookMetadata(self):
         """
-    Parse the file localmetadata.tex and retrieve the metadata
-    """
+        Parse the file localmetadata.tex and retrieve the metadata
+        """
 
         localmetadataf = open("localmetadata.tex", encoding="utf-8")
         localmetadata = localmetadataf.read()
@@ -121,25 +127,40 @@ class Book(Publication):
 
     def getChapters(self, glottolog=False):
         """
-    find all chapters in edited volumes which are referenced in main.tex
-    """
+        find all chapters in edited volumes which are referenced in main.tex
+        """
 
         mainf = open("main.tex", encoding="utf-8")
         main = mainf.read()
         mainf.close()
         chapterpaths = INCLUDEPAPERP.findall(main)
         self.chapters = [
-            Chapter(cp, booktitle=self.title, isbn=self.digitalisbn, bookDOI=self.bookDOI, extracommunities=self.extracommunities, glottolog=glottolog)
+            Chapter(
+                cp,
+                booktitle=self.title,
+                isbn=self.digitalisbn,
+                bookDOI=self.bookDOI,
+                extracommunities=self.extracommunities,
+                glottolog=glottolog,
+            )
             for cp in chapterpaths
         ]
 
 
 class Chapter(Publication):
     """
-  A chapter in an edited volume
-  """
+    A chapter in an edited volume
+    """
 
-    def __init__(self, path, booktitle="", isbn=False, bookDOI=False, extracommunities=[], glottolog=False):
+    def __init__(
+        self,
+        path,
+        booktitle="",
+        isbn=False,
+        bookDOI=False,
+        extracommunities=[],
+        glottolog=False,
+    ):
         print("reading", path)
         Publication.__init__(self, extracommunities=extracommunities)
         chapterf = open("chapters/%s.tex" % path, encoding="utf-8")
@@ -152,21 +173,19 @@ class Chapter(Publication):
         keywords = []
         try:
             keywords = [
-                    x.strip()
-                    for x in KEYWORDSEPARATOR.split(
-                        CHAPTERKEYWORDSP.search(preamble).group(1)
-                    )
-                ]
+                x.strip()
+                for x in KEYWORDSEPARATOR.split(
+                    CHAPTERKEYWORDSP.search(preamble).group(1)
+                )
+            ]
         except AttributeError:
             pass
         glottocodes = []
         try:
             glottocodes = [
-                    x.strip()
-                    for x in KEYWORDSEPARATOR.split(
-                        GLOTTOCODESP.search(preamble).group(1)
-                    )
-                ]
+                x.strip()
+                for x in KEYWORDSEPARATOR.split(GLOTTOCODESP.search(preamble).group(1))
+            ]
         except AttributeError:
             pass
         self.path = path.strip()
@@ -202,17 +221,26 @@ class Chapter(Publication):
         # print(authorlist)
         creatorslist = []
         for au in authorlist:
-            name = addcomma(self,au[1])
+            name = addcomma(self, au[1])
             orcid = au[3]
             affiliation = au[4]
             creatorslist.append(dict(name=name, affiliation=affiliation, orcid=orcid))
         self.metadata["creators"] = creatorslist
-        for i,c in enumerate(self.metadata["creators"]):
-            if c["orcid"] in (None,""," "):
+        for i, c in enumerate(self.metadata["creators"]):
+            if c["orcid"] in (None, "", " "):
                 del self.metadata["creators"][i]["orcid"]
         self.metadata["keywords"] = self.keywords
-        self.metadata['related_identifiers'] = [{'relation':'isPartOf', 'identifier':self.bookisbn},
-                                                {'relation':'isPartOf', 'identifier':self.bookDOI}]
+        self.metadata["related_identifiers"] = [
+            {"relation": "isPartOf", "identifier": self.bookisbn},
+            {"relation": "isPartOf", "identifier": self.bookDOI},
+        ]
         if glottolog:
-            self.metadata['subjects'] = [{"term":glottolog.languoid(code).name , "identifier":f"https://glottolog.org/resource/languoid/id/{code}", "scheme":"url"} for code in glottocodes]
+            self.metadata["subjects"] = [
+                {
+                    "term": glottolog.languoid(code).name,
+                    "identifier": f"https://glottolog.org/resource/languoid/id/{code}",
+                    "scheme": "url",
+                }
+                for code in glottocodes
+            ]
         pprint.pprint(self.metadata)

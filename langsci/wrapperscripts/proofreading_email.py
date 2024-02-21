@@ -2,10 +2,27 @@ import PyPDF2
 import re
 
 try:
-  from langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names
+    from langscipressorg_webcrawler import (
+        get_blurb,
+        get_soup,
+        get_publication_date,
+        get_citeinfo,
+        get_ISBN_digital,
+        get_biosketches,
+        get_title_subtitle,
+        biosketches2names,
+    )
 except ImportError:
-  from langsci.langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names
-
+    from langsci.langscipressorg_webcrawler import (
+        get_blurb,
+        get_soup,
+        get_publication_date,
+        get_citeinfo,
+        get_ISBN_digital,
+        get_biosketches,
+        get_title_subtitle,
+        biosketches2names,
+    )
 
 
 with open("localmetadata.tex") as localmetadata:
@@ -14,26 +31,26 @@ with open("localmetadata.tex") as localmetadata:
 
 soup = get_soup(ID)
 citeinfo = get_citeinfo(soup)
-title = citeinfo['title'].strip()
-edited = citeinfo['ed'] or ""
-creators = citeinfo['creators']
+title = citeinfo["title"].strip()
+edited = citeinfo["ed"] or ""
+creators = citeinfo["creators"]
 blurb = get_blurb(soup)
 
-pdf = PyPDF2.PdfReader(open('main.pdf', 'rb'))
+pdf = PyPDF2.PdfReader(open("main.pdf", "rb"))
 number_of_pages = len(pdf.pages)
 
 with open("main.toc") as tocfile:
     content = tocfile.read()
-    chapters = re.findall(r"chapter.*numberline \{[0-9]+}*([A-Z].*?)\}",content)
+    chapters = re.findall(r"chapter.*numberline \{[0-9]+}*([A-Z].*?)\}", content)
 
 newchapters = []
 for chapter in chapters:
-  try:
-    ch,au = chapter.split(r"~\newline {\normalfont \ResolveAffiliations {")
-  except ValueError:
-    ch = chapter
-    au = "FIXAUTHOR"
-  newchapters.append(f"{ch}\n{au}\n")
+    try:
+        ch, au = chapter.split(r"~\newline {\normalfont \ResolveAffiliations {")
+    except ValueError:
+        ch = chapter
+        au = "FIXAUTHOR"
+    newchapters.append(f"{ch}\n{au}\n")
 
 number_of_chapters = len(newchapters)
 toc = "\n".join([f"{i+1} {ch}" for i, ch in enumerate(newchapters)])

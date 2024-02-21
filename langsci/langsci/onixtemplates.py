@@ -1,4 +1,3 @@
-
 romanistentemplate = """
 <?xml version="1.0" encoding="UTF-8"?>
 <ONIXmessage release="2.1" xmlns="http://www.editeur.org/onix/2.1/short"
@@ -77,7 +76,7 @@ romanistentemplate = """
 """
 
 
-proquest_creator_template=u"""
+proquest_creator_template = """
         <Contributor>
         <SequenceNumber>%s</SequenceNumber>
         <ContributorRole>%s</ContributorRole>
@@ -87,7 +86,6 @@ proquest_creator_template=u"""
       </Contributor>
 
 """
-
 
 
 proquest_template = f"""<?xml version="1.0"?>

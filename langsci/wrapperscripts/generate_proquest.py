@@ -1,32 +1,50 @@
-import  yaml
+import yaml
 import sys
 from datetime import date
 from xml.etree import ElementTree as ET
 from xml.sax.saxutils import escape
 
 try:
-  from langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names
-  from catalogmetadata import LICENSES, SERIES, METALANGUAGE
+    from langscipressorg_webcrawler import (
+        get_blurb,
+        get_soup,
+        get_publication_date,
+        get_citeinfo,
+        get_ISBN_digital,
+        get_biosketches,
+        get_title_subtitle,
+        biosketches2names,
+    )
+    from catalogmetadata import LICENSES, SERIES, METALANGUAGE
 except ImportError:
-  from langsci.langscipressorg_webcrawler import get_blurb, get_soup, get_publication_date, get_citeinfo, get_ISBN_digital, get_biosketches, get_title_subtitle, biosketches2names
-  from langsci.catalogmetadata import LICENSES, SERIES, METALANGUAGE
+    from langsci.langscipressorg_webcrawler import (
+        get_blurb,
+        get_soup,
+        get_publication_date,
+        get_citeinfo,
+        get_ISBN_digital,
+        get_biosketches,
+        get_title_subtitle,
+        biosketches2names,
+    )
+    from langsci.catalogmetadata import LICENSES, SERIES, METALANGUAGE
 
 
 book_ID = sys.argv[1]
 soup = get_soup(book_ID)
 citegroups = get_citeinfo(soup)
 if citegroups is None:
-  sys.exit()
+    sys.exit()
 print(book_ID)
 
 title, subtitle = get_title_subtitle(citegroups)
 
 series = citegroups["series"]
 
-publication_date = get_publication_date(soup).replace('-','')
+publication_date = get_publication_date(soup).replace("-", "")
 blurb = get_blurb(soup)
-isbn_digital =  get_ISBN_digital(soup)
-issn =  SERIES[citegroups["series"]]
+isbn_digital = get_ISBN_digital(soup)
+issn = SERIES[citegroups["series"]]
 metalanguage = METALANGUAGE.get(book_ID, "eng")
 
 biosketches = get_biosketches(soup)
@@ -42,14 +60,14 @@ authorrolecode = "A01"
 editorrolecode = "B01"
 
 role = authorrolecode
-if citegroups['ed']:
-  role = editorrolecode
+if citegroups["ed"]:
+    role = editorrolecode
 
 
-#FIXME mix of authors and editors
+# FIXME mix of authors and editors
 
 
-proquest_creator_template=u"""<Contributor>
+proquest_creator_template = """<Contributor>
         <SequenceNumber>%s</SequenceNumber>
         <ContributorRole>%s</ContributorRole>
         <NamesBeforeKey>%s</NamesBeforeKey>
@@ -66,10 +84,13 @@ for i, creator in enumerate(creatorlist):
     firstname = creator[0]
     lastname = creator[1]
     sketch = creator[2]
-    creators.append(proquest_creator_template % (i+1, role, escape(firstname), escape(lastname), escape(sketch)))
+    creators.append(
+        proquest_creator_template
+        % (i + 1, role, escape(firstname), escape(lastname), escape(sketch))
+    )
 creatorstring = "\n".join(creators)
 
-#creatorstring = authorstring + editorstring
+# creatorstring = authorstring + editorstring
 today = date.today().strftime("%Y%m%d")
 
 
@@ -241,10 +262,7 @@ proquest_template = f"""<?xml version="1.0"?>
 </ONIXMessage>"""
 
 
-
 with open(f"proquest/{isbn_digital}.xml", "w") as xmlout:
-  #validate XML
-  ET.fromstring(proquest_template)
-  xmlout.write(proquest_template)
-
-
+    # validate XML
+    ET.fromstring(proquest_template)
+    xmlout.write(proquest_template)

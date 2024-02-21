@@ -1,4 +1,5 @@
 import re
+
 try:
     from lgrlist import LGRLIST
 except ImportError:
@@ -18,7 +19,7 @@ LGRPATTERN_LOWER = re.compile(r"(%s)({})?" % "|".join([s.lower() for s in LGRLIS
 LGRPATTERN_UPPER_LOWER = re.compile(
     r"(%s)({})?" % "|".join([s[0] + s[1:].lower() for s in LGRLIST])
 )
-#braces after a space or after the beginning of the line
+# braces after a space or after the beginning of the line
 BRACESPATTERN = re.compile(r"(?<=.^| ){([^}{ ]+)}")
 GLL = re.compile(PRESOURCELINE + SOURCELINE + IMTLINE1 + IMTLINE2 + TRSLINE)
 TEXTEXT = re.compile(r"\\text(.*?)\{(.*?)\}")
@@ -258,7 +259,7 @@ TEXTARGYANKS = [
 ]
 
 ONE_LANGUAGE_BOOKS = {
-#   ID  ISO6393 Glottocode   Name
+    #   ID  ISO6393 Glottocode   Name
     17: ("sje", "pite1240", "Pite Saami"),
     66: ("ybh", "yakk1236", "Yakkha"),
     67: ("mhl", "mauw1238", "Mauwake"),
@@ -283,7 +284,6 @@ ONE_LANGUAGE_BOOKS = {
     329: ("swe", "swed1254", "Swedish"),
     16: ("ita", "ital1282", "Italian"),
 }
-
 
 
 SUPERSEDED = [22, 25, 46, 141, 144, 149, 195]

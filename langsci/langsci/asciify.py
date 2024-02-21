@@ -108,13 +108,13 @@ REPLACEMENTS = FRENCH_REPLACEMENTS + GERMAN_REPLACEMENTS + ICELANDIC_REPLACEMENT
 
 def asciify(s):
     """Replace all non-ASCII characters in the input string with their ASCII equivalent and return the output
-  
-  Args:
-    s (str): the string to conform
-    
-  Returns:
-    str: the conformed string
-  """
+
+    Args:
+      s (str): the string to conform
+
+    Returns:
+      str: the conformed string
+    """
     tmpstring = s.translate(ASCIITRANS)
     for r in REPLACEMENTS:
         tmpstring = tmpstring.replace(r[0], r[1])
@@ -123,10 +123,10 @@ def asciify(s):
 
 def is_ascii(s):
     """Evaluate whether a given string can be rendered in ASCII
-          
+
     Args:
       s (str): the string to test
-      
+
     Returns:
       bool: True if the string can be rendered in ASCII, False otherwise.
     """

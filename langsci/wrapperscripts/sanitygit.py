@@ -16,16 +16,16 @@ except ImportError:
 
 def cloneorpull(url):
     """
-    Make a git repository available locally. 
-    
+    Make a git repository available locally.
+
     The repo is cloned if not already available locally, otherwise, it is pull'ed.
-    
+
     args:
       url (str): the url string of the repository. It can be either the html URL or the git url
-      
+
     returns
       str: the file path to the local repo
-      
+
     """
     m = re.search("langsci/([0-9]{2,}a?)", url)
     githubID = m.group(1)
@@ -49,8 +49,8 @@ def cloneorpull(url):
 
 if __name__ == "__main__":
     """
-    usage: 
-        python3 sanitygit.py https://www.github.com/langsci/42 
+    usage:
+        python3 sanitygit.py https://www.github.com/langsci/42
     """
     githuburl = sys.argv[1]
     ignorecodes = []
