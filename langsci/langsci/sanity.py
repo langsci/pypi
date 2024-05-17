@@ -20,6 +20,7 @@ import os
 import textwrap
 import uuid
 import unicodedata
+import hashlib
 
 # import enchant
 # from enchant.tokenize import get_tokenizer
@@ -60,14 +61,14 @@ class SanityError:
         except IndexError:
             self.post = ""
         self.ID = uuid.uuid1()
-        self.name = str(hash(msg))[-6:]
+        self.name = str(int(hashlib.md5(str.encode(msg)).hexdigest(),16))[-9:]
         # compute rgb colors from msg
-        t = textwrap.wrap(self.name, 2)[-3:]
+        t = textwrap.wrap(self.name, 3)[-3:]
         self.color = "rgb({},{},{})".format(
-            int(t[0]) + 140, int(t[1]) + 140, int(t[2]) + 140
+            int(t[0])%140 + 140, int(t[1])%140 + 140, int(t[2])%140 + 140
         )
         self.bordercolor = "rgb({},{},{})".format(
-            int(t[0]) + 100, int(t[1]) + 100, int(t[2]) + 100
+            int(t[0])%140 + 100, int(t[1])%140 + 100, int(t[2])%140 + 100
         )
 
     def __str__(self):
@@ -87,6 +88,12 @@ class SanityFile:
     """
 
     def __init__(self, filename):
+        def get_name(key):
+            try:
+                return unicodedata.name(key)
+            except ValueError:
+                return "Low ASCII Control Character"
+
         self.filename = filename
         self.errors = []
         try:
@@ -103,7 +110,7 @@ class SanityFile:
         # get a list of all characters outside of low ASCII range, together with their Unicode name
         self.characters = sorted(
             [
-                (k, unicodedata.name(k))
+                (k, get_name(k))
                 for k in set([x for x in self.content])
                 if ord(k) > 255 and k not in "‘’“…−–—””"
             ]
