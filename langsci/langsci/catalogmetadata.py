@@ -133,8 +133,8 @@ SERIES = {
     "Languages of the Caucasus": "2699-0156",
     "Open Romance Linguistics": "2940-1100",
     "Current Issues in Bilingualism": "2747-9927",
-    # "Topics in Phonological Diversity": "",
-    # "Estudios de Lingüística Amerindia / Estudos de Linguística Ameríndia / Studies of Amerindian Linguistics / Études de Linguistique Amérindienne": "",
+    "Estudios de Lingüística Amerindia / Estudos de Linguística Ameríndia / Studies of Amerindian Linguistics / Études de Linguistique Amérindienne": "2943-0658",
+    'Topics in Phonological Diversity': "0000-0000",
     # "Im­ple­ment­ed Gram­mars": "",
-    # "Advances in Historical Linguistics" : ""
+    "Advances in Historical Linguistics" : "2943-064X"
 }

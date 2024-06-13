@@ -40,7 +40,7 @@ def get_citeinfo(soup):
     # if "orthcoming" in citeinfo:
     # print("not published yet")
     # return None
-    print(citeinfo)
+    # print(citeinfo)
     citegroups = CITEPATTERN.match(citeinfo)
     if citegroups is None:
         print("could not match citeinfo")
@@ -261,6 +261,8 @@ def get_pdf(soup, file_name):
         with open(file_name, "wb") as out:
             response = requests.get(zenodolink)
             out.write(response.content)
+    except AttributeError:
+        print("publication format PDF could not be retrieved")
     except IndexError:
         omplinks_pdf = [
             el["href"]

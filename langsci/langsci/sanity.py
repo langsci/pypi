@@ -65,7 +65,7 @@ class SanityError:
         # compute rgb colors from msg
         t = textwrap.wrap(self.name, 3)[-3:]
         self.color = "rgb({},{},{})".format(
-            int(t[0])%140 + 140, int(t[1])%140 + 140, int(t[2])%140 + 140
+            int(t[0])%140 + 115, int(t[1])%140 + 115, int(t[2])%140 + 115
         )
         self.bordercolor = "rgb({},{},{})".format(
             int(t[0])%140 + 100, int(t[1])%140 + 100, int(t[2])%140 + 100
@@ -422,7 +422,7 @@ class SanityDir:
         """
 
         matches = []
-        localfiles = glob.glob("%s/local*" % self.dirname)
+        localfiles = glob.glob("%s/local*" % self.dirname) + ['%s/main.tex' % self.dirname]
         chapterfiles = glob.glob("%s/chapters/*tex" % self.dirname)
         imgfiles = glob.glob("%s/figures/*" % self.dirname)
         for filename in fnmatch.filter(
