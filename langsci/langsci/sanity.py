@@ -281,11 +281,11 @@ class TexFile(SanityFile):
         ),
         (
             r"\\vspace",
-            "Please do not manually adjust vertical spacing. This will be done during final typesetting by the LangSci office,
+            "Please do not manually adjust vertical spacing. This will be done during final typesetting by the LangSci office",
         ),
         (
             r"\\(newpage|pagebreak|clearpage)",
-            "Please do not manually adjust page breaks. This will be done during final typesetting by the LangSci office,
+            "Please do not manually adjust page breaks. This will be done during final typesetting by the LangSci office",
         ),
     )
 
