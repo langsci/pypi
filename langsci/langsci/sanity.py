@@ -263,6 +263,30 @@ class TexFile(SanityFile):
             r"\\texttipa",
             "Do not use the tipa package. Use Unicode or the package langsci-textipa",
         ),
+        (
+            r"\\(underline|uline|ul)\{",
+            "Please do not use underlining. Consult with support if you really need it",
+        ),
+        (
+            """quote}[\s]*['’’'‘’'‘'′ʼ´ʹʻˈʹ՚＇‛"“”]""",
+            "Please do not use quotation marks for indented quotes",
+        ),
+        (
+            r"\\begin\{tabular\}[c]\{l\}",
+            "Please do not use nested tables. Get in touch with support",
+        ),
+        (
+            r"\\begin\{minipage\}",
+            "Please do not use minipages. Get in touch with support",
+        ),
+        (
+            r"\\vspace",
+            "Please do not manually adjust vertical spacing. This will be done during final typesetting by the LangSci office,
+        ),
+        (
+            r"\\(newpage|pagebreak|clearpage)",
+            "Please do not manually adjust page breaks. This will be done during final typesetting by the LangSci office,
+        ),
     )
 
     posnegpatterns = (
@@ -329,18 +353,6 @@ class BibFile(SanityFile):
             "In order to keep the Roman numbers in capitals, enclose them in braces {}",
         ),
         ("\.[A-Z]", "Please use a space after a period or an abbreviated name"),
-        (
-            r"\\underline",
-            "Please do not use underlining. Consult with support if you really need it",
-        ),
-        (
-            """quote}[\s]*['’’'‘’'‘'′ʼ´ʹʻˈʹ՚＇‛"“”]""",
-            "Please do not use quotation marks for indented quotes",
-        ),
-        (
-            r"\begin{tabular}[c]{l}",
-            "Please do not use nested tables. Get in touch with support",
-        ),
     )
 
     posnegpatterns = []
@@ -422,7 +434,7 @@ class SanityDir:
         """
 
         matches = []
-        localfiles = glob.glob("%s/local*" % self.dirname) + ['%s/main.tex' % self.dirname]
+        localfiles = glob.glob("%s/local*" % self.dirname) + glob.glob('%s/main.tex' % self.dirname)
         chapterfiles = glob.glob("%s/chapters/*tex" % self.dirname)
         imgfiles = glob.glob("%s/figures/*" % self.dirname)
         for filename in fnmatch.filter(
