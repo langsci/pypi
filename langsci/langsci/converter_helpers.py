@@ -1,3 +1,6 @@
+
+# pylint: disable=anomalous-backslash-in-string,consider-using-f-string
+
 yanks = (
             "\\begin{flushleft}",
             "\\end{flushleft}",
@@ -378,3 +381,35 @@ last subexample: change \\z to \\z\\z \n\\langinfo{}{}{",
             ("[Warning: Draw object ignored]", "%%[Warning: Draw object ignored]\n"),
             (r"\=\i", "{\=\i}"),
         )
+
+
+
+
+authorchars_firstletter = "[A-ZÅÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛŐŰĆĆÇČÐĐŘŚŠŞŌǪØŽ]"
+authorchars_furtherletters = (
+    "[-a-záéíóúaèìòùâeîôûäëïöüőűðĺłŁøæœåćĆçÇčČĐđǧñńŘřŚśŠšŞşŽžA-Z]+"
+)
+authorchars = authorchars_firstletter + authorchars_furtherletters
+yearchars = "[12][0-9]{3}[a-z]?"
+
+
+bogus_styles = """styleStandard
+styleDefault
+styleBlockText
+styleTextbody
+styleTextbodyindent
+styleParagrapheArticle
+styleNormalWeb
+styleNormali
+styleNone
+styleNessuno
+styleHTMLPreformatted
+styleFootnoteSymbol
+styleDefault
+styleBodyTexti
+styleBodyTextii
+styleBodyTextiii
+styleBodyTextIndent
+styleBodyTextIndentii
+styleBodyTextIndentiii
+""".split()
