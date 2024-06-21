@@ -4,6 +4,16 @@ import indextools
 import asciify
 import bibtools
 import delatex
+import sanity
+
+
+class TestSanity(unittest.TestCase):
+    """Test the sanity checker"""
+
+    def test_sanity(self):
+        sanitydir = sanity.SanityDir('.', [])
+        sanitydir.check()
+
 
 
 class TestFixIndex(unittest.TestCase):

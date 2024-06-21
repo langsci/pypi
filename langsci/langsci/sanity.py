@@ -1,35 +1,22 @@
 """
-Check files of various types for conformity to Language Science Press guidelines. Currently the following 
-file types are checked: 
+Check files of various types for conformity to Language Science Press guidelines.
+Currently the following file types are checked:
 
 * tex files from folder chapters/
 * bib files 
 * png/jpg files in forlder figures/
 
-Attributes:
-  SPELLD: A US-English dictionary 
-  TKNZR: A US_English tokenizer
-  LATEXTERMS: LaTeX terms which the spell checker should treat as conformant
 """
 
 import re
 import glob
-import sys
 import fnmatch
-import os
 import textwrap
 import uuid
 import unicodedata
 import hashlib
 
-# import enchant
-# from enchant.tokenize import get_tokenizer
 from PIL import Image
-
-
-# SPELLD = enchant.Dict("en_US")
-# TKNZR = get_tokenizer("en_US")
-# LATEXTERMS = ("newpage","clearpage","textit","textbf","textsc","textwidth","tabref","figref","sectref","emph")
 
 
 class SanityError:
@@ -61,15 +48,25 @@ class SanityError:
         except IndexError:
             self.post = ""
         self.ID = uuid.uuid1()
-        self.name = str(int(hashlib.md5(str.encode(msg)).hexdigest(),16))[-9:]
-        # compute rgb colors from msg
+        hash_input = msg
+        if hash_input.startswith("uncommon character"):
+            hash_input = "uncommon character"
+        self.name = str(int(hashlib.md5(str.encode(hash_input)).hexdigest(), 16))[-9:]
+
+    def get_colors(self):
+        """
+        compute rgb colors from msg
+        """
         t = textwrap.wrap(self.name, 3)[-3:]
-        self.color = "rgb({},{},{})".format(
-            int(t[0])%140 + 115, int(t[1])%140 + 115, int(t[2])%140 + 115
-        )
-        self.bordercolor = "rgb({},{},{})".format(
-            int(t[0])%140 + 100, int(t[1])%140 + 100, int(t[2])%140 + 100
-        )
+        red = int(t[0]) % 140 + 115
+        green = int(t[1]) % 140 + 115
+        blue = int(t[2]) % 140 + 115
+        color = f"rgb({red},{green},{blue})"
+        border_red = red - 15
+        border_green = green - 15
+        border_blue = blue - 15
+        bordercolor = f"rgb({border_red},{border_green},{border_blue})"
+        return color, bordercolor
 
     def __str__(self):
         return "{linenr}: …{offendingstring}… \t{msg}".format(**self.__dict__)
@@ -83,9 +80,11 @@ class SanityFile:
       content (str): the content of the file
       lines ([]str): the lines of the file
       errors ([]SanityError): the list of found errors
-      spellerrors ([]SanityError): the list of words not found in the spell dictionary
 
     """
+
+    antipatterns = ()
+    posnegpatterns = ()
 
     def __init__(self, filename):
         def get_name(key):
@@ -97,29 +96,25 @@ class SanityFile:
         self.filename = filename
         self.errors = []
         try:
-            self.content = open(filename, encoding="utf-8").read()
+            with open(filename, encoding="utf-8") as content:
+                self.content = content.read()
         except UnicodeDecodeError:
-            print("file %s is not in proper Unicode encoding" % filename)
+            print(f"file {filename} is not in proper Unicode encoding")
             self.content = ""
             self.errors = [
                 SanityError(
                     filename, 0, " ", " ", "file not in Unicode, no analysis possible"
                 )
             ]
-        self.lines = self.split_(self.content)
+        self.lines =  self._removecomments(self.content).split("\n")
         # get a list of all characters outside of low ASCII range, together with their Unicode name
-        self.characters = sorted(
+        self.uncommon_characters = sorted(
             [
                 (k, get_name(k))
-                for k in set([x for x in self.content])
+                for k in set(self.content)
                 if ord(k) > 255 and k not in "‘’“…−–—””"
             ]
         )
-        # self.spellerrors = []
-
-    def split_(self, c):
-        result = self._removecomments(c).split("\n")
-        return result
 
     def _removecomments(self, s):
         """strip comments from file so that errors are not marked in comments"""
@@ -128,7 +123,7 @@ class SanityFile:
         try:
             result = re.sub("(?<!\\\\)%.*\n", "\n", s)
         except TypeError:
-            print("%s could not be regexed" % s)
+            print(f"{s} could not be regexed")
             return s
         return result
 
@@ -142,45 +137,35 @@ class SanityFile:
                 continue
             for antipattern, msg in self.antipatterns:
                 # print(antipattern)
-                m = re.search("(%s)" % antipattern, line)
-                if m != None:
+                m = re.search(f"({antipattern})", line)
+                if m is not None:
                     g = m.group(1)
                     if g != "":
                         self.errors.append(SanityError(self.filename, i, line, g, msg))
             for positivepattern, negativepattern, msg in self.posnegpatterns:
-                posmatch = re.search("(%s)" % positivepattern, line)
-                if posmatch == None:
+                posmatch = re.search(f"({positivepattern})", line)
+                if posmatch is None:
                     continue
-                # a potentiall incorrect behaviour is found, but could be saved by the presence of additional material
+                # a potential incorrect behaviour is found, but could be saved
+                # by the presence of additional material
                 g = posmatch.group(1)
                 negmatch = re.search(negativepattern, line)
                 if (
-                    negmatch == None
+                    negmatch is None
                 ):  # the match required to make this line correct is not found
                     self.errors.append(SanityError(self.filename, i, line, g, msg))
 
-        for ch in self.characters:
+        for ch in self.uncommon_characters:
             self.errors.append(
                 SanityError(self.filename, 0, "", ch[0], f"uncommon character: {ch[1]}")
             )
 
-    def spellcheck(self):
-        """return a list of all words which are neither known LaTeX terms nor found in the enchant dictionary"""
-        result = sorted(
-            list(
-                set(
-                    [
-                        t[0]
-                        for t in TKNZR(self.content)
-                        if SPELLD.check(t[0]) == False and t[0] not in LATEXTERMS
-                    ]
-                )
-            )
-        )
-        self.spellerrors = result
+    def get_uncommon_chars(self):
+        """
+        return the list of uncommon characters
+        """
 
-    def uncommon_chars(self):
-        for ch in self.characters:
+        for ch in self.uncommon_characters:
             return f"The following uncommon characters were found:\n{ch[0]}:{ch[1]}"
 
 
@@ -189,8 +174,10 @@ class TexFile(SanityFile):
     A tex file to be checked
 
     Attributes:
-      antipatterns (str[]): a list of 2-tuples consisting of a string to match and a message to deliver if the string is found
-      posnegpatterns (str[]): a list of 3-tuples consisting a pattern to match, a pattern NOT to match, and a message
+      antipatterns (str[]): a list of 2-tuples consisting of a string
+                            to match and a message to deliver if the string is found
+      posnegpatterns (str[]): a list of 3-tuples consisting a pattern to match,
+                            a pattern NOT to match, and a message
       filechecks: currently unused #TODO
     """
 
@@ -198,15 +185,16 @@ class TexFile(SanityFile):
         (
             r" et al.",
             "Please use the citation commands \\citet and \\citep",
-        ),  # et al in main tex
+        ),
         (r"setfont", "You should not set fonts explicitely"),  # no font definitions
         (
             r"\\(small|scriptsize|footnotesize)",
             "Please consider whether changing font sizes manually is really a good idea here",
-        ),  # no font definitions
+        ),
         (
             r"([Tt]able|[Ff]igure|[Ss]ection|[Pp]art|[Cc]hapter\() *\\ref",
-            "It is often advisable to use the more specialized commands \\tabref, \\figref, \\sectref, and \\REF for examples",
+            "It is often advisable to use the more specialized commands \\tabref,\
+\\figref, \\sectref, and \\REF for examples",
         ),  # no \ref
         # ("",""),      #\ea\label
         # ("",""),      #\section\label
@@ -218,10 +206,11 @@ class TexFile(SanityFile):
         ),  # no 12,34 without spacing
         (
             r"\([^)]+\\cite[pt][^)]+\)",
-            "In order to avoid double parentheses, it can be a good idea to use \\citealt instead of \\citet or \\citep",
+            "In order to avoid double parentheses, it can be a good idea\
+ to use \\citealt instead of \\citet or \\citep",
         ),
         ("([0-9]+-[0-9]+)", "Please use -- for ranges instead of -"),
-        # (r"[0-9]+ *ff","Do not use ff. Give full page ranges"),
+        (r"[0-9]+ *ff", "Do not use ff. Give full page ranges"),
         (r"[^-]---[^-]", "Use -- with spaces rather than ---"),
         (r"tabular.*\|", "Vertical lines in tables should be avoided"),
         (r"\\hline", "Use \\midrule rather than \\hline in tables"),
@@ -241,12 +230,13 @@ class TexFile(SanityFile):
         ),
         (
             r"(?<!\\)[A-Z]{3,}",
-            "It is often a good idea to use \\textsc\{smallcaps} instead of ALLCAPS",
+            "It is often a good idea to use \\textsc{smallcaps} instead of ALLCAPS",
         ),
         (
             r"(?<![0-9])[?!;\.,][A-Z]",
+            # negative lookbehind for numbers because of lists of citation keys
             "Please use a space after punctuation (or use smallcaps in abbreviations)",
-        ),  # negative lookbehind for numbers because of lists of citation keys
+        ),
         (
             r"\\textsuperscript\{w\}",
             "Please use Unicode ʷ for labialization instead of superscript w",
@@ -268,7 +258,7 @@ class TexFile(SanityFile):
             "Please do not use underlining. Consult with support if you really need it",
         ),
         (
-            """quote}[\s]*['’’'‘’'‘'′ʼ´ʹʻˈʹ՚＇‛"“”]""",
+            r"""quote}[\s]*['’’'‘’'‘'′ʼ´ʹʻˈʹ՚＇‛"“”]""",
             "Please do not use quotation marks for indented quotes",
         ),
         (
@@ -281,11 +271,13 @@ class TexFile(SanityFile):
         ),
         (
             r"\\vspace",
-            "Please do not manually adjust vertical spacing. This will be done during final typesetting by the LangSci office",
+            "Please do not manually adjust vertical spacing.\
+            This will be done during final typesetting by the LangSci office",
         ),
         (
             r"\\(newpage|pagebreak|clearpage)",
-            "Please do not manually adjust page breaks. This will be done during final typesetting by the LangSci office",
+            "Please do not manually adjust page breaks.\
+            This will be done during final typesetting by the LangSci office",
         ),
     )
 
@@ -325,23 +317,31 @@ class BibFile(SanityFile):
     A bib file to be checked
 
     Attributes:
-      antipatterns (str[]): a list of 2-tuples consisting of a string to match and a message to deliver if the string is found
+      antipatterns (str[]): a list of 2-tuples consisting of a string to
+                        match and a message to deliver if the string is found
     """
 
     antipatterns = (
-        # ("[Aa]ddress *=.*[,/].*[^ ]","No more than one place of publication. No indications of countries or provinces"), #double cities in address
-        # ("[Aa]ddress *=.* and .*","No more than one place of publication."), #double cities in address
+        (
+            "[Aa]ddress *=.*[,/].*[^ ]",
+            "No more than one place of publication.\
+ No indications of countries or provinces",
+        ),
+        ("[Aa]ddress *=.* and .*", "No more than one place of publication."),
         (
             "[Tt]itle * =.*: +(?<!{)[a-zA-Z]+",
-            "Subtitles should be capitalized. In order to protect the capital letter, enclose it in braces {} ",
+            "Subtitles should be capitalized. In order to protect the capital\
+ letter, enclose it in braces {} ",
         ),
         (
-            "[Aa]uthor *=.*(?<=(and|AND|..[,{])) *[A-Z]\..*",
-            "Full author names should be given. Only use abbreviated names if the author is known to prefer this. It is OK to use middle initials",
+            r"[Aa]uthor *=.*(?<=(and|AND|..[,{])) *[A-Z]\..*",
+            "Full author names should be given. Only use abbreviated names if\
+ the author is known to prefer this. It is OK to use middle initials",
         ),
         (
-            "[Ee]ditor *=.*(?<=(and|AND|..[,{])) *[A-Z]\..*",
-            "Full editor names should be given. Only use abbreviated names if the editor is known to prefer this. It is OK to use middle initials",
+            r"[Ee]ditor *=.*(?<=(and|AND|..[,{])) *[A-Z]\..*",
+            "Full editor names should be given. Only use abbreviated names if\
+ the editor is known to prefer this. It is OK to use middle initials",
         ),
         (
             "[Aa]uthor *=.* et al",
@@ -349,16 +349,17 @@ class BibFile(SanityFile):
         ),
         ("[Aa]uthor *=.*&.*", "Use 'and' rather than & in the bib file"),
         (
-            "[Tt]itle *=(.* )?[IVXLCDM]*[IVX]+[IVXLCDM]*[\.,\) ]",
-            "In order to keep the Roman numbers in capitals, enclose them in braces {}",
+            r"[Tt]itle *=(.* )?[IVXLCDM]*[IVX]+[IVXLCDM]*[\.,\) ]",
+            "In order to keep the Roman numbers in capitals, enclose them in\
+ braces {}",
         ),
-        ("\.[A-Z]", "Please use a space after a period or an abbreviated name"),
+        (r"\.[A-Z]", "Please use a space after a period or an abbreviated name"),
     )
 
     posnegpatterns = []
 
 
-class ImgFile(SanityFile):
+class ImgFile():
     """
     An image file to be checked
     """
@@ -370,8 +371,14 @@ class ImgFile(SanityFile):
         self.latexterms = []
 
     def check(self):
+        """
+        retrieve the resolution of the image and output an error
+        message if it is too low
+        """
+
         try:
-            img = Image.open(self.filename)
+            with Image.open(self.filename) as img:
+                pass
         except IOError:
             print("could not open", self.filename)
             return
@@ -385,7 +392,7 @@ class ImgFile(SanityFile):
                         "",
                         "",
                         "low resolution",
-                        "%sx%sdpi, required 300" % (x, y),
+                        f"{x}x{y}dpi, required 300",
                     )
                 )
         except KeyError:
@@ -393,8 +400,8 @@ class ImgFile(SanityFile):
             if x < 1500:
                 estimatedresolution = x / 5
                 print(
-                    "resolution of %s when printed full with: %i. Required: 300"
-                    % (self.filename.split("/")[-1], estimatedresolution)
+                    f"resolution of {self.filename.split('/')[-1]} when \
+printed full with: {estimatedresolution}. Required: 300"
                 )
                 self.errors.append(
                     SanityError(
@@ -402,7 +409,7 @@ class ImgFile(SanityFile):
                         "low resolution",
                         " ",
                         " ",
-                        "estimated %sdpi, required 300" % estimatedresolution,
+                        f"estimated {estimatedresolution}dpi, required 300",
                     )
                 )
 
@@ -417,8 +424,7 @@ class SanityDir:
         self.ignorecodes = ignorecodes
         self.texfiles = self.findallfiles("tex")
         self.bibfiles = self.findallfiles("bib")
-        self.pngfiles = self.findallfiles("png")
-        self.jpgfiles = self.findallfiles("jpg")
+        self.imgfiles = self.findallfiles("png") + self.findallfiles("jpg")
         self.texterrors = {}
         self.imgerrors = {}
 
@@ -434,13 +440,16 @@ class SanityDir:
         """
 
         matches = []
-        localfiles = glob.glob("%s/local*" % self.dirname) + glob.glob('%s/main.tex' % self.dirname)
-        chapterfiles = glob.glob("%s/chapters/*tex" % self.dirname)
-        imgfiles = glob.glob("%s/figures/*" % self.dirname)
+        localfiles = glob.glob(f"{self.dirname}/local*") + glob.glob(
+            f"{self.dirname}/main.tex"
+        )
+        chapterfiles = glob.glob(f"{self.dirname}/chapters/*tex")
+        imgfiles = glob.glob(f"{self.dirname}/figures/*")
         for filename in fnmatch.filter(
-            localfiles + chapterfiles + imgfiles, "*.%s" % extension
+            localfiles + chapterfiles + imgfiles, f"*.{extension}"
         ):
             matches.append(filename)
+        print(matches)
         return sorted(matches)
 
     def printErrors(self):
@@ -450,20 +459,16 @@ class SanityDir:
         for filename in sorted(self.texterrors):
             fileerrors = self.texterrors[filename]
             print(
-                "\n",
-                70 * "=",
-                "\n%s, %i possible errors found." % (filename, len(fileerrors)),
-                "Suppressing %i error codes: %s"
-                % (len(self.ignorecodes), ",".join(self.ignorecodes)),
-                "\n",
-                70 * "=",
+                f"""
+{70 * '='}
+{filename}, {len(fileerrors)}possible errors found.
+Suppressing {len(self.ignorecodes)} error codes: {','.join(self.ignorecodes)}
+{70 * '='}"""
             )
-            # print(fileerrors)
             for e in fileerrors:
                 if e.name not in self.ignorecodes:
                     print("    ", e.name, e)
-        for filename in self.imgerrors:
-            fileerrors = self.imgerrors[filename]
+        for filename, fileerrors in self.imgerrors.items():
             for e in fileerrors:
                 print(filename)
                 print("    ", e)
@@ -480,16 +485,12 @@ class SanityDir:
                 print(tfilename)
                 continue
             t.check()
-            # t.spellcheck()
             self.texterrors[tfilename] = t.errors
-            # self.errors[tfilename][1] = t.spellerrors
         for bfilename in self.bibfiles:
             b = BibFile(bfilename)
             b.check()
             self.texterrors[bfilename] = b.errors
-            # self.errors[bfilename][1] = b.spellerrors
-        for ifilename in self.pngfiles + self.jpgfiles:
+        for ifilename in self.imgfiles:
             imgf = ImgFile(ifilename)
             imgf.check()
-            # self.spellerrors = []
             self.imgerrors[ifilename] = imgf.errors
