@@ -1,58 +1,60 @@
+"""
+Tools for the conversion of docx/odt into tex
+"""
+
 import re
+import os
 import shutil
 import uuid
 import codecs
 from pathlib import Path
-
 try:
     import bibtools
 except ImportError:
     from langsci import bibtools
-import os
+from converter_helpers import yanks, explicitreplacements
 
 WD = "/home/doc2tex"
 WD = "/tmp"
 lspskeletond = "/home/doc2tex/skeletonbase"
-# lspskeletond = '/home/snordhoff/versioning/git/langsci/lsp-converters/webapp/doc2tex/assets/skeletonbase'
-# wwwdir = os.path.join(wd,'www')
 wwwdir = "/var/www/wlport"
 
-
+# pylint: disable=anomalous-backslash-in-string,consider-using-f-string
 def convert(fn, wd=WD, tmpdir=False):
-    # print "converting %s" %fn
+    """
+    Convert a file in docx or odt format to tex
+    """
+
     odtfn = False
     os.chdir(wd)
-    if tmpdir == False:
+    if tmpdir is False:
         tmpdir = Path(fn).parent.absolute()
-    # tmpdir = "."
-    # print tmpdir
     if fn.endswith("docx"):
         os.chdir(tmpdir)
-        syscall = """soffice --convert-to odt --outdir "%s" "%s"   """ % (tmpdir, fn)
+        syscall = f"""soffice --convert-to odt --outdir "{tmpdir}" "{fn}"   """
         print(syscall)
         os.system(syscall)
         odtfn = fn.replace("docx", "odt")
     elif fn.endswith("doc"):
         os.chdir(tmpdir)
-        syscall = """soffice --convert-to odt --outdir "%s" "%s"   """ % (tmpdir, fn)
-        # print syscall
+        syscall = f"""soffice --convert-to odt --outdir "{tmpdir}" "{fn}"   """
         os.system(syscall)
         odtfn = fn.replace("doc", "odt")
     elif fn.endswith("odt"):
         odtfn = fn
     else:
         raise ValueError
-    if odtfn == False:
+    if odtfn is False:
         return False
     os.chdir(wd)
     texfn = odtfn.replace("odt", "tex")
-    # print texfn
     w2loptions = (
         "-clean",
         "-wrap_lines_after=0",
         "-multilingual=false",
         # floats
-        "-simple_table_limit=10" "-use_supertabular=false",
+        "-simple_table_limit=10",
+        "-use_supertabular=false",
         "-float_tables=false",
         "-float_figures=false",
         "-use_caption=true",
@@ -73,17 +75,17 @@ def convert(fn, wd=WD, tmpdir=False):
         # "-no_preamble=true"
     )
     syscall = """w2l {} "{}" "{}" """.format(" ".join(w2loptions), odtfn, texfn)
-    # print syscall
     os.system(syscall)
-    w2lcontent = open(texfn, encoding="utf-8").read()
+    with open(texfn, encoding="utf-8") as w2l:
+        w2lcontent = w2l.read()
     ipacharcodes = "251 25B 26A 254 28A? 259 268 289".split()
-    IPACHARS = re.compile(
-        "(%s)" % "|".join(["\[%s\?\]" % char for char in ipacharcodes])
-    )
+    ipaset = ["\[%s\?\]" % char for char in ipacharcodes]
+    IPACHARS = re.compile(f"({'|'.join(ipaset)})")
     found_ipa_chars = set(IPACHARS.findall(w2lcontent))
     warning = ""
     if found_ipa_chars:
-        warning = f"% ATTENTION: Diacritics on the following phonetic characters might have been lost during conversion: {found_ipa_chars}\n"
+        warning = f"% ATTENTION: Diacritics on the following phonetic\
+ characters might have been lost during conversion: {found_ipa_chars}\n"
     preamble, text = w2lcontent.split(r"\begin{document}")
     text = warning + text.split(r"\end{document}")[0]
     preamble = preamble.split("\n")
@@ -121,8 +123,11 @@ def convert(fn, wd=WD, tmpdir=False):
     )
     return Document(newcommands, newenvironments, newpackages, newcounters, text)
 
-
 class Document:
+    """A document which contains the text and all definitions of styles, counters
+    and required packages
+    """
+
     def __init__(self, commands, environments, packages, counters, text):
         self.commands = commands
         self.environments = environments
@@ -146,10 +151,13 @@ class Document:
 \maketitle 
 %\shorttitlerunninghead{}%%use this for an abridged title in the page headers
 """
-        paperpostamble = "\n\\sloppy\\printbibliography[heading=subbibliography,notkeyword=this]\n\\end{document}"
+        paperpostamble = """
+\\sloppy\\printbibliography[heading=subbibliography,notkeyword=this]
+\\end{document}"""
         self.papertext = paperpreamble + self.modtext + paperpostamble
 
     def ziptex(self):
+        """prepare a zip archive which includes all the necessary files to compile the project"""
         localskeletond = os.path.join(WD, "skeleton")
         try:
             shutil.rmtree(localskeletond)
@@ -157,416 +165,33 @@ class Document:
             pass
         shutil.copytree(lspskeletond, localskeletond)
         os.chdir(localskeletond)
-        localcommands = codecs.open("localcommands.tex", "a", encoding="utf-8")
-        localpackages = codecs.open("localpackages.tex", "a", encoding="utf-8")
-        localcounters = codecs.open("localcounters.tex", "a", encoding="utf-8")
         try:
             os.mkdir("./chapters")
         except OSError:
             pass
-        content = codecs.open("chapters/filename.tex", "w", encoding="utf-8")
-        contentorig = codecs.open("chapters/filenameorig.tex", "w", encoding="utf-8")
-        localcommands.write(self.commands)
-        localcommands.write(self.environments)
-        localcommands.close()
-        localpackages.write(self.packages)
-        localpackages.close()
-        localcounters.write(self.counters)
-        localcounters.close()
-        content.write(self.modtext)
-        content.close()
-        contentorig.write(self.text)
-        contentorig.close()
+        with codecs.open("localcommands.tex", "a", encoding="utf-8") as localcommands:
+            localcommands.write(self.commands)
+            localcommands.write(self.environments)
+        with codecs.open("localpackages.tex", "a", encoding="utf-8") as localpackages:
+            localpackages.write(self.packages)
+        with codecs.open("localcounters.tex", "a", encoding="utf-8") as localcounters:
+            localcounters.write(self.counters)
+        with codecs.open("chapters/filename.tex", "w", encoding="utf-8") as content:
+            content.write(self.modtext)
+        with codecs.open(
+            "chapters/filenameorig.tex", "w", encoding="utf-8"
+        ) as contentorig:
+            contentorig.write(self.text)
         os.chdir(WD)
-        self.zipfn = str(uuid.uuid4())
-        shutil.make_archive(self.zipfn, "zip", localskeletond)
-        shutil.move(self.zipfn + ".zip", wwwdir)
+        zipfn = str(uuid.uuid4())
+        shutil.make_archive(zipfn, "zip", localskeletond)
+        shutil.move(zipfn + ".zip", wwwdir)
 
-    def getModtext(self, ID="key"):
+    def getModtext(self):
+        """postprocess the raw output from the w2l converter"""
+
         modtext = self.text
-        explicitreplacements = (  #'`^v~
-            (r"\'{a}", "á"),
-            (r"\'{e}", "é"),
-            (r"\'{i}", "í"),
-            (r"\'{o}", "ó"),
-            (r"\'{u}", "ú"),
-            (r"\'{y}", "ý"),
-            (r"\'{m}", "ḿ"),
-            (r"\'{n}", "ń"),
-            (r"\'{r}", "ŕ"),
-            (r"\'{l}", "ĺ"),
-            (r"\'{c}", "ć"),
-            (r"\'{s}", "ś"),
-            (r"\'{z}", "ź"),
-            (r"\`{a}", "à"),
-            (r"\`{e}", "è"),
-            (r"\`{i}", "ì"),
-            (r"\`{o}", "ò"),
-            (r"\`{u}", "ù"),
-            (r"\`{y}", "ỳ"),
-            (r"\`{n}", "ǹ"),
-            (r"\^{a}", "â"),
-            (r"\^{e}", "ê"),
-            (r"\^{i}", "î"),
-            (r"\^{o}", "ô"),
-            (r"\^{u}", "û"),
-            (r"\^{y}", "ŷ"),
-            (r"\^{c}", "ĉ"),
-            (r"\^{s}", "ŝ"),
-            (r"\^{z}", "ẑ"),
-            (r"\~{a}", "ã"),
-            (r"\~{e}", "ẽ"),
-            (r"\~{i}", "ĩ"),
-            (r"\~{o}", "õ"),
-            (r"\~{u}", "ũ"),
-            (r"\~{y}", "ỹ"),
-            (r"\~{n}", "ñ"),
-            (r"\"{a}", "ä"),
-            (r"\"{e}", "ë"),
-            (r"\"{i}", "ï"),
-            (r"\"{o}", "ö"),
-            (r"\"{u}", "ü"),
-            (r"\"{y}", "ÿ"),
-            (r"\"{A}", "Ä"),
-            (r"\"{E}", "Ë"),
-            (r"\"{I}", "Ï"),
-            (r"\"{O}", "Ö"),
-            (r"\"{U}", "Ü"),
-            (r"\"{Y}", "Ÿ"),
-            (r"\v{a}", "ǎ"),
-            (r"\v{e}", "ě"),
-            (r"\v{i}", "ǐ"),
-            (r"\v{o}", "ǒ"),
-            (r"\v{u}", "ǔ"),
-            (r"\v{n}", "ň"),
-            (r"\v{r}", "ř"),
-            (r"\v{c}", "č"),
-            (r"\v{s}", "š"),
-            (r"\v{z}", "ž"),
-            (r"\v{C}", "Č"),
-            (r"\v{S}", "Š"),
-            (r"\v{Y}", "Ž"),
-            (r"\u{a}", "ă"),
-            (r"\u{e}", "ĕ"),
-            (r"\u{i}", "ĭ"),
-            (r"\u{\i}", "ĭ"),
-            (r"\u{o}", "ŏ"),
-            (r"\u{u}", "ŭ"),
-            (r"\u{A}", "Ă"),
-            (r"\u{E}", "Ĕ"),
-            (r"\u{I}", "Ĭ"),
-            (r"\u{O}", "Ŏ"),
-            (r"\u{U}", "Ŭ"),
-            (r"\={a}", "ā"),
-            (r"\={e}", "ē"),
-            (r"\={i}", "ī"),
-            (r"\={\i}", "ī"),
-            (r"\=\i", "ī"),
-            (r"\={o}", "ō"),
-            (r"\={u}", "ū"),
-            (r"\={A}", "Ā"),
-            (r"\={E}", "Ē"),
-            (r"\={I}", "Ī"),
-            (r"\={O}", "Ō"),
-            (r"\={U}", "Ū"),
-            (r"\=a", "ā"),
-            (r"\=e", "ē"),
-            (r"\=i", "ī"),
-            (r"\=o", "ō"),
-            (r"\=u", "ū"),
-            (r"\=A", "Ā"),
-            (r"\=E", "Ē"),
-            (r"\=I", "Ī"),
-            (r"\=O", "Ō"),
-            (r"\=U", "Ū"),
-            (r"$\alpha $", "α"),
-            (r"$\beta $", "β"),
-            (r"$\gamma $", "γ"),
-            (r"$\delta $", "δ"),
-            (r"$\epsilon $", "ε"),
-            (r"$\zeta $", "ζ"),
-            (r"$\eta $", "η"),
-            (r"$\theta $", "θ"),
-            (r"$\iota $", "ι"),
-            (r"$\kappa $", "κ"),
-            (r"$\lambda $", "λ"),
-            (r"$\mu $", "μ"),
-            (r"$\nu $", "ν"),
-            (r"$\xi $", "ξ"),
-            (r"$\omicron $", "ο"),
-            (r"$\pi $", "π"),
-            (r"$\rho $", "ρ"),
-            (r"$\sigma $", "σ"),
-            (r"$\tau $", "τ"),
-            (r"$\upsilon $", "υ"),
-            (r"$\phi $", "φ"),
-            (r"$\chi $", "χ"),
-            (r"$\psi $", "ψ"),
-            (r"$\omega $", "ω"),
-            (r"$\Alpha $", "Α"),
-            (r"$\Beta $", "β"),
-            (r"$\Gamma $", "Γ"),
-            (r"$\Delta $", "Δ"),
-            (r"$\Epsilon $", "ε"),
-            (r"$\Zeta $", "ζ"),
-            (r"$\Eta $", "η"),
-            (r"$\Theta $", "Θ"),
-            (r"$\Iota $", "ι"),
-            (r"$\Kappa $", "Κ"),
-            (r"$\Lambda $", "λ"),
-            (r"$\Mu $", "μ"),
-            (r"$\Nu $", "ν"),
-            (r"$\Xi $", "ξ"),
-            (r"$\Omicron $", "ο"),
-            (r"$\Pi $", "π"),
-            (r"$\Rho $", "ρ"),
-            (r"$\Sigma $", "Σ"),
-            (r"$\Tau $", "τ"),
-            (r"$\Upsilon $", "υ"),
-            (r"$\Phi $", "φ"),
-            (r"$\Chi $", "χ"),
-            (r"$\Psi $", "ψ"),
-            (r"$\Omega $", "Ω"),
-            ("{\\textquoteleft}", "`"),
-            ("{\\textgreater}", ">"),
-            ("{\\textless}", "<"),
-            ("{\\textquotedbl}", '"'),
-            ("{\\textquotedblleft}", "``"),
-            ("{\\textquoteright}", "'"),
-            ("{\\textquotedblright}", "''"),
-            ("{\\textquotesingle}", "'"),
-            ("{\\textquotedouble}", '"'),
-            ("\\par}", "}"),
-            ("\\clearpage", "\n"),
-            ("\\textstyleLangSciCategory", "\\textsc"),
-            # ("\\begin","\n\\begin"),
-            # ("\\end","\n\\end"),
-            # (" }","} "),%causes problems with '\ '
-            ("supertabular", "tabular"),
-            ("\\mdseries", "\\bfseries"),
-            ("\~{}", "{\\textasciitilde}"),
-            # ("\\section","\\chapter"),
-            # ("\\subsection","\\section"),
-            # ("\\subsubsection","\\subsection"),
-            (
-                """\\begin{listWWNumiileveli}
-\\item 
-\\setcounter{listWWNumiilevelii}{0}
-\\begin{listWWNumiilevelii}
-\\item 
-\\begin{styleLangSciLanginfo}""",
-                "\\begin{styleLangSciLanginfo}",
-            ),  # MSi langsci
-            (
-                """\\begin{listWWNumiileveli}
-\\item 
-\\setcounter{listWWNumiilevelii}{0}
-\\begin{listWWNumiilevelii}
-\\item 
-\\begin{stylelsLanginfo}""",
-                "\\begin{stylelsLanginfo}",
-            ),  # MSi ls
-            (
-                """\\begin{listWWNumiileveli}
-\\item 
-\\begin{styleLangSciLanginfo}\n""",
-                "\\ea\\label{ex:key:}\n%%1st subexample: change \\ea\\label{...} to \\ea\\label{...}\\ea; remove \\z  \n%%further subexamples: change \\ea to \\ex; remove \\z  \n%%last subexample: change \\z to \\z\\z \n\\langinfo{}{}{",
-            ),  # MSii langsci
-            (
-                """\\begin{listWWNumiileveli}
-\\item 
-\\begin{stylelsLanginfo}\n""",
-                "\\ea\\label{ex:key:}\n%%1st subexample: change \\ea\\label{...} to \\ea\\label{...}\\ea; remove \\z  \n%%further subexamples: change \\ea to \\ex; remove \\z  \n%%last subexample: change \\z to \\z\\z \n\\langinfo{}{}{",
-            ),  # MSii ls
-            (
-                """\\begin{listLangSciLanginfoiileveli}
-\\item 
-\\begin{styleLangSciLanginfo}""",
-                "\\begin{styleLangSciLanginfo}",
-            ),  # OOi langsci
-            (
-                """\\begin{listlsLanginfoiileveli}
-\\item 
-\\begin{stylelsLanginfo}""",
-                "\\begin{stylelsLanginfo}",
-            ),  # OOi ls
-            (
-                """\\begin{listLangSciLanginfoiilevelii}
-\\item 
-\\begin{styleLangSciLanginfo}""",
-                "\\begin{styleLangSciLanginfo}",
-            ),  # OOii langsci
-            (
-                """\\begin{listlsLanginfoiilevelii}
-\\item 
-\\begin{stylelsLanginfo}""",
-                "\\begin{stylelsLanginfo}",
-            ),  # OOii ls
-            (
-                """\\end{styleLangSciLanginfo}
 
-
-\\end{listWWNumiilevelii}
-\\end{listWWNumiileveli}""",
-                "\\end{styleLangSciLanginfo}",
-            ),  # langsci
-            (
-                """\\end{stylelsLanginfo}
-
-
-\\end{listWWNumiilevelii}
-\\end{listWWNumiileveli}""",
-                "\\end{stylelsLanginfo}",
-            ),  # ls
-            (
-                """\\end{styleLangSciLanginfo}
-
-\\end{listWWNumiilevelii}
-\\end{listWWNumiileveli}""",
-                "\\end{styleLangSciLanginfo}",
-            ),  # langsci
-            (
-                """\\end{stylelsLanginfo}
-
-\\end{listWWNumiilevelii}
-\\end{listWWNumiileveli}""",
-                "\\end{stylelsLanginfo}",
-            ),  # ls
-            ("\\begin{styleLangSciLanginfo}\n", "\\ea\label{ex:key:}\n\\langinfo{}{}{"),
-            ("\\begin{stylelsLanginfo}\n", "\\ea\label{ex:key:}\n\\langinfo{}{}{"),
-            ("\\begin{listWWNumiilevelii}\n\\item \n\\ea\\label{ex:key:}\n", ""),
-            ("\n\\end{styleLangSciLanginfo}\n", "}\\\\\n"),
-            ("\\begin{styleLangSciExample}\n", "\n\\gll "),
-            ("\\end{styleLangSciExample}\n", "\\\\"),
-            ("\\begin{styleLangSciSourceline}\n", "\\gll "),
-            ("\\end{styleLangSciSourceline}\n", "\\\\"),
-            ("\n\\end{stylelsLanginfo}\n", "}\\\\\n"),
-            ("\\begin{stylelsExample}\n", "\n\\gll "),
-            ("\\end{stylelsExample}\n", "\\\\"),
-            ("\\begin{stylelsSourceline}\n", "\\gll "),
-            ("\\end{stylelsSourceline}\n", "\\\\"),
-            ("\\end{listWWNumiileveli}\n\\gll", "\\gll"),
-            ("\\begin{styleLangSciIMT}\n", "     "),
-            ("\\end{styleLangSciIMT}\n", "\\\\"),
-            ("\\begin{styleLangSciTranslation}\n", "\\glt "),
-            ("\\end{styleLangSciTranslation}", "\z"),
-            ("\\begin{styleLangSciTranslationSubexample}\n", "\\glt "),
-            ("\\end{styleLangSciTranslationSubexample}", "\z"),
-            ("\\begin{stylelsIMT}\n", "     "),
-            ("\\end{stylelsIMT}\n", "\\\\"),
-            ("\\begin{stylelsTranslation}\n", "\\glt "),
-            ("\\end{stylelsTranslation}", "\z"),
-            ("\\begin{stylelsTranslationSubexample}\n", "\\glt "),
-            ("\\end{stylelsTranslationSubexample}", "\z"),
-            (
-                """\\setcounter{listWWNumiileveli}{0}
-\\ea\\label{ex:key:}""",
-                "",
-            ),  # MS
-            # ("""\\setcounter{listLangSciLanginfoiilevelii}{0}
-            # \\ea\\label{ex:key:}""",""),#OO
-            (
-                """\\begin{listLangSciLanginfoiileveli}
-\item""",
-                "\\ea\label{ex:key:}",
-            ),
-            (
-                """\setcounter{listLangSciLanginfoiilevelii}{0}
-\\ea\label{ex:key:}""",
-                "",
-            ),
-            ("\n\\end{listLangSciLanginfoiileveli}", ""),
-            ("\n\\end{listLangSciLanginfoiilevelii}", ""),
-            (
-                """\\begin{listlsLanginfoiileveli}
-\item""",
-                "\\ea\label{ex:key:}",
-            ),
-            (
-                """\setcounter{listlsLanginfoiilevelii}{0}
-\\ea\label{ex:key:}""",
-                "",
-            ),
-            ("\n\\end{listlsLanginfoiileveli}", ""),
-            ("\n\\end{listlsLanginfoiilevelii}", ""),
-            ("\n\\glt ~", ""),
-            # end examples
-            ("{styleQuote}", "{quote}"),
-            ("{styleAbstract}", "{abstract}"),
-            ("textstylelsCategory", "textsc"),
-            ("textstylelsCategory", "textsc"),
-            # ("\\begin{styleListParagraph}","%\\begin{epigram}"),
-            # ("\\end{styleListParagraph}","%\\end{epigram}"),
-            # ("\\begin{styleListenabsatz}","%\\begin{epigram}"),
-            # ("\\end{styleListenabsatz}","%\\end{epigram}"),
-            # ("\\begin{styleEpigramauthor}","%\\begin{epigramauthor}"),
-            # ("\\end{styleEpigramauthor}","%\\end{epigramauthor}"),
-            ("{styleConversationTranscript}", "{lstlisting}"),
-            ("\ ", " "),
-            # (" }","} "),
-            # ("\\setcounter","%\\setcounter"),
-            ("\n\n\\item", "\\item"),
-            ("\n\n\\end", "\\end"),
-            ("[Warning: Draw object ignored]", "%%[Warning: Draw object ignored]\n"),
-            (r"\=\i", "{\=\i}"),
-        )
-        yanks = (
-            "\\begin{flushleft}",
-            "\\end{flushleft}",
-            "\\centering",
-            "\\rmfamily",
-            "\\raggedright",
-            "\\par ",
-            "\\tablehead{}",
-            "\\textstylepagenumber",
-            "\\textstyleCharChar",
-            "\\textstyleInternetlink",
-            "\\textstylefootnotereference",
-            "\\textstyleFootnoteTextChar",
-            "\\textstylepagenumber",
-            "\\textstyleappleconvertedspace",
-            "\\textstyleDefaultParagraphFont",
-            "\\pagestyle{Standard}",
-            "\\hline",
-            "\\begin{center}",
-            "\\end{center}",
-            "\\begin{styleNormal}",
-            "\\end{styleNormal}",
-            "\\begin{styleStandard}",
-            "\\end{styleStandard}",
-            "\\begin{styleBodytextC}",
-            "\\end{styleBodytextC}",
-            "\\begin{styleBodyTextFirst}",
-            "\\end{styleBodyTextFirst}",
-            "\\begin{styleIllustration}",
-            "\\end{styleIllustration}",
-            "\\begin{styleTabelle}",
-            "\\end{styleTabelle}",
-            "\\begin{styleCaption}",
-            "\\end{styleCaption}",
-            "\\begin{styleAbbildung}",
-            "\\end{styleAbbildung}",
-            "\\begin{styleTextbody}",
-            "\\end{styleTextbody}",
-            "\\begin{styleLangSciBulletList}",
-            "\\end{styleLangSciBulletList}",
-            "\\begin{stylelsBulletList}",
-            "\\end{stylelsBulletList}",
-            "\\maketitle",
-            "\\arraybslash",
-            "\\textstyleAbsatzStandardschriftart{}",
-            "\\textstyleAbsatzStandardschriftart",
-            "[Warning: Image ignored] % Unhandled or unsupported graphics:",
-            "%\\setcounter{listWWNumileveli}{0}\n",
-            "%\\setcounter{listWWNumilevelii}{0}\n",
-            "%\\setcounter{listWWNumiileveli}{0}\n",
-            "%\\setcounter{listWWNumiilevelii}{0}\n",
-            "%\\setcounter{listLangSciLanginfoiileveli}{0}\n",
-            "%\\setcounter{listlsLanginfoiileveli}{0}\n",
-            "\\setcounter{itemize}{0}",
-            "\\setcounter{page}{1}",
-            "\\mdseries ",
-        )
         for old, new in explicitreplacements:
             modtext = modtext.replace(old, new)
 
@@ -577,8 +202,8 @@ class Document:
         w2lunicodep4 = re.compile(
             r"(\[[0-9A-Da-d][0-9A-Fa-f]{3}\?\])"
         )  # intentionally leaving out PUA
-        byteprefix3 = b"\u0"
-        byteprefix4 = b"\u"
+        byteprefix3 = b"\u0" # pylint: disable=anomalous-unicode-escape-in-string
+        byteprefix4 = b"\u"  # pylint: disable=anomalous-unicode-escape-in-string
         for m in w2lunicodep3.findall(modtext):
             modtext = modtext.replace(
                 m, (byteprefix3 + m[1:-2].encode("utf-8")).decode("unicode_escape")
@@ -589,8 +214,6 @@ class Document:
             )
         # remove marked up white space and punctuation
         modtext = re.sub("\\text(it|bf|sc)\{([ \.,]*)\}", "\2", modtext)
-
-        # remove explicit counters. These are not useful when from autoconversion
 
         # remove explicit table widths
         modtext = re.sub("m\{-?[0-9.]+(in|cm)\}", "X", modtext)
@@ -671,83 +294,80 @@ class Document:
             "\\\1section{\\4}",
             modtext,
         )
-        #                        several subs | options       formatting           title ||   subs      title
         # move explict section number to end of line and comment out
         modtext = re.sub("section\{([0-9\.]+ )(.*)", r"section{\2 %\1/", modtext)
         modtext = re.sub("section\[.*?\]", "section", modtext)
-        #                                 number    title         title number
         # table cells in one row
         modtext = re.sub("[\n ]*&[ \n]*", " & ", modtext)
         modtext = modtext.replace(r"\ &", "\&")
         # collapse newlines
         modtext = re.sub("\n*\\\\\\\\\n*", "\\\\\\\\\n", modtext)
         # bib
-        authorchars = "[A-ZÅÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛŐŰĆĆÇČÐĐŘŚŠŞŌǪØŽ][-a-záéíóúaèìòùâeîôûäëïöüőűðĺłŁøæœåćĆçÇčČĐđǧñńŘřŚśŠšŞşŽžA-Z]+"
+        authorchars_firstletter = "[A-ZÅÁÉÍÓÚÄËÏÖÜÀÈÌÒÙÂÊÎÔÛŐŰĆĆÇČÐĐŘŚŠŞŌǪØŽ]"
+        authorchars_furtherletters = "[-a-záéíóúaèìòùâeîôûäëïöüőűðĺłŁøæœåćĆçÇčČĐđǧñńŘřŚśŠšŞşŽžA-Z]+"
+        authorchars = authorchars_firstletter+authorchars_furtherletters
         yearchars = "[12][0-9]{3}[a-z]?"
         modtext = re.sub(
-            "\((%s) +et al\.?  +(%s): *([0-9,-]+)\)" % (authorchars, yearchars),
+            f"\(({authorchars}) +et al\.?  +({yearchars}): *([0-9,-]+)\)",
             r"\\citep[\3]{\1EtAl\2}",
             modtext,
         )
         modtext = re.sub(
-            "\((%s) +(%s): *([0-9,-]+)\)" % (authorchars, yearchars),
+            f"\(({authorchars}) +({yearchars}): *([0-9,-]+)\)",
             r"\\citep[\3]{\1\2}",
             modtext,
         )
         modtext = re.sub(
-            "\((%s) +et al\.? +(%s)\)" % (authorchars, yearchars),
+            f"\(({authorchars}) +et al\.? +({yearchars})\)",
             r"\\citep{\1EtAl\2}",
             modtext,
         )
         modtext = re.sub(
-            "\((%s) +(%s)\)" % (authorchars, yearchars), r"\\citep{\1\2}", modtext
+            f"\(({authorchars}) +({yearchars})\)", r"\\citep{\1\2}", modtext
         )
         # citet
         modtext = re.sub(
-            "(%s) +et al.? +\((%s): *([0-9,-]+)\)" % (authorchars, yearchars),
+            f"({authorchars}) +et al.? +\(({yearchars}): *([0-9,-]+)\)",
             r"\\citet[\3]{\1EtAl\2}",
             modtext,
         )
         modtext = re.sub(
-            "(%s) +\((%s): *([0-9,-]+)\)" % (authorchars, yearchars),
+            f"({authorchars}) +\(({yearchars}): *([0-9,-]+)\)",
             r"\\citet[\3]{\1\2}",
             modtext,
         )
         modtext = re.sub(
-            "(%s) +et al.? +\((%s)\)" % (authorchars, yearchars),
+            f"({authorchars}) +et al.? +\(({yearchars})\)",
             r"\\citet{\1EtAl\2}",
             modtext,
         )
         modtext = re.sub(
-            "(%s) +\((%s)\)" % (authorchars, yearchars), r"\\citet{\1\2}", modtext
+            f"({authorchars}) +\(({yearchars})\)", r"\\citet{\1\2}", modtext
         )
         # citegen
         modtext = re.sub(
-            "(%s) +et al\.?]['’]s +\((%s)\)" % (authorchars, yearchars),
+            f"({authorchars}) +et al\.?]['’]s +\(({yearchars})\)",
             r"\\citegen{\1EtAl\2}",
             modtext,
         )
         modtext = re.sub(
-            "(%s)['’]s +\((%s)\)" % (authorchars, yearchars),
+            f"({authorchars})['’]s +\(({yearchars})\)",
             r"\\citegen{\1\2}",
             modtext,
         )
         # citeapo
         modtext = re.sub(
-            "(%s) +et al\.?]['’] +\((%s)\)" % (authorchars, yearchars),
+            f"({authorchars}) +et al\.?]['’] +\(({yearchars})\)",
             r"\\citeapo{\1EtAl\2}",
             modtext,
         )
         modtext = re.sub(
-            "(%s)['’] +\((%s)\)" % (authorchars, yearchars), r"\\citeapo{\1\2}", modtext
+            f"({authorchars})['’] +\(({yearchars})\)", r"\\citeapo{\1\2}", modtext
         )
-        # modtext = re.sub("([A-Z][a-z]+) +(%s)","\\citet{\1\2}",modtext)i
         # catch all citealt
+        modtext = re.sub(f"({authorchars}) +({yearchars})", r"\\citealt{\1\2}", modtext)
         modtext = re.sub(
-            "(%s) +(%s)" % (authorchars, yearchars), r"\\citealt{\1\2}", modtext
-        )
-        modtext = re.sub(
-            "(%s) et al\.? +(%s)" % (authorchars, yearchars),
+            f"({authorchars}) et al\.? +({yearchars})",
             r"\\citealt{\1EtAl\2}",
             modtext,
         )
@@ -758,7 +378,7 @@ class Document:
         modtext = re.sub(r"(%s) and \\citealt{" % authorchars, r"\\citealt{\1", modtext)
         # Smith (2000, 2001)
         modtext = re.sub(
-            r"(%s)\((%s), *(%s)\)" % (authorchars, yearchars, yearchars),
+            rf"({authorchars})\(({yearchars}), *({yearchars})\)",
             r"\\citet{\1\2,\1\3}",
             modtext,
         )
@@ -818,12 +438,14 @@ class Document:
 
         modtext = re.sub(
             "\n\\\\textit{Table ([0-9]+)[\.:] *(.*?)}\n",
-            r"%%please move \\begin{table} just above \\\\begin{tabular . \n\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",
+            r"%%please move \\begin{table} just above \\\\begin{tabular . \n\
+\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",
             modtext,
         )
         modtext = re.sub(
             "\nTable ([0-9]+)[\.:] *(.*?) *\n",
-            r"%%please move \\begin{table} just above \\begin{tabular\n\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",
+            r"%%please move \\begin{table} just above \\begin{tabular\n\\begin{table}\n\
+\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",
             modtext,
         )  # do not add } after tabular
         modtext = re.sub("Table ([0-9]+)", "\\\\tabref{tab:key:\\1}", modtext)
@@ -889,7 +511,8 @@ class Document:
         while i != 0:
             modtext, i = re.subn(r"(\\gll.*)\\textit", r"\1", modtext)
 
-        # bold and smallcaps are used in example environments, so we want them to enclose only minimal words
+        # bold and smallcaps are used in example environments, so we want them to
+        # enclose only minimal words
         for s in ("textbf", "textsc"):
             i = 1
             while i != 0:
@@ -899,7 +522,8 @@ class Document:
 
         modtext = re.sub(
             "\\\\includegraphics\[.*?width=\\\\textwidth\]\{",
-            r"%please move the includegraphics inside the {figure} environment\n%%\\includegraphics[width=\\textwidth]{figures/",
+            r"%please move the includegraphics inside the {figure} environment\n\
+%%\\includegraphics[width=\\textwidth]{figures/",
             modtext,
         )
 
@@ -912,13 +536,15 @@ class Document:
         )
 
         modtext = re.sub(
-            r"\\begin{itemize}\n\\item \\begin{itemize}\n\\item (\\subsection{.*?})\n\\end{itemize}\n\\end{itemize}",
+            r"\\begin{itemize}\n\\item \\begin{itemize}\n\\item (\\subsection{.*?})\n\
+\\end{itemize}\n\\end{itemize}",
             r"\1",
             modtext,
         )
 
         modtext = re.sub(
-            r"\\begin{itemize}\n\\item *(\\section{.*?})\n\n\\begin{itemize}\n\\item (\\subsection{.*?})\n\\end{itemize}\n\\end{itemize}",
+            r"\\begin{itemize}\n\\item *(\\section{.*?})\n\n\\begin{itemize}\n\
+\\item (\\subsection{.*?})\n\\end{itemize}\n\\end{itemize}",
             r"\1\n\2",
             modtext,
         )
@@ -962,7 +588,7 @@ class Document:
         styleBodyTextIndentiii
         """.split()
 
-        modtext = re.sub("\\\\(begin|end){(%s)}" % "|".join(bogus_styles), "", modtext)
+        modtext = re.sub(f"\\\\(begin|end){('|'.join(bogus_styles))}", "", modtext)
 
         modtext = modtext.replace(
             "\\begin{itemize}\n\\item \\begin{styleLangSciEnumerated}\n",
