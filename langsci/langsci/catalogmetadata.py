@@ -31,6 +31,17 @@ ONE_LANGUAGE_BOOKS = {
     372: ("yla", "yaul1241", "Ulwa"),
     374: ("deu", "stan1295", "German"),
     382: ("deu", "ital1282", "Italian"),
+    401: ("fra", "stan1290", "French"),
+    400: ("pnk", "paun1241", "Paunaka"),
+    398: ("cay", "cayu1261", "Gayogo̱hó:nǫˀ"),
+    385: ("hye", "arme1241", "Armenian"),
+    403: ("bun", "sher1258", "Sherbro"),
+    413: ("mul", "mata1289", "Mataguayan"),
+    414: ("txe", "toto1304", "Totoli"),
+    431: ("gmh", "midd1343", "Mittelhochdeutsch"),
+    443: ("cgc", "kaga1256", "Kagayanen"),
+    445: ("mkt", "vama1243", "Vamale"),
+    446: ("mhq", "mand1446", "Mandan"),
 }
 
 METALANGUAGE = {
@@ -52,6 +63,7 @@ METALANGUAGE = {
     363: "deu",
     371: "deu",
     406: "deu",
+    431: "deu",
 }
 
 LICENSES = {
@@ -134,7 +146,7 @@ SERIES = {
     "Open Romance Linguistics": "2940-1100",
     "Current Issues in Bilingualism": "2747-9927",
     "Estudios de Lingüística Amerindia / Estudos de Linguística Ameríndia / Studies of Amerindian Linguistics / Études de Linguistique Amérindienne": "2943-0658",
-    'Topics in Phonological Diversity': "0000-0000",
+    'Topics in Phonological Diversity': "2943-6540",
     # "Im­ple­ment­ed Gram­mars": "",
     "Advances in Historical Linguistics" : "2943-064X"
 }
