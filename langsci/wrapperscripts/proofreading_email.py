@@ -25,6 +25,37 @@ except ImportError:
     )
 
 
+
+
+
+def straighten_creators(s):
+    CREATOR_REGEX = re.compile("([^ ,][^,]+), ([^,]+)")
+    try:
+        firsts, last = s.split(' & ')
+    except ValueError:
+        firsts = s
+        last = ''
+    firsts_list = CREATOR_REGEX.findall(firsts)
+    last_list = CREATOR_REGEX.findall(last)
+    flipped= [f'{t[1]} {t[0]}' for t in firsts_list]
+    if last_list:
+        flipped_last = f'{last_list[0][1]}{last_list[0][0]}'
+        flipped.append(flipped_last)
+    amp_index = len(flipped)-2
+    joiner = ','
+    result = flipped[0]
+    for i, name in enumerate(flipped[1:]):
+        if i == amp_index:
+            joiner = ' &'
+        result+=f'{joiner} {name}'
+    return result
+
+
+
+
+
+
+
 with open("localmetadata.tex") as localmetadata:
     content = localmetadata.read()
     ID = re.search(r"\\lsID\}\{([0-9]+)\}", content).group(1)
@@ -33,7 +64,9 @@ soup = get_soup(ID)
 citeinfo = get_citeinfo(soup)
 title = citeinfo["title"].strip()
 edited = citeinfo["ed"] or ""
-creators = citeinfo["creators"]
+if edited:
+    edited = "edited"
+creators = straighten_creators(citeinfo["creators"])
 blurb = get_blurb(soup)
 
 pdf = PyPDF2.PdfReader(open("main.pdf", "rb"))
@@ -41,12 +74,13 @@ number_of_pages = len(pdf.pages)
 
 with open("main.toc") as tocfile:
     content = tocfile.read()
-    chapters = re.findall(r"chapter.*numberline \{[0-9]+}*([A-Z].*?)\}", content)
+    chapters = re.findall(r"chapter.*numberline \{[0-9]+}*([A-ZÉ].*?)\}", content)
 
 newchapters = []
 for chapter in chapters:
     try:
         ch, au = chapter.split(r"~\newline {\normalfont \ResolveAffiliations {")
+        au = au.replace(' and ', ' & ')
     except ValueError:
         ch = chapter
         au = "FIXAUTHOR"
