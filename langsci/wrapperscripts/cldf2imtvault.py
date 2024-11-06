@@ -11,6 +11,25 @@ except ImportError:
 
 import re
 
+CLLD_D = {"1":"wals",
+        "2":"apics",
+        "3":"autotyp",
+        "4":"grambank",
+        "5":"dplace",
+        "6":"pulotu",
+        "7":"acd",
+        "8":"uratyp",
+        "9":"elcat",
+        "10":"igasttdir",
+        "11":"jacquesestimative",
+        "12":"malchukovditransitives",
+        "13":"dictionariadaakaka",
+        "14":"dictionariakalamang",
+        "15":"dictionarianen",
+        "16":"dictionariapalula",
+        "17":"dictionariasidaama"
+}
+
 PROVIDER_ID_PATTERN = re.compile("([a-z]+)([0-9]+)")
 skipexisting = True
 # nercache = json.loads(open("nercache.json").read())
@@ -35,6 +54,9 @@ with open("examples.csv", newline="") as csvfile:
         citation = row["Source"]
         external_ID = row["ID"]
         # print(external_ID)
+        if provider == 'cldf':
+            provider = CLLD_D[provider_ID]
+            provider_ID = '0'
         thisgll = gll(
             "",
             row["Language_ID"],

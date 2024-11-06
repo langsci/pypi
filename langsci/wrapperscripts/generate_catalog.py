@@ -74,7 +74,7 @@ fields = "ID DOI edited metalanguage objectlanguage license superseded pages ser
 # fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber book_title year creator institution chapter_author chapter_title".split()
 csvstrings = ["\t".join(fields)]
 
-for ID in range(16, 450):
+for ID in range(16, 550):
     # for ID in [239]:
     soup = get_soup(ID)
     citegroups = get_citeinfo(soup)
