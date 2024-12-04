@@ -16,7 +16,7 @@ ONE_LANGUAGE_BOOKS = {
     245: ("dga", "sout2789", "Dagaare"),
     98: ("ikx", "ikkk1242", "Ik"),
     326: ("ruc", "ruul1235", "Ruruuli"),
-    287: ("nyy", "nyak1261", "Nyakyusa"),
+    297: ("nyy", "nyak1261", "Nyakyusa"),
     109: ("nru", "yong1288", "Yongning Na"),
     225: ("dar", "mege1234", "Mehweb"),
     228: ("aaz", "amar1273", "Amarasi"),
