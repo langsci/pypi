@@ -27,11 +27,10 @@ print(
         len(
             sanitydir.texfiles
             + sanitydir.bibfiles
-            + sanitydir.pngfiles
-            + sanitydir.jpgfiles
+            + sanitydir.imgfiles
         ),
     )
 )
 sanitydir.check()
 sanitydir.printErrors()
-print(sanitydir.get_uncommon_chars())
+# print(sanitydir.get_uncommon_chars())
