@@ -275,9 +275,34 @@ class TexFile(SanityFile):
             This will be done during final typesetting by the LangSci office",
         ),
         (
-            r"\\(newpage|pagebreak|clearpage)",
+            r"\\hspace",
+            "Please do not manually adjust horizontal spacing.\
+            This will be done during final typesetting by the LangSci office",
+        ),
+        (
+            r"\\(newpage|pagebreak|clearpage|FloatBarrier)",
             "Please do not manually adjust page breaks.\
             This will be done during final typesetting by the LangSci office",
+        ),
+        (
+            r"{table}\[[hH!]+\]",
+            "All table positioning will be done during final typesetting. [h] and [H] will be removed then. There is no way to make sure that this table will be positioned exactly here."
+        ),
+        (
+            r"{figure}\[[hH!]+\]",
+            "All figure positioning will be done during final typesetting. [h] and [H] will be removed then. There is no way to make sure that this figure will be positioned exactly here."
+        ),
+        (
+            r"\[hbtp\]",
+            "[hbtp] is meaningless. It is entered by some automatic conversion programs and can be removed"
+        ),
+        (
+            r"\[htbp\]",
+            "[htbp] is meaningless. It is entered by some automatic conversion programs and can be removed"
+        ),
+        (
+            r"\\centering",
+            "Floats are automatically centered in LangSci books, so this command is probably redundant"
         ),
     )
 
