@@ -22,7 +22,6 @@ NUMPATTERN = re.compile("[A-Za-z][-0-9]+")  # stuff like M2-34 is not any good
 # pass
 
 
-# nercache = json.loads(open("nercache.json").read())
 entitiescache = json.loads(open("entitiestitles.json").read())
 parentcache = defaultdict(dict)
 
@@ -32,35 +31,48 @@ with open("closure.csv") as closurefile:
         parentcache[child][ancestor] = True
 
 
-def get_entities(text, cache=None):
-    if cache:
-        # global nercache
-        try:
-            entities = cache[text]
-            return entities
-        except KeyError:
-            pass
+def get_entities(text, nercache=None):
+    ner_url = "http://localhost:8090/service/disambiguate"
+    URL     = "http://localhost:8090/service/disambiguate"
+    try:
+        cached_entities = nercache[text]
+        return [{"wdid": x,
+                "label": cached_entities[x]
+                }
+                for x in cached_entities
+                ]
+    except KeyError:
+        pass
     """send text to online resolver and retrieve wikidataId's"""
-    ner_url = "https://cloud.science-miner.com/nerd/service/disambiguate"
+    # ner_url = "https://cloud.science-miner.com/nerd/service/disambiguate"
     if len(text.split()) < 5:  # cannot do NER on less than 5 words
         return {}
-    rtext = requests.post(ner_url, json={"text": text}).text
+    # rtext = requests.post(ner_url, json={"text": text}).text
+    rtext = requests.post(URL, json={"text": text}, timeout=1200).text
     # parse json
-    print(rtext)
     if rtext == None or rtext == "":
         return {}
     retrieved_entities = json.loads(rtext).get("entities", [])
     # extract names and wikidataId's
-    result = {
-        x["wikidataId"]: x["rawName"]
+    result =[{
+        "wdid": x["wikidataId"],
+        "label": x["rawName"]
+        }
         for x in retrieved_entities
         if x.get("wikidataId")
         and x["wikidataId"] not in misextractions
         and not NUMPATTERN.match(x["rawName"])
-    }
+        and x["confidence_score"] > 0.4
+    ]
     # if nercache:
-    # nercache[text] = result
+    nercache[text] = result
+    # if result:
+    #     print([x[0] for x in result.values()])
+    with open("nercache.json", "w") as nercachejson:
+        nercachejson.write(json.dumps(nercache, indent=4, sort_keys=True))
     return result
+
+
 
 
 def get_title(wikidata_ID):
@@ -82,16 +94,19 @@ def get_title(wikidata_ID):
 
 def get_parent_entities(entities, excludelist=misextractions):
     parents = []
-    for entity in entities:
+    for entity_d in entities:
+        entity = entity_d["wdid"]
         if entity in excludelist:
             continue
         parents += list(parentcache[entity].keys())
-        result = {
-            parent: get_title(parent)
-            for parent in parents
-            if parent not in entities and parent not in excludelist
-        }
-        return result
+    result = [{"wdid": parent,
+               "label": get_title(parent)
+               }
+                for parent in parents
+                if parent not in entities and parent not in excludelist
+            ]
+    # print(result)
+    return result
 
 
 # for f in glob.glob("langscijson/*json")[offset:]:

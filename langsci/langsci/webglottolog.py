@@ -30,7 +30,7 @@ def string2glottocode(language_name):
 
 
 def glottocode2iso(glottocode):
-    print("using glottocode2iso for", glottocode)
+    # print("using glottocode2iso for", glottocode)
     request_url = f"https://glottolog.org/resource/languoid/id/{glottocode}"
     html = requests.get(request_url).text
     soup = BeautifulSoup(html, "html.parser")

@@ -1,4 +1,5 @@
 import json
+import sys
 import csv
 from os.path import exists
 
@@ -32,12 +33,16 @@ CLLD_D = {"1":"wals",
 
 PROVIDER_ID_PATTERN = re.compile("([a-z]+)([0-9]+)")
 skipexisting = True
-# nercache = json.loads(open("nercache.json").read())
+nercache = json.loads(open("nercache.json").read())
 filenametemplate = "langscijson/cldfexamples%s.json"
 examples = []
 current_docID = "dummy"
 skipped_ID = ""
-with open("examples.csv", newline="") as csvfile:
+try:
+    infile = sys.argv[1]
+except IndexError:
+    infile = "examples.csv"
+with open(infile, newline="") as csvfile:
     reader = csv.DictReader(csvfile)
     for count, row in enumerate(reader):
         # print(row['ID'])
@@ -69,11 +74,11 @@ with open("examples.csv", newline="") as csvfile:
             provider=provider,
             categories="allcaps",
             analyze=True,
-            extract_entities=False,
-            parent_entities=False,
+            extract_entities=True,
+            extract_parent_entities=True,
             provided_citation=citation,
             external_ID=external_ID,
-            nercache=False,
+            nercache=nercache,
         )
         if doc_ID != current_docID:
             print(f"writing out {current_docID}")
@@ -96,13 +101,21 @@ with open("examples.csv", newline="") as csvfile:
             current_docID = doc_ID
             print(f"reading examples for {current_docID}")
         examples.append(thisgll)
+    print(f"writing out {current_docID}")
+    exlist = [ex.__dict__ for ex in examples]
+    thisjson = json.dumps(
+        exlist,
+        sort_keys=True,
+        indent=4,
+        ensure_ascii=False,
+    )
+    jsonname = f"langscijson/cldfexamples{current_docID}.json"
+    with open(jsonname, "w", encoding="utf8") as jsonout:
+        jsonout.write(thisjson)
         # try:
         # nercache[thisgll.trs] = thisgll.entities
         # except AttributeError:
         # pass
 
-# with open("nercache.json", "w") as nerout:
-# nerout.write = json.dumps(nercache,
-# sort_keys=True,
-# indent=4,
-# ensure_ascii=False)
+# with open("nercache.json", "w") as nercachejson:
+#     nercachejson.write(json.dumps(nercache, indent=4, sort_keys=True))

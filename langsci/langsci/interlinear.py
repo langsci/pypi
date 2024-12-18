@@ -14,7 +14,7 @@ import hashlib
 from collections import defaultdict
 
 try:
-    from titlemapping import titlemapping
+    from titlemapping import  ID_to_title as titlemapping
     from named_entities import get_entities, get_parent_entities
 
     # from lgrlist import LGRLIST
@@ -22,7 +22,7 @@ try:
     from imtvaultconstants import *
     from langsci.webglottolog import string2glottocode, glottocode2iso, glottocode2name
 except ImportError:
-    from langsci.titlemapping import titlemapping
+    from langsci.titlemapping import ID_to_title as titlemapping
     from langsci.named_entities import get_entities, get_parent_entities
 
     # from lgrlist import LGRLIST
@@ -67,7 +67,7 @@ class gll:
         glottolog=False,
         analyze=False,
         extract_entities=False,
-        parent_entities=False,
+        extract_parent_entities=False,
         categories="smallcaps",
         nercache=None,
         external_ID=None,
@@ -84,6 +84,8 @@ class gll:
         self.provider = provider
         self.book_metalanguage = book_metalanguage
         self.abbrkey = abbrkey
+        self.entities={}
+        self.parententities={}
         if categories == "smallcaps":
             self.categories = self.tex2categories(imt)
         else:
@@ -171,9 +173,9 @@ class gll:
             self.analyze()
         self.entities = None
         if extract_entities:
-            self.entities = get_entities(self.trs, cache=nercache)
-        if parent_entities:
-            self.parent_entities = get_parent_entities(self.entities)
+            self.entities = get_entities(self.trs, nercache=nercache)
+        if extract_parent_entities:
+            self.parententities = get_parent_entities(self.entities)
 
     def strip_tex_comment(self, s):
         return re.split(r"(?<!\\)%", s)[0].replace(r"\%", "%")
