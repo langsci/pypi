@@ -80,6 +80,7 @@ with open(infile, newline="") as csvfile:
             external_ID=external_ID,
             nercache=nercache,
         )
+        thisgll.entities += thisgll.parententities
         if doc_ID != current_docID:
             print(f"writing out {current_docID}")
             exlist = [ex.__dict__ for ex in examples]

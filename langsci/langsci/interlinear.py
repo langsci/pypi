@@ -84,8 +84,8 @@ class gll:
         self.provider = provider
         self.book_metalanguage = book_metalanguage
         self.abbrkey = abbrkey
-        self.entities={}
-        self.parententities={}
+        self.entities=[]
+        self.parententities=[]
         if categories == "smallcaps":
             self.categories = self.tex2categories(imt)
         else:
@@ -171,7 +171,7 @@ class gll:
 
         if analyze:
             self.analyze()
-        self.entities = None
+        self.entities = []
         if extract_entities:
             self.entities = get_entities(self.trs, nercache=nercache)
         if extract_parent_entities:

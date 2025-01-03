@@ -40,18 +40,19 @@ def get_entities(text, nercache=None):
                 "label": cached_entities[x]
                 }
                 for x in cached_entities
+                if x not in misextractions
                 ]
     except KeyError:
         pass
     """send text to online resolver and retrieve wikidataId's"""
     # ner_url = "https://cloud.science-miner.com/nerd/service/disambiguate"
     if len(text.split()) < 5:  # cannot do NER on less than 5 words
-        return {}
+        return []
     # rtext = requests.post(ner_url, json={"text": text}).text
     rtext = requests.post(URL, json={"text": text}, timeout=1200).text
     # parse json
     if rtext == None or rtext == "":
-        return {}
+        return []
     retrieved_entities = json.loads(rtext).get("entities", [])
     # extract names and wikidataId's
     result =[{
