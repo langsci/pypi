@@ -31,7 +31,7 @@ CLLD_D = {"1":"wals",
         "17":"dictionariasidaama"
 }
 
-PROVIDER_ID_PATTERN = re.compile("([a-z]+)([0-9]+)")
+PROVIDER_ID_PATTERN = re.compile("([a-z]+)([0-9,]+)")
 skipexisting = True
 nercache = json.loads(open("nercache.json").read())
 filenametemplate = "langscijson/cldfexamples%s.json"
