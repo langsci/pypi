@@ -3,12 +3,9 @@ import sys
 import csv
 from os.path import exists
 
-try:
-    import titlemapping
-    from interlinear import gll
-except ImportError:
-    from langsci import titlemapping
-    from langsci.interlinear import gll
+from langsci import titlemapping
+from langsci.interlinear import gll
+from langsci.webglottolog import glottocode2countries, glottocode2geocoords
 
 import re
 
@@ -34,6 +31,8 @@ CLLD_D = {"1":"wals",
 PROVIDER_ID_PATTERN = re.compile("([a-z]+)([0-9]+)")
 skipexisting = True
 nercache = json.loads(open("nercache.json").read())
+countrycache = json.loads(open("countrycache.json").read())
+coordscache = json.loads(open("coordscache.json").read())
 filenametemplate = "langscijson/cldfexamples%s.json"
 examples = []
 current_docID = "dummy"
@@ -81,6 +80,27 @@ with open(infile, newline="") as csvfile:
             nercache=nercache,
         )
         thisgll.entities += thisgll.parententities
+        try:
+            thisgll.countries = countrycache[thisgll.language_glottocode]
+        except AttributeError:
+            print(f'no glottocode')
+        except KeyError:
+            print(f'no country for {thisgll.language_glottocode} in cache')
+            thisgll.countries = glottocode2countries(thisgll.language_glottocode)
+            print(f' found {thisgll.countries}')
+            countrycache[thisgll.language_glottocode] = thisgll.countries
+
+
+        try:
+            thisgll.coords = coordscache[thisgll.language_glottocode]
+        except AttributeError:
+            print(f'no glottocode')
+        except KeyError:
+            print(f'no coords for {thisgll.language_glottocode} in cache')
+            thisgll.coords = glottocode2geocoords(thisgll.language_glottocode)
+            print(f' found {thisgll.coords}')
+            coordscache[thisgll.language_glottocode] = thisgll.coords
+
         if doc_ID != current_docID:
             print(f"writing out {current_docID}")
             exlist = [ex.__dict__ for ex in examples]
@@ -120,3 +140,7 @@ with open(infile, newline="") as csvfile:
 
 # with open("nercache.json", "w") as nercachejson:
 #     nercachejson.write(json.dumps(nercache, indent=4, sort_keys=True))
+with open("countrycache.json", "w") as countrycachejson:
+    countrycachejson.write(json.dumps(countrycache, indent=4, sort_keys=True))
+with open("coordscache.json", "w") as coordscachejson:
+    coordscachejson.write(json.dumps(coordscache, indent=4, sort_keys=True))

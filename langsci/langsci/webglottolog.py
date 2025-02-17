@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
+import re
 
 def string2glottocode(language_name):
     request_url = f"https://glottolog.org/glottolog?search={language_name}"
@@ -53,3 +53,37 @@ def glottocode2name(glottocode):
         return ""
     print(glottocode, name)
     return name
+
+
+
+def glottocode2countries(glottocode):
+    print("using glottocode2countries for", glottocode)
+    request_url = f"https://glottolog.org/resource/languoid/id/{glottocode}"
+    html = requests.get(request_url).text
+    soup = BeautifulSoup(html, "html.parser")
+    try:
+        links = soup.find("div",{"id":"acc-countries"}).find_all('a')
+        countrycodes = [{"ISO3166":a["href"].split("=")[-1], "label": a.text.strip().split(' [')[0]} for a in links]
+    except AttributeError:
+        print(f"countries for {glottocode} could not be established")
+        countrycodes = []
+    print(glottocode, countrycodes)
+    return countrycodes
+
+
+
+def glottocode2geocoords(glottocode):
+    print("using glottocode2geocoords for", glottocode)
+    request_url = f"https://glottolog.org/resource/languoid/id/{glottocode}"
+    html = requests.get(request_url).text
+    soup = BeautifulSoup(html, "html.parser")
+    try:
+        mapdiv = soup.find("div",{"id":"map-container"})
+        script = mapdiv.find('script').text
+        longitude, latitude = re.search('"longitude": ([-0-9.]+), "latitude": ([-0-9.]+)', script).groups()
+        coords = (float(longitude), float(latitude))
+    except AttributeError:
+        print(f"coords for {glottocode} could not be established")
+        coords = []
+    # print(glottocode, coords)
+    return coords
