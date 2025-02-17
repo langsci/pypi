@@ -1,4 +1,4 @@
-from langsci.langscipressorg_webcrawler import get_soup, get_citeinfo
+from langsci.langscipressorg_webcrawler import get_soup, get_citeinfo, get_ISBN_digital
 from langsci.catalogmetadata import (
     METALANGUAGE,
     ONE_LANGUAGE_BOOKS,
@@ -69,7 +69,7 @@ def get_chapter_author_affiliations(filecontent):
     return d
 
 
-fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators title year".split()
+fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber creators title year isbn".split()
 
 # fields = "ID DOI edited metalanguage objectlanguage license superseded pages series seriesnumber book_title year creator institution chapter_author chapter_title".split()
 csvstrings = ["\t".join(fields)]
@@ -84,6 +84,10 @@ for ID in range(16, 550):
     creators = citegroups["creators"]
     creatorstring = creators.replace("&nbsp;&nbsp;", "&")
     creatorstring = second_comma_to_ampersand(creators)
+    try:
+        digital_isbn = get_ISBN_digital(soup)
+    except KeyError:
+        digital_isbn = ''
     fields = [
         str(ID),
         citegroups["doi"] or "",
@@ -98,6 +102,7 @@ for ID in range(16, 550):
         creatorstring,
         citegroups["title"].strip(),
         citegroups["year"].strip(),
+        digital_isbn
     ]
     if args.chapters and citegroups["ed"]:
         fields[2] = "chapter"

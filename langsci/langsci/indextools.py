@@ -18,8 +18,8 @@ except ImportError:
 
 # the LaTeX index entries consist of the string to be displayed (after the "@")
 # and the string used for sorting (before the "@").
-p = re.compile(r"\\indexentry \{(.*)\|hyper")
-
+p = re.compile(r"\\indexentry \{(.*)\|(\)|\(?hyper)")
+#                                   pipe, followed by either a ")" or by "(hyper" or only "hyper"
 
 ignoredic = {}
 
