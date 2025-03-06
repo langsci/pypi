@@ -28,7 +28,7 @@ CLLD_D = {"1":"wals",
         "17":"dictionariasidaama"
 }
 
-PROVIDER_ID_PATTERN = re.compile("([a-z]+)([0-9]+)")
+PROVIDER_ID_PATTERN = re.compile("([a-z]+)([0-9,]+)")
 skipexisting = True
 nercache = json.loads(open("nercache.json").read())
 countrycache = json.loads(open("countrycache.json").read())
@@ -73,8 +73,8 @@ with open(infile, newline="") as csvfile:
             provider=provider,
             categories="allcaps",
             analyze=True,
-            extract_entities=True,
-            extract_parent_entities=True,
+            extract_entities=False,
+            extract_parent_entities=False,
             provided_citation=citation,
             external_ID=external_ID,
             nercache=nercache,
