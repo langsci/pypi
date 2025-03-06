@@ -136,7 +136,7 @@ def processfile(f, lg):
             "ID Primary_Text Analyzed_Word Gloss Translated_Text Comment LGRConformance Contribution_ID Source Language_ID Meta_Language_ID Abbreviations".split()
         )
         for item in d_words:
-            csv_writer.writerow([d_words[item]['ID'],
+            csv_writer.writerow([d_words[item]['ID'],q
                                 d_words[item]['Primary_Text'],
                                 d_words[item]['Analyzed_Word'],
                                 d_words[item]['Gloss'],
