@@ -2,12 +2,38 @@ import json
 import sys
 import csv
 from os.path import exists
+import requests
 
-from langsci import titlemapping
+from langsci import titlemapping, langscipressorg_webcrawler
 from langsci.interlinear import gll
 from langsci.webglottolog import glottocode2countries, glottocode2geocoords
+from langsci.macroareas import macroarea_d
 
 import re
+
+# def glossa_id2creator(id_):
+#     url = f"https://www.glossa-journal.org/article/id/{id_}"
+#     html = requests.get(url).text
+#     soup = BeautifulSoup(html, "html.parser")
+#     head = soup.find('head')
+#     authorstring = ' & '.join([x.attrs['content'] for x in head.select("meta[name='citation_author']")])
+#     return authorstring
+
+
+citation_d = {}
+with open('contributions.csv', newline="") as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        id_ = row['ID']
+        citation_d[id_] = row['Citation']
+citation_d['ineldolgan'] = "Däbritz, Chris Lasse; Kudryakova, Nina; Stapert, Eugénie. 2022. INEL Dolgan Corpus. Version 2.0. Publication date 2022-11-30. https://hdl.handle.net/11022/0000-0007-F9A7-4."
+citation_d['inelkamas'] = "Gusev, Valentin; Klooster, Tiina; Wagner-Nagy, Beáta. 2023. “INEL Kamas Corpus.” Version 2.0. Publication date 2023-12-31. http://hdl.handle.net/11022/0000-0007-FC25-4"
+citation_d['inelselkup'] = "Brykina, Maria; Orlova, Svetlana; Wagner-Nagy, Beáta. 2021. “INEL Selkup Corpus.” Version 2 .0. Publication date 2021-12-31. https://hdl.handle.net/11022/0000-0007-F4D9-1"
+citation_d['inelevenki'] = "Däbritz, Chris Lasse; Gusev, Valentin; Stoynova, Natalia. 2024. INEL Evenki Corpus. Version 2.0. Publication date 2024-12-31. Archived at Universität Hamburg. https://hdl.handle.net/11022/0000-0007-FE38-D"
+citation_d['inelenets'] = "Shluinsky, Andrey; Khanina, Olesya; Wagner-Nagy, Beáta. 2024. INEL Enets Corpus. Version 1.0. Publication date 2024-11-30. https://hdl.handle.net/11022/0000-0007-FE1D-C"
+citation_d['inelnenets'] = "Budzisch, Josefina; Wagner-Nagy, Beáta. 2024. INEL Nenets Corpus. Version 1.0. Publication date 2024-12-31. https://hdl.handle.net/11022/0000-0007-FE37-E."
+
+
 
 CLLD_D = {"1":"wals",
         "2":"apics",
@@ -90,8 +116,10 @@ with open(infile, newline="") as csvfile:
             thisgll.countries = glottocode2countries(thisgll.language_glottocode)
             print(f' found {thisgll.countries}')
             countrycache[thisgll.language_glottocode] = thisgll.countries
-
-
+        try:
+            thisgll.macroareas = list({macroarea_d[country["ISO3166"]] for country in thisgll.countries})
+        except AttributeError:
+            thisgll.macroareas = []
         try:
             thisgll.coords = coordscache[thisgll.language_glottocode]
         except AttributeError:
@@ -101,6 +129,7 @@ with open(infile, newline="") as csvfile:
             thisgll.coords = glottocode2geocoords(thisgll.language_glottocode)
             print(f' found {thisgll.coords}')
             coordscache[thisgll.language_glottocode] = thisgll.coords
+<<<<<<< Updated upstream
         try:
             thisgll.ancestors = [{'label': a[1], 'id':a[0]} for a  in ancestors[thisgll.language_glottocode]]
         except AttributeError:
@@ -109,6 +138,21 @@ with open(infile, newline="") as csvfile:
             print(f"{thisgll.language_glottocode} is a glottocode which does not have proper ancestors")
             thisgll.ancestors = []
             ancestors[thisgll.language_glottocode] = []
+=======
+        # thisgll.licence = "CC-BY"
+        if thisgll.provider.startswith("inel"):
+            thisgll.licence = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+        thisgll.rightsholder = "unknown"
+        citation_ID = raw_ID
+        for s in "dolgan enets nenets evenki kamas selkup".split():
+            if citation_ID.startswith(f"inel{s}"):
+                citation_ID = f"inel{s}"
+        try:
+            thisgll.rightsholder = citation_d[citation_ID]
+        except KeyError:
+            print(f'rightsholder could not be established for {raw_ID}')
+            citation_d[citation_ID] = 'unknown'
+>>>>>>> Stashed changes
         if doc_ID != current_docID:
             print(f"writing out {current_docID}")
             exlist = [ex.__dict__ for ex in examples]
