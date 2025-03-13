@@ -129,7 +129,6 @@ with open(infile, newline="") as csvfile:
             thisgll.coords = glottocode2geocoords(thisgll.language_glottocode)
             print(f' found {thisgll.coords}')
             coordscache[thisgll.language_glottocode] = thisgll.coords
-<<<<<<< Updated upstream
         try:
             thisgll.ancestors = [{'label': a[1], 'id':a[0]} for a  in ancestors[thisgll.language_glottocode]]
         except AttributeError:
@@ -138,7 +137,6 @@ with open(infile, newline="") as csvfile:
             print(f"{thisgll.language_glottocode} is a glottocode which does not have proper ancestors")
             thisgll.ancestors = []
             ancestors[thisgll.language_glottocode] = []
-=======
         # thisgll.licence = "CC-BY"
         if thisgll.provider.startswith("inel"):
             thisgll.licence = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
@@ -152,7 +150,6 @@ with open(infile, newline="") as csvfile:
         except KeyError:
             print(f'rightsholder could not be established for {raw_ID}')
             citation_d[citation_ID] = 'unknown'
->>>>>>> Stashed changes
         if doc_ID != current_docID:
             print(f"writing out {current_docID}")
             exlist = [ex.__dict__ for ex in examples]

@@ -63,7 +63,7 @@ class gll:
         book_language=None,
         book_metalanguage="eng",
         provider=None,
-        abbrkey=None,
+        abbrkey={},
         glottolog=False,
         analyze=False,
         extract_entities=False,
@@ -74,7 +74,7 @@ class gll:
         provided_citation=None,
     ):
         basename = filename.split("/")[-1]
-        self.license = "https://creativecommons.org/licenses/by/4.0"
+        self.licence = "https://creativecommons.org/licenses/by/4.0"
         self.doc_ID = int(filename.split("/")[-2])
         if provider == "langsci":
             self.doc_URL = f"https://langsci-press.org/catalog/book/{self.doc_ID}"
@@ -102,7 +102,7 @@ class gll:
                 '\t<div class="imtblock">\n\t\t<div class="srcblock">'
                 + self.tex2html(t[0])
                 + '</div>\n\t\t<div class="glossblock">'
-                + self.tex2html(t[1])
+                + self.tex2html(t[1], abbrkey=self.abbrkey)
                 + "</div>\n\t</div>"
                 for t in zip(srcwordstex, imtwordstex)
             ]
@@ -190,13 +190,20 @@ class gll:
             s = re.sub(r"\\%s(?![a-zA-Z])" % g, g.upper(), s)
         return s
 
-    def tex2html(self, s):
+
+    def tex2html(self, s, abbrkey={}):
         result = self.striptex(s, html=True)
         # repeated for nested  \textsomething{\textsomethingelse{}}
         result = TEXTEXT.sub('<span class="\\1">\\2</span>', result)
         result = TEXTEXT.sub('<span class="\\1">\\2</span>', result)
         result = TEXTEXT.sub('<span class="\\1">\\2</span>', result)
+        allcaps_strings = re.findall('[A-Z][A-Z]+', result)
+        for allcaps_string in allcaps_strings:
+            expansion = abbrkey.get(allcaps_string)
+            if expansion:
+                result =  re.sub(f'(?<![A-Z]){allcaps_string}(?![A-Z])', f"<span class='abbr'>{allcaps_string}<span class='abbrexpansion'>{expansion}</span></span>", result)
         return result
+
 
     def striptex(self, s, sc2upper=False, html=False):
         result = converter.decode_Tex_Accents(s, utf8_or_ascii=1)

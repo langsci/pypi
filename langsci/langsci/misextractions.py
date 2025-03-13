@@ -1760,4 +1760,144 @@ misextractions = [
     "Q371427", # "Imperfective_aspect",
     "Q7550950", # "social aspects of television",
     "Q358648", # "table of organization and equipment",
-    ]
+    "Q973736",# #music single
+    "Q1675349",# #product life
+    "Q65119684",# #Aaah
+    "Q1206488",# #singing style 'scream'
+    "Q28692583",# #bladed object
+    "Q222405",# #cold weapon
+    "Q15407649",# #edged and bladed weapon
+    "Q16686448",# #artificial object
+    "Q154503",#   aerodyne
+    "Q1949826",# Powered_aircraft
+    "Q2875704",# Fixed-wing_aircraft
+    "Q12405827",# biblical character
+    "Q13002315",# legendary_figure
+    "Q15619164",# abstract being
+    "Q15621286",# intellectual work
+    "Q18563354",# religious character
+    "Q2198779",# unit
+    "Q7096330",# weapon open carry
+    "Q18357134",# music group
+    "Q16839378",# US music group
+    "Q16334295",# group of humans
+    "Q1783492",# Universo Online
+    "Q4968295",# Melissa Etheridge song
+    "Q3615378",# Leader of the labour party
+    "Q17149257",# Orofacial_pain
+    "Q21170479",# possibility
+    "Q2508462",# Oral_and_maxillofacial_pathology
+    "Q47455774",# unpleasantness
+    "Q5259414",# Tooth_pathology
+    "Q55082545",# stomatognathic_disease
+    "Q61788060",# human activity
+    "Q86923152",# risk source
+    "Q3991447",# 1923 film
+    "Q96142",# German art dealer
+    "Q11199605",# Japanese rock band
+    "Q2406791",# surprise result
+    "Q79784",# sitcom
+    "Q853725",# social relation
+    "Q2470307",# brand name
+    "Q1807498",# social position
+    "Q6413000",# building in London
+    "Q65115262",# fluid_accelerato
+    "Q101998",# Biome
+    "Q30336093",# Biological_system
+    "Q6506039",# Living_systems
+    "Q1948304",# Christian hymn
+    "Q2382443",# Biota
+    "Q11780457",# heterogeneous mixture
+    "Q104541",# Aerosol
+    "Q169336",# mixture
+    "Q178697",# dispersion
+    "Q2784655",# low-level cloud
+    "Q40526",# stratus
+    "Q85756654",# music album
+    "Q105688",# hypoxia
+    "Q11386",# electromagnetic wave
+    "Q2532663",# Full-spectrum_light
+    "Q37172",# wave
+    "Q899666",# video game
+    "Q538795",# music album
+    "Q15710813",# physical structure
+    "Q14865065",# body_fluid_secretion
+    "Q22284496",# biological_regulation
+    "Q2695280",# technique
+    "Q50380212",# floating_object
+    "Q13417213",# Americam sitcom
+    "Q934904",# village in Israel
+    "Q21482880",# Mexican film
+    "Q29431432",# dyad
+    "Q66317996",# regular_connective_tissue
+    "Q2924132",# Ashanti album
+    "Q7080517",# Commodores song
+    "Q15619164",# abstract being
+    "Q5439369",# fear mongering
+    "Q1415550",# Single by Madonna
+    "Q2633862",# locomotion
+    "Q17988854",# active motion
+    "Q7080376",# album by Basia Bulat
+    "Q16829513",# intermediate_product
+    "Q34669510",# malleable material
+    "Q44395",# physical unit Pascal
+    "Q528917",# singer
+    "Q757163",# Woody_plant
+    "Q682002",# 2006 film directed by Woody Allen
+    "Q2414810",# film episode
+    "Q28429684",# music album
+    "Q24060707",# plant organ
+    "Q19816755",# artificial_landform
+    "Q2432265",# cricket term
+    "Q1826691",# linear construction site
+    "Q207961",# Shape
+    "Q211548",# locus
+    "Q815741",# geometric shape
+    "Q82794",# geographic region
+    "Q88307738",# quarantine
+    "Q1032176",# Countermeasure
+    "Q1544281",# management cybernetics
+    "Q1665268",# command
+    "Q1674502",# Isolation_(health_care)
+    "Q18340964",# power philosophical concept
+    "Q18390984",# Monitoring_and_evaluation
+    "Q185698",# Methodology
+    "Q24651263",# management_tool
+    "Q2556572",# order
+    "Q18035997",# Russia at the 2016 Summer Olympics
+    "Q5223107",# closing of broadcasting station
+    "Q1418712",# Plant_community
+    "Q184806",# Biocoenosis
+    "Q55610479",# ecological
+    "Q5608096",# Community_(ecology)
+    "Q7516312",# fictional shoes that appear in the Oz series by L. Frank Baum
+    "Q1747737",# hydronym
+    "Q2377898",# video game
+    "Q3537517",# transformation_of_matter
+    "Q43706",#  Church Father, Archbishop of Constantinople and Christian saint
+    "Q736556",# Filter_(chemistry)
+    "Q1823478",# Biological_interaction
+    "Q19001334",# DNA virus infectious disease
+    "Q1928978",# viral infectious disease
+    "Q12040808",# neurological_symptom
+    "Q55009676",# dsDNA virus infectious disease
+    "Q89415750",# eradicated disease
+    "Q571005",# scription continua
+    "Q4425763",# interlocutor
+    "Q1115533",# flammable_object
+    "Q11438",# solid
+    "Q1408429",# solid fuel
+    "Q14515877",# biocombustible
+    "Q21073024",# flammable solid
+    "Q837718",# energy storage
+    "Q20011319",# plant structure
+    "Q27043950",# anatomical entity
+    "Q21170479",#  possibility
+    "Q17537576",#  creative work
+    "Q15621286",#  intellectual work
+    "Q178659",#  illustrates
+    "Q851990",#  population group
+    "Q874405",#  human social group
+  ]
+
+

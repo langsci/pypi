@@ -50,6 +50,8 @@ def get_entities(text, nercache=None):
             return list_
     except KeyError:
         pass
+    except TypeError:
+        print(f"TypeError for {text}")
     """send text to online resolver and retrieve wikidataId's"""
     # ner_url = "https://cloud.science-miner.com/nerd/service/disambiguate"
     if len(text.split()) < 5:  # cannot do NER on less than 5 words

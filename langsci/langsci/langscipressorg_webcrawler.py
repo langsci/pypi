@@ -16,6 +16,11 @@ def ID2title(book_ID):
     title = get_title_subtitle(citeinfo)[0]
     return title
 
+def ID2creator(book_ID):
+    soup = get_soup(book_ID)
+    citeinfo = get_citeinfo(soup)
+    return citeinfo['creators']
+
 
 def get_soup(book_ID):
     url = f"https://langsci-press.org/catalog/book/{book_ID}"
