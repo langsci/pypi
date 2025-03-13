@@ -115,7 +115,7 @@ def processfile(f, lg):
     number = str(int(hashlib.sha256(barename.encode("utf-8")).hexdigest(),16))[:10]
     doc_id = 'inel' + language + number
     for item in d_words:
-        d_words[item]['ID'] = doc_id+str(item)
+        d_words[item]['ID'] = f"{doc_id}_{item[0]}_{item[1]}"
         d_words[item]['Language_ID'] = glottocode
         d_words[item]['Meta_Language_ID'] = 'stan1293'
         d_words[item]['LGRConformance'] = ''
@@ -136,7 +136,7 @@ def processfile(f, lg):
             "ID Primary_Text Analyzed_Word Gloss Translated_Text Comment LGRConformance Contribution_ID Source Language_ID Meta_Language_ID Abbreviations".split()
         )
         for item in d_words:
-            csv_writer.writerow([d_words[item]['ID'],q
+            csv_writer.writerow([d_words[item]['ID'],
                                 d_words[item]['Primary_Text'],
                                 d_words[item]['Analyzed_Word'],
                                 d_words[item]['Gloss'],

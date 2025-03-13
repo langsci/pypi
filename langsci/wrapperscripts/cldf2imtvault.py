@@ -33,6 +33,7 @@ skipexisting = True
 nercache = json.loads(open("nercache.json").read())
 countrycache = json.loads(open("countrycache.json").read())
 coordscache = json.loads(open("coordscache.json").read())
+ancestors = json.loads(open("ancestors.json").read())
 filenametemplate = "langscijson/cldfexamples%s.json"
 examples = []
 current_docID = "dummy"
@@ -73,8 +74,8 @@ with open(infile, newline="") as csvfile:
             provider=provider,
             categories="allcaps",
             analyze=True,
-            extract_entities=False,
-            extract_parent_entities=False,
+            extract_entities=True,
+            extract_parent_entities=True,
             provided_citation=citation,
             external_ID=external_ID,
             nercache=nercache,
@@ -100,7 +101,14 @@ with open(infile, newline="") as csvfile:
             thisgll.coords = glottocode2geocoords(thisgll.language_glottocode)
             print(f' found {thisgll.coords}')
             coordscache[thisgll.language_glottocode] = thisgll.coords
-
+        try:
+            thisgll.ancestors = [{'label': a[1], 'id':a[0]} for a  in ancestors[thisgll.language_glottocode]]
+        except AttributeError:
+            thisgll.ancestors = []
+        except KeyError:
+            print(f"{thisgll.language_glottocode} is a glottocode which does not have proper ancestors")
+            thisgll.ancestors = []
+            ancestors[thisgll.language_glottocode] = []
         if doc_ID != current_docID:
             print(f"writing out {current_docID}")
             exlist = [ex.__dict__ for ex in examples]

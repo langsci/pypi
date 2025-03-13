@@ -36,12 +36,18 @@ def get_entities(text, nercache=None):
     URL     = "http://localhost:8090/service/disambiguate"
     try:
         cached_entities = nercache[text]
-        return [{"wdid": x,
-                "label": cached_entities[x]
-                }
-                for x in cached_entities
-                if x not in misextractions
-                ]
+        try:
+            return [x
+                    for x in cached_entities
+                    if x['wdid'] not in misextractions
+                    ]
+        except TypeError:
+            list_ = [{'label':cached_entities[x][0], 'wdid': x}
+                    for x in cached_entities
+                    if x not in misextractions
+                    ]
+            nercache[text] = list_
+            return list_
     except KeyError:
         pass
     """send text to online resolver and retrieve wikidataId's"""
@@ -69,8 +75,8 @@ def get_entities(text, nercache=None):
     nercache[text] = result
     # if result:
     #     print([x[0] for x in result.values()])
-    with open("nercache.json", "w") as nercachejson:
-        nercachejson.write(json.dumps(nercache, indent=4, sort_keys=True))
+    # with open("nercache.json", "w") as nercachejson:
+    #     nercachejson.write(json.dumps(nercache, indent=4, sort_keys=True))
     return result
 
 
