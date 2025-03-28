@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from langsci.langscipressorg_webcrawler import get_soup, get_citeinfo
+from langsci.catalog.langscipressorg_webcrawler import get_soup, get_citeinfo
 
 url = "https://langsci-press.org/catalog"
 html = requests.get(url).text

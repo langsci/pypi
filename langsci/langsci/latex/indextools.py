@@ -7,14 +7,8 @@ The ways how the *dx files are generated varies between different versions of Te
 import re, sys
 import shutil
 
-try:
-    from langsci.delatex import dediacriticize
-except ImportError:
-    from delatex import dediacriticize
-try:
-    from langsci.asciify import asciify
-except ImportError:
-    from asciify import asciify
+from .delatex import dediacriticize
+from .asciify import asciify
 
 # the LaTeX index entries consist of the string to be displayed (after the "@")
 # and the string used for sorting (before the "@").

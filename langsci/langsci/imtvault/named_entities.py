@@ -7,10 +7,7 @@ import re
 # import sys
 from collections import defaultdict
 
-try:
-    from misextractions import misextractions
-except ImportError:
-    from langsci.misextractions import misextractions
+from langsci.imtvault.misextractions import misextractions
 
 
 NUMPATTERN = re.compile("[A-Za-z][-0-9]+")  # stuff like M2-34 is not any good

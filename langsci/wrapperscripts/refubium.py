@@ -1,5 +1,5 @@
 import sys
-from langsci import langscipressorg_webcrawler
+from langsci.catalog import langscipressorg_webcrawler
 
 def refubiumstring(id_):
     soup = langscipressorg_webcrawler.get_soup(id_)

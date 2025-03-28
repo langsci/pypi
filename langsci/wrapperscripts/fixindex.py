@@ -1,9 +1,6 @@
 import sys
 
-try:
-    from indextools import processfile
-except ImportError:
-    from langsci.indextools import processfile
+from langsci.latex.indextools import processfile
 
 if __name__ == "__main__":
     """

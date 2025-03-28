@@ -1,29 +1,16 @@
 import PyPDF2
 import re
 
-try:
-    from langscipressorg_webcrawler import (
-        get_blurb,
-        get_soup,
-        get_publication_date,
-        get_citeinfo,
-        get_ISBN_digital,
-        get_biosketches,
-        get_title_subtitle,
-        biosketches2names,
-    )
-except ImportError:
-    from langsci.langscipressorg_webcrawler import (
-        get_blurb,
-        get_soup,
-        get_publication_date,
-        get_citeinfo,
-        get_ISBN_digital,
-        get_biosketches,
-        get_title_subtitle,
-        biosketches2names,
-    )
-
+from langsci.catalog.langscipressorg_webcrawler import (
+    get_blurb,
+    get_soup,
+    get_publication_date,
+    get_citeinfo,
+    get_ISBN_digital,
+    get_biosketches,
+    get_title_subtitle,
+    biosketches2names,
+)
 
 
 

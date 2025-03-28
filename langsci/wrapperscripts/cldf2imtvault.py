@@ -3,13 +3,13 @@ import sys
 import csv
 from os.path import exists
 import requests
-
-from langsci import titlemapping, langscipressorg_webcrawler
-from langsci.interlinear import gll
-from langsci.webglottolog import glottocode2countries, glottocode2geocoords
-from langsci.macroareas import macroarea_d
-
 import re
+
+from langsci.catalog import titlemapping, langscipressorg_webcrawler
+from langsci.imtvault.interlinear import gll
+from langsci.services.webglottolog import glottocode2countries, glottocode2geocoords
+from langsci.resources.macroareas import macroarea_d
+
 
 # def glossa_id2creator(id_):
 #     url = f"https://www.glossa-journal.org/article/id/{id_}"

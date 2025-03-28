@@ -1,23 +1,13 @@
 import re
 
-try:
-    from bibnouns import (
-        LANGUAGENAMES,
-        OCEANNAMES,
-        COUNTRIES,
-        CONTINENTNAMES,
-        CITIES,
-        OCCURREDREPLACEMENTS,
-    )
-except ImportError:
-    from langsci.bibnouns import (
-        LANGUAGENAMES,
-        OCEANNAMES,
-        COUNTRIES,
-        CONTINENTNAMES,
-        CITIES,
-        OCCURREDREPLACEMENTS,
-    )
+from langsci.bib.bibnouns import (
+    LANGUAGENAMES,
+    OCEANNAMES,
+    COUNTRIES,
+    CONTINENTNAMES,
+    CITIES,
+    OCCURREDREPLACEMENTS,
+)
 
 
 PRESERVATIONPATTERN = re.compile(

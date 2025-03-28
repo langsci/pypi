@@ -9,8 +9,7 @@ import xlsxwriter
 from os.path import exists
 
 
-try:
-    from langscipressorg_webcrawler import (
+from langsci.catalog.langscipressorg_webcrawler import (
         get_blurb,
         get_soup,
         get_publication_date,
@@ -21,20 +20,8 @@ try:
         biosketches2names,
         get_pdf,
     )
-    from catalogmetadata import LICENSES, SERIES, METALANGUAGE
-except ImportError:
-    from langsci.langscipressorg_webcrawler import (
-        get_blurb,
-        get_soup,
-        get_publication_date,
-        get_citeinfo,
-        get_ISBN_digital,
-        get_biosketches,
-        get_title_subtitle,
-        biosketches2names,
-        get_pdf,
-    )
-    from langsci.catalogmetadata import LICENSES, SERIES, METALANGUAGE
+from langsci.catalog.catalogmetadata import LICENSES, SERIES, METALANGUAGE
+
 
 today = date.today().strftime("%Y%m%d")
 

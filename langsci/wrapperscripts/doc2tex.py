@@ -2,10 +2,7 @@ import sys
 import os
 import codecs
 
-try:
-    from convertertools import convert
-except ImportError:
-    from langsci.convertertools import convert
+from langsci.conversion.convertertools import convert
 
 filename = sys.argv[1]
 currentworkingdirectory = os.getcwd()

@@ -8,10 +8,8 @@ import os
 import sys
 import subprocess
 
-try:
-    from sanity import SanityDir
-except ImportError:
-    from langsci.sanity import SanityDir
+
+from langsci.latex.sanity import SanityDir
 
 
 def cloneorpull(url, token=None):

@@ -1,10 +1,7 @@
 import unittest
 
-import indextools
-import asciify
-import bibtools
-import delatex
-import sanity
+from latex import indextools, asciify, delatex, sanity
+from bib import bibtools
 
 
 class TestSanity(unittest.TestCase):

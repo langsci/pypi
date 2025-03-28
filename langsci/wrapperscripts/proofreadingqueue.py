@@ -1,38 +1,27 @@
 import sys
-
-try:
-    from langscipressorg_webcrawler import (
-        get_blurb,
-        get_soup,
-        get_publication_date,
-        get_citeinfo,
-        get_ISBN_digital,
-        get_biosketches,
-        get_title_subtitle,
-        biosketches2names,
-    )
-except ImportError:
-    from langsci.langscipressorg_webcrawler import (
-        get_blurb,
-        get_soup,
-        get_publication_date,
-        get_citeinfo,
-        get_ISBN_digital,
-        get_biosketches,
-        get_title_subtitle,
-        biosketches2names,
-    )
+from langsci.catalog import langscipressorg_webcrawler
 
 
-IDs = sys.argv[1:]
-for ID in IDs:
-    soup = get_soup(ID)
-    citeinfo = get_citeinfo(soup)
-    title = citeinfo["title"].strip()
-    edited = citeinfo["ed"] or ""
-    creators = citeinfo["creators"]
-    edited_by = ""
-    if edited:
-        edited_by = "edited "
-    template = f"""<li class="show"><a href="/catalog/book/{ID}"><img style="width: 200px !important;" src="/$$$call$$$/submission/cover/cover?submissionId={ID}" alt="cover for {title}" /><br />{title} {edited_by} by {creators} </a></li>"""
-    print(template)
+def li_string(id_):
+    soup = langscipressorg_webcrawler.get_soup(id_)
+    citegroups = langscipressorg_webcrawler.get_citeinfo(soup)
+    title = citegroups['title']
+    creators = citegroups['creators']
+    ed = citegroups['ed']
+    edstring = ''
+    if ed:
+        edstring = 'edited'
+    url = f"https://langsci-press.org/catalog/book/{id_}"
+    return(f"""<li class="show"><a href="/catalog/book/{id_}"><img style="width: 200px !important;" src="/$$$call$$$/submission/cover/cover?submissionId={id_}" alt="" /><br />{title} {edstring} by {creators} </a></li>""")
+
+
+
+if __name__ == "__main__":
+    ids = sys.argv[1:]
+    for id_ in ids:
+        print(li_string(id_))
+        print()
+
+
+
+

@@ -12,42 +12,24 @@ import glob
 import string
 import argparse
 
-try:
-    from asciify import (
-        ASCIITRANS,
-        FRENCH_REPLACEMENTS,
-        GERMAN_REPLACEMENTS,
-        ICELANDIC_REPLACEMENTS,
-        asciify,
-    )
-    from bibnouns import (
-        LANGUAGENAMES,
-        OCEANNAMES,
-        COUNTRIES,
-        CONTINENTNAMES,
-        CITIES,
-        OCCURREDREPLACEMENTS,
-    )
-    from delatex import dediacriticize
-    import bibpatterns
-except ImportError:
-    from langsci.asciify import (
-        ASCIITRANS,
-        FRENCH_REPLACEMENTS,
-        GERMAN_REPLACEMENTS,
-        ICELANDIC_REPLACEMENTS,
-        asciify,
-    )
-    from langsci.bibnouns import (
-        LANGUAGENAMES,
-        OCEANNAMES,
-        COUNTRIES,
-        CONTINENTNAMES,
-        CITIES,
-        OCCURREDREPLACEMENTS,
-    )
-    from langsci.delatex import dediacriticize
-    from langsci import bibpatterns
+from langsci.latex.asciify import (
+    ASCIITRANS,
+    FRENCH_REPLACEMENTS,
+    GERMAN_REPLACEMENTS,
+    ICELANDIC_REPLACEMENTS,
+    asciify,
+)
+from .bibnouns import (
+    LANGUAGENAMES,
+    OCEANNAMES,
+    COUNTRIES,
+    CONTINENTNAMES,
+    CITIES,
+    OCCURREDREPLACEMENTS,
+)
+from langsci.latex.delatex import dediacriticize
+from langsci.bib import bibpatterns
+
 
 keys = {}  # store for all bibtex keys
 

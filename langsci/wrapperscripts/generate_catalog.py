@@ -1,5 +1,5 @@
-from langsci.langscipressorg_webcrawler import get_soup, get_citeinfo, get_ISBN_digital
-from langsci.catalogmetadata import (
+from langsci.catalog.langscipressorg_webcrawler import get_soup, get_citeinfo, get_ISBN_digital
+from langsci.catalog.catalogmetadata import (
     METALANGUAGE,
     ONE_LANGUAGE_BOOKS,
     LICENSES,

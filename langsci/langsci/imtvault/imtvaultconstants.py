@@ -1,9 +1,6 @@
 import re
 
-try:
-    from lgrlist import LGRLIST
-except ImportError:
-    from langsci.lgrlist import LGRLIST
+from langsci.resources.lgrlist import LGRLIST
 
 NON_CCBY_LIST = [148, 149, 234]
 

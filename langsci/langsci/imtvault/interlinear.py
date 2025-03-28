@@ -13,22 +13,14 @@ import hashlib
 
 from collections import defaultdict
 
-try:
-    from titlemapping import  ID_to_title as titlemapping
-    from named_entities import get_entities, get_parent_entities
 
-    # from lgrlist import LGRLIST
+from langsci.catalog.titlemapping import ID_to_title as titlemapping
+from .named_entities import get_entities, get_parent_entities
 
-    from imtvaultconstants import *
-    from langsci.webglottolog import string2glottocode, glottocode2iso, glottocode2name
-except ImportError:
-    from langsci.titlemapping import ID_to_title as titlemapping
-    from langsci.named_entities import get_entities, get_parent_entities
+# from lgrlist import LGRLIST
 
-    # from lgrlist import LGRLIST
-
-    from langsci.imtvaultconstants import *
-    from langsci.webglottolog import string2glottocode, glottocode2iso, glottocode2name
+from .imtvaultconstants import *
+from langsci.services.webglottolog import string2glottocode, glottocode2iso, glottocode2name
 
 
 SMALLCAPS = re.compile("\\\\textsc\{([-=.:a-zA-Z0-9)(/\[\]]+?)\}")

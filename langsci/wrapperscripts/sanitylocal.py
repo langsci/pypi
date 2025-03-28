@@ -8,13 +8,12 @@ usage:
 import sys
 
 
-from langsci import sanity
+from langsci.latex import sanity
 
 try:
     directory = sys.argv[1]
 except IndexError:
-    pass
-ignorecodes = []
+    directory = '.'
 try:
     ignorecodes = sys.argv[2:]
 except IndexError:

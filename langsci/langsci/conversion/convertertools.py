@@ -9,7 +9,7 @@ import uuid
 import codecs
 from pathlib import Path
 
-from . import bibtools
+from langsci.bib import bibtools
 
 from .converter_helpers import (
     yanks,

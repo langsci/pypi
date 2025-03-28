@@ -1,6 +1,6 @@
 name = "langsci"
 
-from .asciify import (
+from .latex.asciify import (
     FRENCH_REPLACEMENTS,
     GERMAN_REPLACEMENTS,
     ICELANDIC_REPLACEMENTS,
@@ -9,7 +9,9 @@ from .asciify import (
     is_ascii,
 )
 
-from .bibnouns import (
+from .latex.delatex import dediacriticize
+
+from .bib.bibnouns import (
     LANGUAGENAMES,
     OCEANNAMES,
     COUNTRIES,
@@ -18,9 +20,8 @@ from .bibnouns import (
     OCCURREDREPLACEMENTS,
 )
 
-from .bibtools import keys, excludefields, FIELDS, Record, normalize
+from .bib.bibtools import keys, excludefields, FIELDS, Record, normalize
 
-from .delatex import dediacriticize
 
 __all__ = [
     # asciify

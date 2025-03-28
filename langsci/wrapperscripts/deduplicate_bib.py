@@ -1,5 +1,5 @@
 from collections import defaultdict
-from langsci.bibtools import *
+from langsci.bib.bibtools import *
 import pprint
 
 keepfields = [

@@ -1,7 +1,7 @@
 import sys
 import requests
 
-from langsci.langscipressorg_webcrawler import (
+from langsci.catalog.langscipressorg_webcrawler import (
     get_soup,
     get_publication_date,
     get_citeinfo,
