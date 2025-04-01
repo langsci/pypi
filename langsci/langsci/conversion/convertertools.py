@@ -193,6 +193,7 @@ class Document:
         zipfn = str(uuid.uuid4())
         shutil.make_archive(zipfn, "zip", localskeletond)
         shutil.move(zipfn + ".zip", wwwdir)
+        self.zipfn = zipfn
 
     def getModtext(self):
         """postprocess the raw output from the w2l converter"""
