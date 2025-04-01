@@ -50,8 +50,9 @@ class SanityError:
         self.ID = uuid.uuid1()
         hash_input = msg
         if hash_input.startswith("uncommon character"):
-            hash_input = "uncommon character"
+            hash_input = "Uncommon character"
         self.name = str(int(hashlib.md5(str.encode(hash_input)).hexdigest(), 16))[-9:]
+        self.color, self.bordercolor = self.get_colors()
 
     def get_colors(self):
         """
