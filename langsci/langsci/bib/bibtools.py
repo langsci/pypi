@@ -829,21 +829,27 @@ class Record:
         return s
 
 
-def normalize(s, inkeysd={}, restrict=False):
-    a = re.split("\n *@", s)
-    # split preamble (if any) from records
-    preamble = a[0]
-    rest = a[1:]
+def normalize(s, inkeysd={}, restrict=False, split_preamble=True):
+    preamble = ''
+    records = re.split("\n *@", s)
+    if split_preamble:
+        # split preamble (if any) from records
+        preamble = records[0]
+        records_to_process = records[1:]
+    else:
+        records_to_process = records
     # sort and reverse in order to get the order of edited volumes and incollection right
-    rest.sort()
-    rest = rest[::-1]
+    records_to_process.sort()
+    records_to_process = records_to_process[::-1]
+
     # create the new bibtex records
     bibtexs = [
         Record(
             record, bibtexformat=True, inkeysd=inkeysd, restrict=restrict, reporting=[]
         ).bibtex()
-        for record in rest
+        for record in records_to_process
     ]
     # assemble output string
-    rest = "\n\n".join([b for b in bibtexs if b])
-    return "\n".join((preamble, rest))
+    processed_records = "\n\n".join([b for b in bibtexs if b])
+    return "\n".join((preamble, processed_records))
+
