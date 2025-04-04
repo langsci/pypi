@@ -1,9 +1,6 @@
 import sys
 
-try:
-    import zenodo
-except ImportError:
-    from langsci import zenodo
+from langsci.services import zenodo
 
 glottolog = False
 # from pyglottolog import Glottolog

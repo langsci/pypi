@@ -10,10 +10,7 @@ import re
 import sys
 
 
-try:
-    from texpatterns import *
-except ImportError:
-    from langsci.texpatterns import *
+from langsci.latex.texpatterns import *
 
 
 def addcomma(self, s):
