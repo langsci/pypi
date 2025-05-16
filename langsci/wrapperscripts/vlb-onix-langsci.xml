@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ONIXmessage release="3.1"><header><sender><x298>Language Science Press</x298><x299>Sebastian Nordhoff</x299><j272>sebastian.nordhoff@langsci-press.org</j272></sender><x307>{senddate}</x307></header>
+<product datestamp="{senddate}">
+    <a001>{bookid}</a001>
+    <a002>03</a002> <!-->notification type</!-->
+    <productidentifier>
+        <b221>03</b221>
+        <b244>{isbndigital}</b244>
+    </productidentifier>
+    <productidentifier>
+        <b221>06</b221>
+        <b244>{doi}</b244>
+    </productidentifier>
+    <productidentifier>
+        <b221>15</b221>
+        <b244>{isbndigital}</b244>
+    </productidentifier>
+    <descriptivedetail>
+        <x314>00</x314> <!--> einteiliges produkt <?!-->
+        <b012>BB</b012>
+        <measure>
+            <x315>01</x315>
+            <c094>18</c094>
+            <c095>cm</c095>
+        </measure>
+        <measure>
+            <x315>02</x315>
+            <c094>24.5</c094>
+            <c095>cm</c095>
+        </measure>
+        <collection>
+            <x329>10</x329> <!-->ist Reihe</!-->
+            <titledetail>
+                <b202>01</b202>
+                <titleelement>
+                    <x409>02</x409>
+                    <b203>{seriesname}</b203>
+                </titleelement>
+                <titleelement>
+                    <x409>01</x409>
+                    <x410>{seriesnumber}</x410>
+                </titleelement>
+            </titledetail>
+        </collection>
+        <titledetail>
+            <b202>01</b202>
+            <titleelement>
+                <x409>01</x409>
+                <b203>{booktitle}</b203>
+            </titleelement>
+        </titledetail>
+        <contributor>
+            <b034>1</b034>
+            <b035>B01</b035> <!-->A:author B:editor</!-->
+            <b036>{lastname} {firstname}</b036>
+            <b037>{firstname}, {lastname}</b037>
+            <b039>{lastname}</b039>
+            <b040>{firstname}</b040>
+            <b044>{biosketch}</b044>
+        </contributor>
+        <b057>{editionnumber}</b057>
+        <language>
+            <b253>01</b253>
+            <b252>{bookmetalanguagecode}</b252>
+        </language>
+        <extent>
+            <b218>11</b218>
+            <b219>{numberofpages}</b219>
+            <b220>03</b220>
+        </extent>
+        <subject>
+            <x425/>
+            <b067>26</b067>
+            <b068>2.0</b068>
+            <b069>1560</b069>
+            <b070>Hardcover, Softcover / Sprachwissenschaft, Literaturwissenschaft</b070>
+        </subject>
+        <subject sourcename="Publisher">
+            <x425/>
+            <b067>93</b067>
+            <b068>1.6</b068>
+            <b069>CF</b069>
+            <b070>Sprachwissenschaft, Linguistik</b070>
+        </subject>
+        <subject>
+            <b067>20</b067>
+            <b070>{keyword}</b070>
+        </subject>
+        <b207>Wissenschaft</b207>
+        <EpubLicense>
+            <EpubLicenseExpression>
+                <EpubLicenseExpressionLink>{license_url.lower()}</EpubLicenseExpressionLink>
+            </EpubLicenseExpression>
+        </EpubLicense>
+    </descriptivedetail>
+    <collateraldetail>
+        <textcontent>
+            <x426>03</x426>
+            <x427>00</x427>
+            <d104 textformat="06" language="eng">{blurb}</d104>
+        </textcontent>
+        <textcontent>
+            <x426>20</x426> <!-->Open access statement </!-->
+            <d103>06</d103>
+            <d104>Der Titel ist Open Access unter der Creative Commons Lizenz {license} 4.0</d104>
+        </textcontent>
+    </collateraldetail>
+    <publishingdetail>
+        <publisher>
+            <b291>01</b291>
+            <publisheridentifier>
+                <x447>05</x447>
+                <b244>5295526</b244>
+            </publisheridentifier>
+            <b081>Language Science Press</b081>
+        </publisher>
+        <b209>Berlin</b209>
+        <b083>DE</b083>
+        <productcontact>
+            <x482>10</x482>
+            <x484>LangSci Press gUG</x484>
+            <x299>Sebastian Nordhoff</x299>
+            <j272>sebastian.nordhoff@langsci-press.org</j272>
+            <x552>Bänschstr. 29</x552>
+            <j349>Berlin</j349>
+            <x590>10247</x590>
+            <b251>DE</b251>
+        </productcontact>
+        <b394>04</b394>
+        <publishingdate>
+            <x448>01</x448>
+            <b306 dateformat="00">{publishingdateyymmdd}</b306>
+        </publishingdate>
+    </publishingdetail>
+    <productsupply>
+        <supplydetail>
+            <supplier>
+                <j292>01</j292>
+                <supplieridentifier>
+                    <j345>05</j345>
+                    <b244>5295526</b244>
+                </supplieridentifier>
+                <j137>Language Science Press</j137>
+            </supplier>
+            <j396>20</j396> <!--availability-->
+            <UnpricedItemType>01</UnpricedItemType>
+        </supplydetail>
+    </productsupply>
+
+</product>
+</ONIXmessage>
