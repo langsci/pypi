@@ -148,5 +148,10 @@ SERIES = {
     "Estudios de Lingüística Amerindia / Estudos de Linguística Ameríndia / Studies of Amerindian Linguistics / Études de Linguistique Amérindienne": "2943-0658",
     'Topics in Phonological Diversity': "2943-6540",
     # "Im­ple­ment­ed Gram­mars": "",
-    "Advances in Historical Linguistics" : "2943-064X"
+    "Advances in Historical Linguistics" : "2943-064X",
+    "World Histories of Lexicography and Lexicology" : "3052-993X",
+    "Current Issues in Celtic Linguistics" : "3053-030X",
+    " Current Issues in Celtic Linguistics" : "3053-030X",
+    "Open Text Collections" : "3052-9956",
+    "Frame-Based Approaches to Semantics" : "3053-0288"
 }

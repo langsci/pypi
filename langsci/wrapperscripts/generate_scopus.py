@@ -13,12 +13,14 @@ from langsci.catalog.langscipressorg_webcrawler import (
         get_biosketches,
         get_title_subtitle,
         biosketches2names,
+        get_pdf
     )
 from langsci.catalog.catalogmetadata import LICENSES, SERIES, METALANGUAGE
 
 
 
 book_ID = sys.argv[1]
+print(book_ID)
 soup = get_soup(book_ID)
 citegroups = get_citeinfo(soup)
 if citegroups is None:
@@ -251,3 +253,6 @@ with open(f"scopus/{isbn_digital}.xml", "w") as xmlout:
     # validate XML
     ET.fromstring(scopus_template)
     xmlout.write(scopus_template)
+
+get_pdf(soup, f"scopuspdfs/{isbn_digital}.pdf")
+
