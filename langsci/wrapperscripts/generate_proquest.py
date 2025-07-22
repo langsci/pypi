@@ -40,6 +40,10 @@ except KeyError:
   print(' no ISBN. Skipping')
   sys.exit()
 issn = SERIES[citegroups["series"]]
+
+
+doi = citegroups["doi"]
+
 metalanguage = METALANGUAGE.get(book_ID, "eng")
 
 biosketches = get_biosketches(soup)
@@ -71,19 +75,35 @@ proquest_creator_template = """<Contributor>
 </Contributor>"""
 
 
+ # <!-->A:author B:editor</!-->
+proquest_vlb_creator_template = """
+        <contributor>
+            <b034>{0}</b034>
+            <b035>{1}</b035>
+            <b036>{2} {3}</b036>
+            <b037>{3}, {2}</b037>
+            <b039>{2}</b039>
+            <b040>{3}</b040>
+            <b044>{4}</b044>
+        </contributor>"""
+
+
 creators = []
+creators_vlb = []
 
 creatorlist = biosketches2names(biosketches)
 
 for i, creator in enumerate(creatorlist):
     firstname = creator[0]
     lastname = creator[1]
-    sketch = creator[2]
+    biosketch = creator[2]
     creators.append(
         proquest_creator_template
-        % (i + 1, role, escape(firstname), escape(lastname), escape(sketch))
+        % (i + 1, role, escape(firstname), escape(lastname), escape(biosketch))
     )
+    creators_vlb.append(proquest_vlb_creator_template.format(i+1,authorrolecode,escape(firstname),escape(lastname),escape(biosketch)))
 creatorstring = "\n".join(creators)
+creatorstring_vlb = "".join(creators_vlb)
 
 # creatorstring = authorstring + editorstring
 today = date.today().strftime("%Y%m%d")
@@ -614,14 +634,28 @@ onix3_template = f"""<?xml version="1.0"?>
 
 """
 
+# a002 <!-->notification type</!-->
+# x314: <!--> einteiliges produkt <?!-->
+# x329:  <!-->ist Reihe</!-->
+# x426;  <!-->Open access statement </!-->
+# j396 <!--availability-->
+
 onix_vlb_template = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<ONIXmessage release="3.1"><header><sender><x298>Language Science Press</x298><x299>Sebastian Nordhoff</x299><j272>sebastian.nordhoff@langsci-press.org</j272></sender><x307>{senddate}</x307></header>
-<product datestamp="{senddate}">
-    <a001>{bookid}</a001>
-    <a002>03</a002> <!-->notification type</!-->
+<ONIXmessage release="3.1">
+<header>
+  <sender>
+    <x298>Language Science Press</x298>
+    <x299>Sebastian Nordhoff</x299>
+    <j272>sebastian.nordhoff@langsci-press.org</j272>
+  </sender>
+  <x307>{today}</x307>
+</header>
+<product datestamp="{today}">
+    <a001>{book_ID}</a001>
+    <a002>03</a002>
     <productidentifier>
         <b221>03</b221>
-        <b244>{isbndigital}</b244>
+        <b244>{isbn_digital}</b244>
     </productidentifier>
     <productidentifier>
         <b221>06</b221>
@@ -629,10 +663,10 @@ onix_vlb_template = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
     </productidentifier>
     <productidentifier>
         <b221>15</b221>
-        <b244>{isbndigital}</b244>
+        <b244>{isbn_digital}</b244>
     </productidentifier>
     <descriptivedetail>
-        <x314>00</x314> <!--> einteiliges produkt <?!-->
+        <x314>00</x314>
         <b012>BB</b012>
         <measure>
             <x315>01</x315>
@@ -645,12 +679,12 @@ onix_vlb_template = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
             <c095>cm</c095>
         </measure>
         <collection>
-            <x329>10</x329> <!-->ist Reihe</!-->
+            <x329>10</x329>
             <titledetail>
                 <b202>01</b202>
                 <titleelement>
                     <x409>02</x409>
-                    <b203>{seriesname}</b203>
+                    <b203>{series}</b203>
                 </titleelement>
                 <titleelement>
                     <x409>01</x409>
@@ -662,28 +696,14 @@ onix_vlb_template = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
             <b202>01</b202>
             <titleelement>
                 <x409>01</x409>
-                <b203>{booktitle}</b203>
+                <b203>{title}</b203>
+                <b029>{subtitle}</b029>
             </titleelement>
-        </titledetail>
-        <contributor>
-            <b034>1</b034>
-            <b035>B01</b035> <!-->A:author B:editor</!-->
-            <b036>{lastname} {firstname}</b036>
-            <b037>{firstname}, {lastname}</b037>
-            <b039>{lastname}</b039>
-            <b040>{firstname}</b040>
-            <b044>{biosketch}</b044>
-        </contributor>
-        <b057>{editionnumber}</b057>
+        </titledetail>{creatorstring_vlb}
         <language>
             <b253>01</b253>
-            <b252>{bookmetalanguagecode}</b252>
+            <b252>{metalanguage}</b252>
         </language>
-        <extent>
-            <b218>11</b218>
-            <b219>{numberofpages}</b219>
-            <b220>03</b220>
-        </extent>
         <subject>
             <x425/>
             <b067>26</b067>
@@ -698,10 +718,6 @@ onix_vlb_template = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
             <b069>CF</b069>
             <b070>Sprachwissenschaft, Linguistik</b070>
         </subject>
-        <subject>
-            <b067>20</b067>
-            <b070>{keyword}</b070>
-        </subject>
         <b207>Wissenschaft</b207>
         <EpubLicense>
             <EpubLicenseExpression>
@@ -713,12 +729,12 @@ onix_vlb_template = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
         <textcontent>
             <x426>03</x426>
             <x427>00</x427>
-            <d104 textformat="06" language="eng">{blurb}</d104>
+            <d104 textformat="06" language="eng">{escape(blurb)}</d104>
         </textcontent>
         <textcontent>
-            <x426>20</x426> <!-->Open access statement </!-->
+            <x426>20</x426>
             <d103>06</d103>
-            <d104>Der Titel ist Open Access unter der Creative Commons Lizenz {license} 4.0</d104>
+            <d104>Der Titel ist Open Access unter der Creative Commons Lizenz {license}4.0 lizensiert</d104>
         </textcontent>
     </collateraldetail>
     <publishingdetail>
@@ -745,7 +761,7 @@ onix_vlb_template = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
         <b394>04</b394>
         <publishingdate>
             <x448>01</x448>
-            <b306 dateformat="00">{publishingdateyymmdd}</b306>
+            <b306 dateformat="00">{publication_date}</b306>
         </publishingdate>
     </publishingdetail>
     <productsupply>
@@ -758,14 +774,14 @@ onix_vlb_template = f"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
                 </supplieridentifier>
                 <j137>Language Science Press</j137>
             </supplier>
-            <j396>20</j396> <!--availability-->
+            <j396>20</j396>
             <UnpricedItemType>01</UnpricedItemType>
         </supplydetail>
     </productsupply>
 </product>
 </ONIXmessage>
 """
-with open(f"proquest_onix3/{isbn_digital}.xml", "w") as xmlout:
+with open(f"proquest_onix_vlb/{isbn_digital}.xml", "w") as xmlout:
     # validate XML
     # ET.fromstring(proquest_template)
     # xmlout.write(proquest_template)

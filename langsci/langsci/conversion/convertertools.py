@@ -354,7 +354,7 @@ class Document:
             (r"(\\citealt{%s)\}[,;] \\citealt{" % authorchars, "\1,"),
             (r"(\\citet{%s)\}[,;] \\citealt{" % authorchars, "\1,"),
             # examples
-            ("\n()", r"\n\\ea \n \\gll \\\\\n   \\\\\n \\glt\n\\z\n\n"),
+            ("\n\(\)", r"\n\\ea \n \\gll \\\\\n   \\\\\n \\glt\n\\z\n\n"),
             # only up to number (1999)
             (
                 "\n\((1?[0-9]?[0-9]?[0-9])\)",

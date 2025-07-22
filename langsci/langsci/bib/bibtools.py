@@ -160,7 +160,7 @@ class Record:
             d["publisher"] = None
             d["note"] = None
             d["url"] = None
-            print(s)
+            # print(s)
             if bibpatterns.MASTERSTHESIS.search(s):
                 self.typ = "mastersthesis"
                 m = bibpatterns.MASTERSTHESIS.search(s)

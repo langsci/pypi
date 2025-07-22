@@ -5,7 +5,6 @@ from langsci.catalog.catalogmetadata import (
     LICENSES,
     SUPERSEDED,
 )
-sudo
 import argparse
 import re
 import glob
