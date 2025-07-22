@@ -13,9 +13,9 @@ content = bib.read()
 match = re.findall(r"(@[a-z]+\{)([a-z]+)(_.*?_)(\d{4}|nodate),", content)
 # delete the "_topic_" group
 for typ, contributor, topic, year in match:
-    new_entry = f"{typ}{contributor}{year}"
-    print(new_entry)
-    content = content.replace(f"{typ}{contributor}{topic}{year}", new_entry)
+    old_key = f"{contributor}{topic}{year}"
+    new_entry = f"{typ}{contributor}{year},"
+    content = content.replace(f"{typ}{contributor}{topic}{year}", new_entry + f"\n\t ids={{{old_key}}}")
 
 with open("new.bib", "w", encoding="utf8") as out:
     out.write(content)
@@ -29,9 +29,8 @@ match2 = re.findall(r"(@[a-z]+\{)([a-z]+\d*,)", content)
 # and concatenate the new group with "typ{"
 for typ, ContributorYear in match2:
     new_entry = f"{typ}{ContributorYear[0].upper() + ContributorYear[1:]}"
-    print(new_entry)
     content = content.replace(f"{typ}{ContributorYear}", new_entry)
-    print(content)
 
+# create new .bib file
 with open(f"new{filename}", "w", encoding="utf8") as out:
     out.write(content)
