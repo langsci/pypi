@@ -10,7 +10,7 @@ content = bib.read()
 # step 1: "@article{nordhoff_unicode_2025," -> "@article{nordhoff2025,"
 
 # match all "@type{contributor_topic_year," and group "@type{", "contributor", "_topic_" and "year,"
-match = re.findall(r"(@[a-z]+\{)([a-z]+)(_.*?_)(\d{4}|nodate),", content)
+match = re.findall(r"(@[A-Z|a-z]+\{)(.*?)(_.*?_)(\d{4}|nodate),", content)
 # delete the "_topic_" group
 for typ, contributor, topic, year in match:
     old_key = f"{contributor}{topic}{year}"
@@ -23,7 +23,7 @@ with open("new.bib", "w", encoding="utf8") as out:
 # step 2: "@article{nordhoff2025," -> "@article{Nordhoff2025,"
 
 # match all @typ{ContributorYear, and group "@typ" und "{ContributorYear,"
-match2 = re.findall(r"(@[a-z]+\{)([a-z]+\d*,)", content)
+match2 = re.findall(r"(@[A-Z|a-z]+\{)([.*?]+\d*,)", content)
 
 # replace first letter in "contributor" by its upper character
 # and concatenate the new group with "typ{"
