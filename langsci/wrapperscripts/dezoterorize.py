@@ -32,5 +32,5 @@ for typ, ContributorYear in match2:
     content = content.replace(f"{typ}{ContributorYear}", new_entry)
 
 # create new .bib file
-with open(f"new{filename}", "w", encoding="utf8") as out:
+with open(f"new_{filename}", "w", encoding="utf8") as out:
     out.write(content)
