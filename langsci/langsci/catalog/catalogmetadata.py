@@ -42,6 +42,27 @@ ONE_LANGUAGE_BOOKS = {
     443: ("cgc", "kaga1256", "Kagayanen"),
     445: ("mkt", "vama1243", "Vamale"),
     446: ("mhq", "mand1446", "Mandan"),
+    542: ("mqo", "modo1249", "Modole"),
+    531: ("hac", "hawr1243", "Hewramî"),
+    483: ("", "celt1248", "Celtic "),
+    537: ("jaa", "jara1276", "Jarawara"),
+    474: ("bul", "bulg1262", "Bulgarian"),
+    528: ("ana", "anda1286", "Andaki"),
+    532: ("deu", "stan1295", "German"),
+    490: ("deu", "stan1295", "German"),
+    472: ("pmy", "papu1250", "Papua Malay"),
+    513: ("nru", "yong1288", "Yongning Na"),
+    521: ("kts", "sout2940", "Muyu"),
+    459: ("bbl", "bats1242", "Tsova-Tush"),
+     51: ("hac", "hawr1243", "Hewramî"),
+    470: ("nor", "norw1258", "North American Norwegian"),
+    403: ("bun", "sher1258", "Sherbro"),
+    541: ("end", "ende1246", "Ende"),
+    508: ("hat", "hait1244", "Haitian Creole"),
+    475: ("deu", "stan1295", "German"),
+    480: ("tci", "wara1294", "Komnzo"),
+    461: ("ell", "mode1248", "Greek")
+
 }
 
 METALANGUAGE = {
@@ -64,6 +85,8 @@ METALANGUAGE = {
     371: "deu",
     406: "deu",
     431: "deu",
+    475: "deu",
+    492: 'cmn',
 }
 
 LICENSES = {
@@ -102,6 +125,7 @@ SUPERSEDED = [
     25,
     46,
     101,
+    109,
     141,
     144,
     149,
