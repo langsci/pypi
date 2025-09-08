@@ -23,7 +23,7 @@ with open("new.bib", "w", encoding="utf8") as out:
 # step 2: "@article{nordhoff2025," -> "@article{Nordhoff2025,"
 
 # match all @typ{ContributorYear, and group "@typ" und "{ContributorYear,"
-match2 = re.findall(r"(@[A-Z|a-z]+\{)([.*?]+\d*,)", content)
+match2 = re.findall(r"(@[A-Za-z]+\{)(.*,)", content)
 
 # replace first letter in "contributor" by its upper character
 # and concatenate the new group with "typ{"
