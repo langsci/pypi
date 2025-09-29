@@ -10,12 +10,12 @@ content = bib.read()
 # step 1: "@article{nordhoff_unicode_2025," -> "@article{nordhoff2025,"
 
 # match all "@type{contributor_topic_year," and group "@type{", "contributor", "_topic_" and "year,"
-match = re.findall(r"(@[A-Z|a-z]+\{)(.*?)(_.*?_)(\d{4}|nodate),", content)
+match = re.findall(r"(@[A-Z|a-z]+\{)(.*?)(_.*?_)(\d{4}|nodate)(.*)?,", content)
 # delete the "_topic_" group
-for typ, contributor, topic, year in match:
-    old_key = f"{contributor}{topic}{year}"
-    new_entry = f"{typ}{contributor}{year},"
-    content = content.replace(f"{typ}{contributor}{topic}{year}", new_entry + f"\n\t ids={{{old_key}}}")
+for typ, contributor, topic, year, addendum in match:
+    old_key = f"{contributor}{topic}{year}{addendum}"
+    new_entry = f"{typ}{contributor}{year}{addendum}"
+    content = content.replace(f"{typ}{contributor}{topic}{year},", f"{new_entry}," + f"\n\t ids={{{old_key}}}")
 
 with open("new.bib", "w", encoding="utf8") as out:
     out.write(content)
