@@ -189,6 +189,7 @@ class Chapter(Publication):
         self.abstract = abstract
         self.keywords = keywords
         self.pagerange = ""
+        self.title = "TITLE NOT RETRIEVED"
         for l in open("collection_tmp.bib", encoding="utf-8").readlines():
             if l.startswith("@incollection{chapters/%s," % path):
                 # print(path)
