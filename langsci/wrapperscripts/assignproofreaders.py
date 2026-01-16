@@ -57,9 +57,13 @@ if __name__ == "__main__":
         name = l.split()[0]
         chapternumbers = l.split()[1:]
         # collate all assigned chapters
-        chapterlist = "\n".join(
-            "* %s %s" % (i, chapters[int(i)]) for i in chapternumbers
-        )
+        try:
+            chapterlist = "\n".join(
+                "* %s %s" % (i, chapters[int(i)]) for i in chapternumbers
+            )
+        except IndexError:
+            print("could not assemble chapterlist. Are all chapter numbers correct?")
+            sys.exit(1)
         # generate mail body
         mailbody = template.format(**locals())
         # launch mail program
