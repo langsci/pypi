@@ -349,37 +349,77 @@ class BibFile(SanityFile):
 
     antipatterns = (
         (
-            "[Aa]ddress *=.*[,/].*[^ ]",
+            "[Aa]ddress\s*=.*[,/&] *[^ ]",
             "No more than one place of publication.\
  No indications of countries or provinces",
         ),
-        ("[Aa]ddress *=.* and .*", "No more than one place of publication."),
         (
-            "[Tt]itle * =.*: +(?<!{)[a-zA-Z]+",
+            "[Aa]ddress\s*=.* and .*", 
+            "No more than one place of publication."
+        ),
+        (
+            r"([Bb]ook)?[Tt]itle\s*=\s*(?!{{.*}} *,? *$)(?!.*}} *,? *$).*?(?:---|--|–|—|:) +(?<!{)[a-zA-Z]+",
             "Subtitles should be capitalized. In order to protect the capital\
- letter, enclose it in braces {} ",
+ letter, enclose it in braces {}",
         ),
         (
-            r"[Aa]uthor *=.*(?<=(and|AND|..[,{])) *[A-Z]\..*",
-            "Full author names should be given. Only use abbreviated names if\
- the author is known to prefer this. It is OK to use middle initials",
+            r"([Aa]uthor|[Ee]ditor)\s*=.*(?<=(and|AND|..[,{]))\s*[A-Z]\..*",
+            "Full names should be given. Only use abbreviated names if they\
+ are known to prefer this. It is OK to use middle initials",
         ),
         (
-            r"[Ee]ditor *=.*(?<=(and|AND|..[,{])) *[A-Z]\..*",
-            "Full editor names should be given. Only use abbreviated names if\
- the editor is known to prefer this. It is OK to use middle initials",
+            "([Aa]uthor|[Ee]ditor)\s*=.* et al",
+            "Do not use et al. for authors/editors. List all names",
         ),
         (
-            "[Aa]uthor *=.* et al",
-            "Do not use et al. in the bib file. Give a full list of authors",
+            "([Aa]uthor|[Ee]ditor)\s*=.*&.*", 
+            "Use 'and' rather than & in the bib file"
         ),
-        ("[Aa]uthor *=.*&.*", "Use 'and' rather than & in the bib file"),
         (
-            r"[Tt]itle *=(.* )?[IVXLCDM]*[IVX]+[IVXLCDM]*[\.,\) ]",
-            "In order to keep the Roman numbers in capitals, enclose them in\
- braces {}",
+            r"([Bb]ook)?[Tt]itle\s*=(.* )?[IVXLCDM]*[IVX]+[IVXLCDM]*[\.,\) ]",
+            "To capitalize Roman numerals, enclose them in braces {}",
         ),
-        (r"\.[A-Z]", "Please use a space after a period or an abbreviated name"),
+        (
+            r"\.[A-Z]", 
+            "Please use a space after a period or an abbreviated name"
+        ),
+        (
+            r"([Aa]uthor|[Ee]ditor)\s*=\s*[{\"]\s*[A-Z]\.\s+.*",
+            "Full names should be given. Only use abbreviated names if they\
+ are known to prefer this. It is OK to use middle initials",
+        ),
+        (
+            r"(.*)\s+-\s+(\w+)",            
+            "Check hyphen or en dash (--)."
+        ),
+        (
+            r"[Ss]eries\s*=\s*[{\"]\s*[a-z].*",
+            "Series should start with a capital."
+        ),
+        (
+            r'[Ss]eries\s*=\s*[{"]\s*[A-Z][^\s]*(?:\s+[a-z0-9(][^\s]*)+\s*[}"]\s*,?\s*$',
+            "Capitalize series in headline case, not sentence case,"
+        ),
+        (
+            r"[Jj]ournal\s*=\s*[{\"][a-z].*",
+            "Journal should start with a capital."
+        ),
+        (
+            r'[Jj]ournal\s*=\s*[{"]\s*[A-Z][^\s]*(?:\s+[a-z0-9(][^\s]*)+\s*[}"]\s*,?\s*$',
+            "Capitalize journal in headline case, not sentence case,"
+        ),
+        (
+            r"([Bb]ook)?[Tt]itle\s*=.*(?<!\w)\{*[Vv]\}*(?:olume|ol\.?)\}*\s+[IVXLCDM0-9\{\}]+\s*[\}\)\",]?\s*$",
+            "Use volume = {}, for title volume information without a subtitle",
+        ),
+        (
+            r"([Bb]ooktitle|[Tt]itle|[Ss]eries|[Jj]ournal)\s*=\s*[\"\{].*[,:;\-–—]\s*[\"\}]\s*,?\s*$",
+            "Title should not end with comma, colon, semicolon, or dash"
+        ),
+        (
+            r"([Vv]olume|[Nn}umber|[Pp]ages|[Yy]ear|[Aa]ddress|[Pp]ublisher|[Ss]chool|[Aa]uthor|[Ee]ditor|[Tt]ype|[Hh]owpublished|[Nn]ote|[Aa]ddendum)\s*=\s*[\"\{].*[,:;\-–—]\s*[\"\}]\s*,?\s*$",
+            "Field should not end with comma, colon, semicolon, or dash"
+        ),
     )
 
     posnegpatterns = []
