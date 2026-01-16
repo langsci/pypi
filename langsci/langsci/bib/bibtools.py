@@ -732,8 +732,12 @@ class Record:
             creators = self.fields["author"]
         except KeyError:
             creators = self.fields["editor"]
-        creator_list = creators[1:-1].split(" and ")
-        print(creator_list)
+        try:
+            creator_list = creators[1:-1].split(" and ")
+        except TypeError:
+            print("neither author nor editor")
+            return
+        # print(creator_list)
         if len(creator_list) == 1:
             return
         if len(creator_list) >= 3:
@@ -744,11 +748,12 @@ class Record:
                 addendum = candidate.split(',')[0].strip()
             else:
                 addendum = candidate.split()[-1]
-        ids = [x.strip() for x in self.fields["ids"][1:-1].split(',')]
+        ids = [x.strip() for x in self.fields.get("ids","  ")[1:-1].split(',') if x.strip() != '']
         current_key = self.key
         none_year_strings = re.split('[0-9]+',current_key)
         new_key = current_key.replace(none_year_strings[0],f'{none_year_strings[0]}{addendum}')
         self.key = new_key
+        print(self.key)
         if current_key not in ids:
             ids.append(current_key)
         self.fields['ids'] = "{" + ', '.join(ids) + "}"
