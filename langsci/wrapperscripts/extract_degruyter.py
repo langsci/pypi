@@ -2,33 +2,28 @@
 """
 Extract IGT examples from PDFs using PyMuPDF ONLY, with reconstruction by halving lines.
 
-NEW (per user):
-- Subexample labels "a.", "b.", ... are additional *opening signals*.
-- Each subexample closes at its own translation line (quoted line).
-- Subexamples MUST have a mother numerical example "(23)".
-- When reporting a subexample, also output the mother example id.
-- Abort reconstruction if ANY list item in either half (post-parity, post-empty-removal)
-  is longer than 50 characters.
+Update (per user):
+- If language detection causes reconstruction to fail, we DROP it:
+    If reconstruction fails AND the block has a lang_line, we retry once by
+    DEMOTING lang_line into the IGT-content stream (prepend it to between-lines),
+    and clearing lang_line (so language falls back to inherited_lang_line for subexamples,
+    or becomes empty for mother examples).
 
-Still:
-- No langdetect.
-- No general line joining.
-- Print RAW MATCH before any parsing/validation.
-- Reconstruction: upper half -> source, lower half -> gloss (space-joined)
-- Skip odd-cardinality lists unless oddness disappears after removing empty lines.
-- Validate: both source & gloss contain '-' or '=' AND have equal token counts.
+This specifically addresses cases where a first source-word (esp. in subexamples) was
+misclassified as a language line, making the number of IGT lines odd or otherwise broken.
 
-Output (for successful parses):
-mother: ...
-number: ...        (mother or mother+sub)
-language: ...      (if detected)
-igt: ...
-translation: ...
-based on: [full match]
-
-For RAW MATCH (always printed for each finalized block):
-RAW MATCH:
-[ ... ]
+Other behavior retained:
+- example_id / subexample_id output keys
+- translation may close on same line or next two lines (1–3 lines)
+- subexamples inherit language from mother if not specified locally
+- reconstruction by halving between-lines
+- inside _reconstruct_core: if first attempt fails, drop exactly ONE cell (first of first
+  adjacent identical pair) and retry once
+- token mismatch repair: collapse adjacent identical tokens and retry once
+- morph-separator requirement toggle (--require-morph-seps, default off)
+- debug prints raw_match only for failures (never for successes)
+- end report: extracted vs raw_matches
+- parser-side one-shot de-duplication after opener "rest" to prevent systematic duplicates
 """
 
 from __future__ import annotations
@@ -57,13 +52,13 @@ def normalize_text(s: str) -> str:
 
 
 def normalize_line(s: str) -> str:
-    s = s.replace("\u00ad", "")  # soft hyphen
+    s = s.replace("\u00ad", "")
     s = s.replace("\ufb01", "fi").replace("\ufb02", "fl")
     s = s.replace("\t", " ")
     return normalize_text(s)
 
 
-def word_tokens(s: str) -> List[str]:
+def tokenized_words(s: str) -> List[str]:
     toks: List[str] = []
     for t in normalize_text(s).split():
         t2 = PUNCT_EDGE.sub("", t)
@@ -72,13 +67,23 @@ def word_tokens(s: str) -> List[str]:
     return toks
 
 
+def collapse_adjacent_identical(tokens: List[str]) -> List[str]:
+    if not tokens:
+        return tokens
+    out = [tokens[0]]
+    for t in tokens[1:]:
+        if t != out[-1]:
+            out.append(t)
+    return out
+
+
 # ----------------------------
-# PDF extraction (PyMuPDF only)
+# PDF extraction
 # ----------------------------
 
 def extract_pdf_lines(pdf_path: str) -> List[str]:
     try:
-        import pymupdf as fitz  # PyMuPDF ≥ 1.23
+        import pymupdf as fitz
     except ImportError:
         import fitz  # type: ignore
 
@@ -92,343 +97,481 @@ def extract_pdf_lines(pdf_path: str) -> List[str]:
                 continue
             for line in block.get("lines", []):
                 spans = line.get("spans", [])
-                if not spans:
-                    continue
                 txt = "".join(sp.get("text", "") for sp in spans if sp.get("text"))
                 txt = normalize_line(txt)
                 if txt:
                     lines.append(txt)
-        lines.append("")  # page break marker
+        lines.append("")
 
     doc.close()
     return lines
 
 
 # ----------------------------
-# Signals & detection
+# Detection
 # ----------------------------
 
 RE_EX_START = re.compile(r"^\((\d+)\)\s*(.*)$")
 RE_SUBLABEL = re.compile(r"^([a-z])\.\s*(.*)$", re.IGNORECASE)
+RE_LANG_HEADER = re.compile(r"^([A-Z][^()]+?)\s*\((.+?)\)\s*$")
 
-# Translation line: contains a quoted span (backtick allowed).
-RE_QUOTED_SPAN = re.compile(r"[\"“‘`].+?[\"”’']")
+OPEN_TO_CLOSE = {"“": "”", "‘": "’", '"': '"', "`": "'"}
+OPENERS = set(OPEN_TO_CLOSE.keys())
 
-
-def has_translation_signal(line: str) -> bool:
-    return bool(RE_QUOTED_SPAN.search(line))
-
-
-def extract_translation(line: str) -> str:
-    m = RE_QUOTED_SPAN.search(line)
-    if not m:
-        return ""
-    t = m.group(0)
-    return normalize_text(t.strip("“”\"").strip("‘’'").strip("`"))
+MAX_ITEM_LEN = 50
 
 
 def has_morph_seps(s: str) -> bool:
     return "-" in s or "=" in s
 
 
-# Optional language line detection (kept; no langdetect)
-RE_LANG_HEADER = re.compile(r"^([A-Z][^()]+?)\s*\((.+?)\)\s*$")
+def _looks_like_close_quote(text: str, i: int, ch: str) -> bool:
+    if ch in {"’", "'"}:
+        nxt = text[i + 1] if i + 1 < len(text) else ""
+        if nxt.isalpha():
+            return False
+    return True
 
 
-def is_language_line(line: str) -> bool:
+def find_open_quote(line: str) -> Optional[Tuple[int, str]]:
+    for i, ch in enumerate(line):
+        if ch in OPENERS:
+            return i, ch
+    return None
+
+
+def find_close_quote(line: str, closer: str) -> Optional[int]:
+    for i, ch in enumerate(line):
+        if ch == closer and _looks_like_close_quote(line, i, ch):
+            return i
+    return None
+
+
+def extract_translation_from_lines(lines: List[str]) -> str:
+    if not lines:
+        return ""
+
+    first = lines[0]
+    found = find_open_quote(first)
+    if not found:
+        return ""
+
+    open_i, opener = found
+    closer = OPEN_TO_CLOSE[opener]
+
+    rem = first[open_i + 1 :]
+    cp = find_close_quote(rem, closer)
+    if cp is not None:
+        return normalize_text(rem[:cp])
+
+    acc = rem.strip()
+    for ln in lines[1:]:
+        cp2 = find_close_quote(ln, closer)
+        if cp2 is not None:
+            return normalize_text(acc + " " + ln[:cp2])
+        acc += " " + ln
+    return ""
+
+
+# ----------------------------
+# Language line detection (weak vs strong)
+# ----------------------------
+
+RE_HAS_QUOTE = re.compile(r"[\"“”‘’`]")
+RE_HAS_DIGIT = re.compile(r"\d")
+RE_WEIRD_PUNCT = re.compile(r"[;:!?]")
+
+
+def _all_titlecase(words: List[str]) -> bool:
+    for w in words:
+        if not w:
+            return False
+        if not w[0].isupper():
+            return False
+        if any(ch.isupper() for ch in w[1:]):
+            return False
+    return True
+
+
+def is_language_line_weak(line: str) -> bool:
     line = normalize_line(line)
     if not line:
         return False
-    if has_translation_signal(line):
-        return False
-    if RE_EX_START.match(line):
-        return False
-    if RE_SUBLABEL.match(line):
+    if RE_EX_START.match(line) or RE_SUBLABEL.match(line):
         return False
     if has_morph_seps(line):
         return False
     if RE_LANG_HEADER.match(line):
         return True
     words = line.split()
-    if 1 <= len(words) <= 8 and line[:1].isupper() and not line.endswith((".", "!", "?", "…")):
+    return 1 <= len(words) <= 8 and line[:1].isupper() and not line.endswith((".", "!", "?", "…"))
+
+
+def is_language_line_strong(line: str) -> bool:
+    line = normalize_line(line)
+    if not line:
+        return False
+    if RE_EX_START.match(line) or RE_SUBLABEL.match(line):
+        return False
+    if has_morph_seps(line):
+        return False
+    if RE_HAS_QUOTE.search(line):
+        return False
+    if RE_HAS_DIGIT.search(line):
+        return False
+    if RE_WEIRD_PUNCT.search(line):
+        return False
+    if RE_LANG_HEADER.match(line):
         return True
-    return False
+    words = line.split()
+    if not (1 <= len(words) <= 4):
+        return False
+    return _all_titlecase(words)
 
 
 # ----------------------------
-# Reconstruction logic
+# Subexample label stripping inside content
 # ----------------------------
 
-MAX_ITEM_LEN = 50
+RE_SUBLABEL_PREFIX = re.compile(r"^\s*([a-z])\.\s+", re.IGNORECASE)
 
 
-def reconstruct_igt(between_lines: List[str]) -> Optional[Tuple[str, str]]:
-    """
-    Reconstruct (source, gloss) from content lines between opening and closing.
+def strip_leading_sublabel_from_content(lines: List[str]) -> List[str]:
+    out = list(lines)
+    for i, ln in enumerate(out):
+        if normalize_line(ln) == "":
+            continue
+        if RE_SUBLABEL_PREFIX.match(ln):
+            out[i] = RE_SUBLABEL_PREFIX.sub("", ln, count=1)
+        break
+    return out
 
-    Parity rule:
-    - If count is even -> OK.
-    - If odd -> remove empty lines and re-check; proceed if even.
-    - Otherwise reject.
 
-    Additional rule:
-    - After choosing the working list, split into halves.
-    - If ANY element in either half is > 50 characters, abort reconstruction.
-    """
-    raw = [normalize_line(x) for x in between_lines]
+# ----------------------------
+# Reconstruction (with built-in single deletion repair)
+# ----------------------------
+
+def _drop_one_of_first_adjacent_identical_pair(raw_lines: List[str]) -> Tuple[List[str], bool]:
+    normed = [normalize_line(x) for x in raw_lines]
+    for i in range(len(normed) - 1):
+        if normed[i] and normed[i] == normed[i + 1]:
+            new_lines = list(raw_lines)
+            del new_lines[i]  # drop EXACTLY one cell
+            return new_lines, True
+    return raw_lines, False
+
+
+def _reconstruct_attempt(raw_lines: List[str]) -> Tuple[Optional[Tuple[str, str]], str]:
+    raw = [normalize_line(x) for x in raw_lines]
+    if not raw:
+        return None, "no_between_lines"
+
+    raw = strip_leading_sublabel_from_content(raw)
+
     nonempty = [x for x in raw if x.strip()]
+    work = raw
 
-    if len(raw) % 2 != 0:
-        if len(nonempty) % 2 != 0:
-            return None
+    if len(work) % 2 != 0:
         work = nonempty
-    else:
-        work = raw
-        if any(not x.strip() for x in work):
-            work = nonempty
-            if len(work) % 2 != 0:
-                return None
+        if len(work) % 2 != 0:
+            return None, "odd_number_of_igt_lines"
 
-    if not work or len(work) < 2 or len(work) % 2 != 0:
-        return None
+    if len(work) < 2:
+        return None, "too_few_between_lines"
 
     half = len(work) // 2
-    upper = work[:half]
-    lower = work[half:]
+    upper, lower = work[:half], work[half:]
 
-    # abort if any item too long
     if any(len(x) > MAX_ITEM_LEN for x in upper):
-        return None
+        return None, "item_too_long_in_source_half"
     if any(len(x) > MAX_ITEM_LEN for x in lower):
-        return None
+        return None, "item_too_long_in_gloss_half"
 
-    source = normalize_text(" ".join(upper))
-    gloss = normalize_text(" ".join(lower))
+    source = normalize_text(" ".join([x for x in upper if x.strip()]))
+    gloss = normalize_text(" ".join([x for x in lower if x.strip()]))
 
-    if not source or not gloss:
-        return None
+    if not source:
+        return None, "empty_source_after_join"
+    if not gloss:
+        return None, "empty_gloss_after_join"
 
-    return source, gloss
+    return (source, gloss), ""
+
+
+def _reconstruct_core(raw_lines: List[str]) -> Tuple[Optional[Tuple[str, str]], str]:
+    recon, reason = _reconstruct_attempt(raw_lines)
+    if recon is not None:
+        return recon, ""
+
+    candidate = strip_leading_sublabel_from_content(raw_lines)
+    repaired, changed = _drop_one_of_first_adjacent_identical_pair(candidate)
+    if not changed:
+        return None, reason
+
+    recon2, reason2 = _reconstruct_attempt(repaired)
+    if recon2 is not None:
+        return recon2, ""
+
+    return None, f"{reason2}|after_drop_one_of_first_adjacent_identical_pair"
+
+
+def reconstruct_igt(between: List[str]) -> Tuple[Optional[Tuple[str, str]], str]:
+    return _reconstruct_core(between)
 
 
 # ----------------------------
-# Streaming state
+# Data structures
 # ----------------------------
 
 @dataclass
 class Block:
-    """
-    A block is either:
-    - mother example block (sub_id = "")
-    - subexample block (sub_id = "a", "b", ...)
-    It starts at an opening signal and ends at its own translation line.
-    """
-    mother_id: str
-    sub_id: str  # "" for mother block, else "a"/"b"/...
+    example_id: str
+    subexample_id: str
     open_line: str
     lang_line: str = ""
-    between: List[str] = field(default_factory=list)  # content lines for reconstruction
-    raw_between: List[str] = field(default_factory=list)  # for RAW MATCH (includes language lines etc. as encountered)
+    inherited_lang_line: str = ""
+    between: List[str] = field(default_factory=list)
+    raw_between: List[str] = field(default_factory=list)
+    skip_next_if_equals: str = ""  # one-shot de-dup guard
 
 
-def block_number(b: Block) -> str:
-    return f"{b.mother_id}{b.sub_id}" if b.sub_id else b.mother_id
+def effective_language(b: Block) -> str:
+    return b.lang_line or b.inherited_lang_line
 
 
-def print_raw_match(b: Block, closing_line: str) -> List[str]:
-    """
-    Print RAW MATCH and return the full block lines (normalized) used for 'based on'.
-    RAW MATCH is from the opening signal line through the closing translation line, inclusive.
-    """
-    open_line = normalize_line(b.open_line)
-    closing = normalize_line(closing_line)
+# ----------------------------
+# Output helpers
+# ----------------------------
 
-    raw_block: List[str] = [open_line]
-    if b.lang_line:
-        raw_block.append(normalize_line(b.lang_line))
-    for ln in b.raw_between:
-        raw_block.append(normalize_line(ln))
-    raw_block.append(closing)
+def build_raw_block_lines(b: Block, translation_lines: List[str]) -> List[str]:
+    out = [normalize_line(b.open_line)]
+    lang = effective_language(b)
+    if lang:
+        out.append(normalize_line(lang))
+    out.extend(b.raw_between)
+    out.extend(translation_lines)
+    return [normalize_line(x) for x in out if normalize_line(x)]
 
-    print("RAW MATCH:")
-    print("[")
-    for ln in raw_block:
-        print(ln)
-    print("]")
+
+def report_failure(b: Block, reason: str, translation_lines: List[str], debug: bool) -> None:
+    print(f"example_id: {b.example_id}")
+    if b.subexample_id:
+        print(f"subexample_id: {b.subexample_id}")
+    print("status: failed")
+    print(f"reason: {reason}")
+    if debug:
+        print("raw_match: [")
+        for ln in build_raw_block_lines(b, translation_lines):
+            print(ln)
+        print("]")
     print()
 
-    return [ln for ln in raw_block if ln]
 
-
-def finalize_block(b: Block, closing_line: str) -> None:
-    """
-    Always prints RAW MATCH. Then attempts reconstruction + checks; if pass, prints structured output.
-    """
-    full_lines = print_raw_match(b, closing_line)
-
-    translation = extract_translation(closing_line)
-    if not translation:
-        return
-
-    recon = reconstruct_igt(b.between)
-    if not recon:
-        return
-
-    source_line, gloss_line = recon
-
-    # Checks requested earlier
-    if not has_morph_seps(source_line):
-        return
-    if not has_morph_seps(gloss_line):
-        return
-    if len(word_tokens(source_line)) != len(word_tokens(gloss_line)):
-        return
-
-    based_on = normalize_text(" ".join(full_lines))
-
-    print(f"mother: {b.mother_id}")
-    print(f"number: {block_number(b)}")
-    print(f"language: {normalize_line(b.lang_line)}")
-    print(f"igt: {source_line} || {gloss_line}")
+def report_success(b: Block, source: str, gloss: str, translation: str) -> None:
+    print(f"example_id: {b.example_id}")
+    if b.subexample_id:
+        print(f"subexample_id: {b.subexample_id}")
+    print(f"language: {normalize_line(effective_language(b))}")
+    print(f"igt: {source} || {gloss}")
     print(f"translation: {translation}")
-    print(f"based on: [{based_on}]")
     print()
+
+
+# ----------------------------
+# Finalization
+# ----------------------------
+
+def finalize_block(b: Block, translation_lines: List[str], debug: bool, require_morph_seps: bool) -> bool:
+    translation_lines_n = [normalize_line(x) for x in translation_lines]
+    translation = extract_translation_from_lines(translation_lines_n)
+    if not translation:
+        report_failure(b, "no_translation_found_within_1_to_3_lines", translation_lines_n, debug)
+        return False
+
+    recon, reason = reconstruct_igt(b.between)
+
+    # NEW: If reconstruction fails and we had a detected lang_line, demote it and retry once.
+    if not recon and b.lang_line:
+        demoted_between = [b.lang_line] + list(b.between)
+        recon2, reason2 = reconstruct_igt(demoted_between)
+        if recon2:
+            # Accept the demotion: clear local lang_line so output uses inherited language (or none).
+            b.lang_line = ""
+            b.between = demoted_between
+            recon = recon2
+            reason = ""
+        else:
+            reason = f"{reason}|after_demote_lang_line_then_reconstruct_failed:{reason2}"
+
+    if not recon:
+        report_failure(b, reason, translation_lines_n, debug)
+        return False
+
+    source, gloss = recon
+
+    if require_morph_seps:
+        if not has_morph_seps(source):
+            report_failure(b, "source_missing_morph_separators", translation_lines_n, debug)
+            return False
+        if not has_morph_seps(gloss):
+            report_failure(b, "gloss_missing_morph_separators", translation_lines_n, debug)
+            return False
+
+    st, gt = tokenized_words(source), tokenized_words(gloss)
+    if len(st) != len(gt):
+        st2, gt2 = collapse_adjacent_identical(st), collapse_adjacent_identical(gt)
+        if len(st2) != len(gt2):
+            report_failure(
+                b,
+                "token_count_mismatch_even_after_collapsing_adjacent_duplicates",
+                translation_lines_n,
+                debug,
+            )
+            return False
+        source, gloss = " ".join(st2), " ".join(gt2)
+
+    report_success(b, source, gloss, translation)
+    return True
 
 
 # ----------------------------
 # Parser
 # ----------------------------
 
-def parse_and_stream(lines: List[str], min_n: int, max_n: int) -> None:
-    mother_id: Optional[str] = None
-    mother_open_line: str = ""
-    mother_lang_line: str = ""
-
+def parse_and_stream(lines: List[str], debug: bool, require_morph_seps: bool) -> Tuple[int, int]:
+    example_id: Optional[str] = None
+    mother_lang = ""
     current: Optional[Block] = None
-    have_seen_subs = False
 
-    def close_current_if_translation(line: str) -> bool:
-        nonlocal current
-        if current is not None and line and has_translation_signal(line):
-            finalize_block(current, line)
-            current = None
-            return True
-        return False
+    pending: List[str] = []
+    pending_closer: Optional[str] = None
+
+    successes = 0
+    total_raw_matches = 0
+
+    def start_pending(line: str) -> None:
+        nonlocal pending, pending_closer
+        pending = [line]
+        found = find_open_quote(line)
+        pending_closer = OPEN_TO_CLOSE[found[1]] if found else None  # type: ignore[index]
+
+    def add_content_to_current(line: str) -> None:
+        assert current is not None
+        ln = normalize_line(line)
+
+        if current.skip_next_if_equals and ln and ln == current.skip_next_if_equals:
+            current.skip_next_if_equals = ""
+            return
+        if current.skip_next_if_equals:
+            current.skip_next_if_equals = ""
+
+        current.raw_between.append(ln)
+        current.between.append(ln)
 
     for raw in lines:
         line = normalize_line(raw)
 
-        # Start of a new mother example?
-        m_ex = RE_EX_START.match(line)
-        if m_ex:
-            # Starting a new mother implicitly ends any open block WITHOUT printing (no closing signal).
-            current = None
-            have_seen_subs = False
+        # Pending translation completion (allow up to 3 lines total)
+        if current and pending:
+            pending.append(line)
+            closed = False
+            if pending_closer and find_close_quote(line, pending_closer) is not None:
+                closed = True
+            elif extract_translation_from_lines(pending):
+                closed = True
 
-            ex_id = m_ex.group(1)
-            try:
-                n = int(ex_id)
-            except ValueError:
-                mother_id = None
+            if closed:
+                total_raw_matches += 1
+                if finalize_block(current, pending, debug, require_morph_seps):
+                    successes += 1
+                current = None
+                pending = []
+                pending_closer = None
                 continue
 
-            if not (min_n <= n <= max_n):
-                mother_id = None
-                continue
+            if len(pending) >= 3:
+                for pl in pending:
+                    add_content_to_current(pl)
+                pending = []
+                pending_closer = None
+            continue
 
-            mother_id = ex_id
-            mother_open_line = line
-            mother_lang_line = ""
+        # Mother opener
+        m = RE_EX_START.match(line)
+        if m:
+            example_id = m.group(1)
+            mother_lang = ""
+            current = Block(example_id=example_id, subexample_id="", open_line=line)
 
-            # Create a mother block immediately (so mother can close on its own translation)
-            current = Block(
-                mother_id=mother_id,
-                sub_id="",
-                open_line=mother_open_line,
-                lang_line="",
-                between=[],
-                raw_between=[]
-            )
-
-            rest = normalize_text(m_ex.group(2))
+            rest = normalize_text(m.group(2))
             if rest:
-                # This "rest" can be language line or content. Store in raw_between always.
-                current.raw_between.append(rest)
-                # If it looks like language, keep it; else treat as content.
-                if current.lang_line == "" and is_language_line(rest):
-                    current.lang_line = rest
-                    mother_lang_line = rest
+                rest_norm = normalize_line(rest)
+                current.skip_next_if_equals = rest_norm
+                current.raw_between.append(rest_norm)
+
+                if not current.lang_line and is_language_line_weak(rest_norm):
+                    current.lang_line = rest_norm
+                    mother_lang = rest_norm
                 else:
-                    current.between.append(rest)
+                    current.between.append(rest_norm)
             continue
 
-        # If there's no mother, subexamples must not start
-        if mother_id is None:
+        if example_id is None:
             continue
 
-        # If current block closes here, do it and keep scanning.
-        if close_current_if_translation(line):
-            continue
+        # Subexample opener
+        sm = RE_SUBLABEL.match(line)
+        if sm:
+            sub_id = sm.group(1).lower()
+            rest = normalize_text(sm.group(2))
 
-        # Subexample opening signal?
-        m_sub = RE_SUBLABEL.match(line)
-        if m_sub:
-            # Subexamples must have a mother id (guaranteed by mother_id check above)
-            have_seen_subs = True
-
-            sub_id = m_sub.group(1).lower()
-            rest = normalize_text(m_sub.group(2))
-
-            # Start a new sub-block; it will close on its own translation line.
-            # Note: mother_lang_line may have been captured earlier. Sub can also have its own language line.
             current = Block(
-                mother_id=mother_id,
-                sub_id=sub_id,
+                example_id=example_id,
+                subexample_id=sub_id,
                 open_line=f"{sub_id}.",
-                lang_line="",
-                between=[],
-                raw_between=[]
+                inherited_lang_line=mother_lang,
             )
 
-            # If "a. ..." has trailing text, it could be language or content.
             if rest:
-                current.raw_between.append(rest)
-                if current.lang_line == "" and is_language_line(rest):
-                    current.lang_line = rest
+                rest_norm = normalize_line(rest)
+                current.skip_next_if_equals = rest_norm
+                current.raw_between.append(rest_norm)
+
+                # subexample context: strict
+                if not current.lang_line and is_language_line_strong(rest_norm):
+                    current.lang_line = rest_norm
                 else:
-                    current.between.append(rest)
+                    current.between.append(rest_norm)
             continue
 
-        # Otherwise: line inside whatever block is current, or part of mother context.
+        # Outside any block
         if current is None:
-            # Not currently inside a block; we ignore until we hit a sublabel or a new mother.
-            # (Subexamples should start with "a." etc.)
+            if not mother_lang and is_language_line_weak(line):
+                mother_lang = line
             continue
 
-        # Allow language line either:
-        # - between mother number and first sublabel (goes to mother block)
-        # - between sublabel and first source word (goes to that sub block)
-        if current.lang_line == "" and is_language_line(line):
-            current.lang_line = line
-            if current.sub_id == "":
-                mother_lang_line = line
+        # Translation start?
+        if find_open_quote(line):
+            start_pending(line)
+            continue
+
+        # Language line inside block?
+        if not current.lang_line:
+            if current.subexample_id:
+                if is_language_line_strong(line):
+                    current.lang_line = line
+                    current.raw_between.append(line)
+                    continue
             else:
-                # If mother language not set, inherit for reporting purposes only
-                pass
-            # still keep for RAW MATCH
-            current.raw_between.append(line)
-            continue
+                if is_language_line_weak(line):
+                    current.lang_line = line
+                    mother_lang = line
+                    current.raw_between.append(line)
+                    continue
 
-        # Content line
-        if raw.strip() == "":
-            # keep empties in raw_between to preserve parity logic; also keep in between
-            current.raw_between.append("")
-            current.between.append("")
-        else:
-            current.raw_between.append(line)
-            current.between.append(line)
+        add_content_to_current(line)
 
-    # EOF: no implicit close; blocks require an explicit closing translation line.
+    return successes, total_raw_matches
 
 
 # ----------------------------
@@ -437,9 +580,9 @@ def parse_and_stream(lines: List[str], min_n: int, max_n: int) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("pdf", help="Input PDF path")
-    ap.add_argument("--min", type=int, default=1)
-    ap.add_argument("--max", type=int, default=10_000)
+    ap.add_argument("pdf")
+    ap.add_argument("--debug", action="store_true")
+    ap.add_argument("--require-morph-seps", action="store_true", help="Require '-' or '=' in source+gloss (default off)")
     args = ap.parse_args()
 
     if not os.path.exists(args.pdf):
@@ -447,7 +590,13 @@ def main() -> int:
         return 2
 
     lines = extract_pdf_lines(args.pdf)
-    parse_and_stream(lines, args.min, args.max)
+    successes, total = parse_and_stream(lines, args.debug, args.require_morph_seps)
+
+    print("report:")
+    print(f"extracted: {successes}")
+    print(f"raw_matches: {total}")
+    print()
+
     return 0
 
 
