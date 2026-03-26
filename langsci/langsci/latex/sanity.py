@@ -230,8 +230,8 @@ class TexFile(SanityFile):
             "Please check whether this should be part of a bibliographic reference",
         ),
         (
-            r"(?<!\\)[A-Z]{3,}",
-            "It is often a good idea to use \\textsc{smallcaps} instead of ALLCAPS",
+            r"(?<!\\)[A-Z]{3,}.*\\\\",
+            "Use \\textsc{smallcaps} instead of ALLCAPS if this is a grammatical category",
         ),
         (
             r"(?<![0-9])[?!;\.,][A-Z]",

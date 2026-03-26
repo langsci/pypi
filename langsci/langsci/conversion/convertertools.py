@@ -394,8 +394,7 @@ class Document:
         for old, new in [
             (
                 "\n\\\\textit{Table ([0-9]+)[\.:] *(.*?)}\n",
-                r"%%please move \\begin{table} just above \\\\begin{tabular . \n\
-\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",
+                r"%%please move \\begin{table} just above \\\\begin{tabular . \n\\begin{table}\n\\caption{\2}\n\\label{tab:key:\1}\n\\end{table}",
             ),
             (
                 "\nTable ([0-9]+)[\.:] *(.*?) *\n",
