@@ -192,7 +192,6 @@ SERIES = {
     "Advances in Historical Linguistics" : "2943-064X",
     "World Histories of Lexicography and Lexicology" : "3052-993X",
     "Current Issues in Celtic Linguistics" : "3053-030X",
-    " Current Issues in Celtic Linguistics" : "3053-030X",
     "Open Text Collections" : "3052-9956",
     "Frame-Based Approaches to Semantics" : "3053-0288"
 }
