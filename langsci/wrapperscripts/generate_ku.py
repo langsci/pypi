@@ -91,7 +91,8 @@ xlsx_headings = [
 "Funding project name",
 "Funding: project acronym",
 "Funding: grant number",
-"Funding: jurisdiction"
+"Funding: jurisdiction",
+"Collection name"
 ]
 
 
@@ -156,6 +157,7 @@ if __name__ == "__main__":
         # fieldvalues[29] = funding project acronym
         # fieldvalues[30] = funding grant number
         # fieldvalues[31] = funding jurisdiction
+        fieldvalues[32] = "Language Science Press 2026"
         records.append(fieldvalues)
 
 
