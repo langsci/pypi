@@ -64,11 +64,11 @@ ONE_LANGUAGE_BOOKS = {
     480: ("tci", "wara1294", "Komnzo"),
     461: ("ell", "mode1248", "Greek"),
     549: ("jya", "japh1234", "Japhug"),
-    544: (" ", " ", "Kilmeri"),
-    542: (" ", " ", "Modole"),
-    562: (" ", " ", "Even"),
-    538: (" ", " ", "Spanish"),
-
+    544: ("kih", "kilm1241", "Kilmeri"),
+    542: ("mqo", "modo1249", "Modole"),
+    562: ("eve", "even1260", "Even"),
+    538: ("spa", "riop1234", "Spanish"),
+    554: ("por", "port1283", "Portuguese")
 }
 
 METALANGUAGE = {

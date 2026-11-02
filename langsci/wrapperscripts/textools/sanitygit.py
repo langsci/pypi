@@ -82,6 +82,7 @@ if __name__ == "__main__":
     #     pass
     d = cloneorpull(git_url, token = token)
     lspdir = SanityDir(os.path.join(d, "."), ignorecodes)
+    print(lspdir.texfiles)
     print(
         "checking %s"
         % "\n  ".join([""] + [f for f in lspdir.texfiles + lspdir.bibfiles])

@@ -1,4 +1,4 @@
-import PyPDF2
+import pypdf
 import re
 
 from langsci.catalog.langscipressorg_webcrawler import (
@@ -56,12 +56,12 @@ if edited:
 creators = straighten_creators(citeinfo["creators"])
 blurb = get_blurb(soup)
 
-pdf = PyPDF2.PdfReader(open("main.pdf", "rb"))
+pdf = pypdf.PdfReader(open("main.pdf", "rb"))
 number_of_pages = len(pdf.pages)
 
 with open("main.toc") as tocfile:
     content = tocfile.read()
-    chapters = re.findall(r"chapter.*numberline \{[0-9]+}*([A-ZÉ].*?)\}", content)
+    chapters = re.findall(r"chapter.*numberline \{[0-9]+[}{]*([A-ZÉ].*?)\}", content)
 
 newchapters = []
 for chapter in chapters:

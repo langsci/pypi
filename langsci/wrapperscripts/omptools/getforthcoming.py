@@ -8,7 +8,7 @@ soup = BeautifulSoup(html, "html.parser")
 books = soup.find_all("div", "obj_monograph_summary")
 meta = []
 
-for i in range(200,500):
+for i in range(300,500):
     soup = get_soup(i)
     citeinfo = get_citeinfo(soup)
     try:
@@ -17,5 +17,13 @@ for i in range(200,500):
         pass
         # print(i)
     # print(year)
-    # if citeinfo["year"].startswith("Forthcoming"):
-    #     print(citeinfo)
+    try:
+        if citeinfo["year"].startswith("Forthcoming"):
+            print(citeinfo["title"], end=".")
+            if "author" in citeinfo:
+                print(citeinfo["author"])
+            elif "editor" in citeinfo:
+                print(f"{citeinfo["editor"]} (ed.)")
+        print()
+    except TypeError:
+        pass

@@ -51,7 +51,21 @@ CLLD_D = {"1":"wals",
         "14":"dictionariakalamang",
         "15":"dictionarianen",
         "16":"dictionariapalula",
-        "17":"dictionariasidaama"
+        "17":"dictionariasidaama",
+        "18":"Differential object marking in symmetrical voice languages",
+        "19":"Indefinite pronoun markers"
+}
+
+OTC_Sources = {
+"1":"Döhler, Christian. 2024. Speaking the map: Komnzo texts. (Open Text Collections 1). Berlin: Language Science Press.",
+"2":"Zahrer, Alexander. 2025. Children of the sago: Muyu texts. (Open Text Collections 2). Berlin: Language Science Press.",
+"3":"Vogel, Alan. 2025. The Stories of Siko and Yowao: Jarawara texts. (Open Text Collections 3). Berlin: Language Science Press.",
+"4":"Mohammadirad, Masoud. 2025. Echoes of the past: Hewramî narratives. (Open Text Collections 4). Berlin: Language Science Press.",
+"5":"Lindsey, Kate L.. 2025. The Ende way: Short stories and songs from Limol prepared with the Ende Language Committee. (Open Text Collections 5). Berlin: Language Science Press.",
+"6":"Zielenbach, Maria. 2026. Half silver, half gold: Modole folk stories and a first sketch grammar. (Open Text Collections 6). Berlin: Language Science Press.",
+"7":"Gerstner-Link, Claudia. 2026. Clans, spirits, land and food: Kilmeri texts. (Open Text Collections 7). Berlin: Language Science Press.",
+"8":"Pakendorf, Brigitte. 2026. I always migrated by reindeer: Lamunkhin and Bystraja Even narratives about their traditional way of life. (Open Text Collections 8). Berlin: Language Science Press.",
+"9":"Visser, Eline. Forthcoming. Life and death on Karas: Ten Uruangnirin texts. (Open Text Collections 9). Berlin: Language Science Press.",
 }
 
 PROVIDER_ID_PATTERN = re.compile("([a-z]+)([0-9,]+)")
@@ -66,35 +80,37 @@ current_docID = "dummy"
 skipped_ID = ""
 try:
     infile = sys.argv[1]
+    provider_ID = sys.argv[2]
 except IndexError:
     infile = "examples.csv"
 with open(infile, newline="") as csvfile:
     reader = csv.DictReader(csvfile)
     for count, row in enumerate(reader):
         # print(row['ID'])
-        raw_ID = row["Contribution_ID"]
-        m = PROVIDER_ID_PATTERN.match(raw_ID)
-        provider = m.group(1)
-        provider_ID = m.group(2)
-        doc_ID = raw_ID
+        raw_ID = row["OTC_ID"]
+        doc_ID = f"otc{provider_ID}"
+        # m = PROVIDER_ID_PATTERN.match(raw_ID)
+        # provider = m.group(1)
+        provider = 'otc'
         if skipexisting and exists(filenametemplate % doc_ID):
             if doc_ID != skipped_ID:
                 print(f"skipping {doc_ID}, already present")
                 skipped_ID = doc_ID
             continue
-        citation = row["Source"]
+        citation = OTC_Sources[provider_ID]
         external_ID = row["ID"]
         # print(external_ID)
-        if provider == 'cldf':
-            provider = CLLD_D[provider_ID]
-            provider_ID = '0'
+        # if provider == 'cldf':
+        #     provider = CLLD_D[provider_ID]
+        #     provider_ID = '0'
+        provider = 'otc'
         thisgll = gll(
             "",
             row["Language_ID"],
             row["Analyzed_Word"],
             row["Gloss"],
             row["Translated_Text"],
-            book_metalanguage=row["Meta_Language_ID"],
+            # book_metalanguage=row["Meta_Language_ID"],
             abbrkey=json.loads(row["Abbreviations"]),
             filename=provider_ID + "/",
             provider=provider,
@@ -137,6 +153,14 @@ with open(infile, newline="") as csvfile:
             print(f"{thisgll.language_glottocode} is a glottocode which does not have proper ancestors")
             thisgll.ancestors = []
             ancestors[thisgll.language_glottocode] = []
+
+        with open("nercache.json", "w") as nercachejson:
+            nercachejson.write(json.dumps(nercache, indent=4, sort_keys=True))
+        with open("countrycache.json", "w") as countrycachejson:
+            countrycachejson.write(json.dumps(countrycache, indent=4, sort_keys=True))
+        with open("coordscache.json", "w") as coordscachejson:
+            coordscachejson.write(json.dumps(coordscache, indent=4, sort_keys=True))
+
         # thisgll.licence = "CC-BY"
         if thisgll.provider.startswith("inel"):
             thisgll.licence = "https://creativecommons.org/licenses/by-nc-sa/4.0/"
@@ -146,7 +170,7 @@ with open(infile, newline="") as csvfile:
             if citation_ID.startswith(f"inel{s}"):
                 citation_ID = f"inel{s}"
         try:
-            thisgll.rightsholder = citation_d[citation_ID]
+            thisgll.rightsholder = OTC_Sources[provider_ID]
         except KeyError:
             print(f'rightsholder could not be established for {raw_ID}')
             citation_d[citation_ID] = 'unknown'
@@ -187,8 +211,8 @@ with open(infile, newline="") as csvfile:
         # except AttributeError:
         # pass
 
-# with open("nercache.json", "w") as nercachejson:
-#     nercachejson.write(json.dumps(nercache, indent=4, sort_keys=True))
+with open("nercache.json", "w") as nercachejson:
+    nercachejson.write(json.dumps(nercache, indent=4, sort_keys=True))
 with open("countrycache.json", "w") as countrycachejson:
     countrycachejson.write(json.dumps(countrycache, indent=4, sort_keys=True))
 with open("coordscache.json", "w") as coordscachejson:
